@@ -7,7 +7,7 @@ import "swiper/css/navigation";
 
 function Slider() {
   return (
-    <div className="container mx-auto py-10">
+    <div className="container mx-auto py-10 max-md:px-4">
       <div>
         <h3 className="mb-18">Navigation</h3>
         <div>

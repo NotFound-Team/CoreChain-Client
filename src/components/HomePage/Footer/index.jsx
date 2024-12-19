@@ -4,10 +4,10 @@ import Logo from "../../../image/Logo.svg";
 function Footer() {
   return (
     <footer className="dark:bg-gray-900 dark:text-gray-100 bg-[#043873] py-10">
-      <div className="container mx-auto">
+      <div className="container mx-auto max-md:px-4">
 
-        <div className="flex items-start justify-between gap-x-10 mb-20 text-white">
-          <ul className="max-w-60">
+        <div className="flex items-start justify-between gap-x-10 mb-20 text-white max-md:flex-col max-md:justify-center max-md:items-center max-md:text-center max-md:gap-y-8">
+          <ul className="max-w-60 max-md:flex max-md:flex-col max-md:justify-center max-md:items-center">
             <li>
               <img src={Logo} alt="logo company" />
             </li>
@@ -65,12 +65,12 @@ function Footer() {
               <h3 className="text-xl font-bold">Try It Today</h3>
             </li>
             <li>
-              <p>
+              <p className="max-md:text-sm">
                 Get started for free. Add your whole team as your needs grow.
               </p>
             </li>
             <li>
-              <a href="/" className="bg-[#4F9CF9] py-4 px-10 rounded-xl">
+              <a href="/" className="bg-[#4F9CF9] py-4 px-10 rounded-xl max-md:py-2 max-md:px-6 max-md:text-sm">
                 Try Whitepace free
               </a>
             </li>
@@ -79,15 +79,16 @@ function Footer() {
 
         <div className="w-full h-px bg-[#dddddd]"></div>
         
-        <div className="flex items-center justify-between mt-8">
-          <ul className="text-white flex gap-x-8">
+        <div className="flex items-center justify-between mt-8 max-md:block">
+          <ul className="text-white flex gap-x-8 max-md:block">
             <li>English</li>
             <li>Terms & privacy</li>
             <li>Security</li>
             <li>Status</li>
             <li>©2021 Whitepace LLC.</li>
           </ul>
-          <ul className="flex gap-x-6 text-white">
+          <ul className="flex items-center gap-x-6 text-white max-md:gap-x-2">
+            <li className="md:hidden max-md:block text-yellow-300">Follow us:</li>
             <li>
               <FaFacebookF />
             </li>

@@ -1,5 +1,9 @@
 import { useGSAP } from "@gsap/react";
-import { Button, Checkbox, Form, Input } from "antd";
+import { Button, Form, Input } from "antd";
+
+import imgBackGround from "../../image/thumb-1920-1297452.jpg"; //https://images4.alphacoders.com/129/1297452.png
+import Fly from "../../image/Lovepik_com-380197117-blue-aircraft-rocket-clip-art.gif";
+
 import gsap from "gsap";
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
@@ -9,11 +13,12 @@ const Register = () => {
 
   const formRegisterRef = useRef(null);
   const formBgRef = useRef(null);
+  const flyAnimationRef = useRef(null);
 
   useGSAP(() => {
     gsap.fromTo(
       formRegisterRef.current,
-      { x: -200, duration: 1.5, ease: "expo.out"},
+      { x: -500, duration: 1.5, ease: "expo.out" },
       { x: 0, duration: 1.5, ease: "expo.out" }
     );
     gsap.fromTo(
@@ -23,9 +28,22 @@ const Register = () => {
     );
   }, []);
 
+  const handleRegister = () => {
+    gsap.to(flyAnimationRef.current, {
+      y: -window.innerHeight,
+      opacity: 5,
+      scale: 1.5,
+      duration: 5,
+      ease: "slow(0.7,0.7,false)",
+    });
+  };
+
   return (
     <>
-      <div className="bg-gray-600 h-screen flex items-center justify-center">
+      <div
+        style={{ backgroundImage: `url(${imgBackGround})` }}
+        className="flex items-center justify-center w-full bg-cover h-screen shadow-2xl"
+      >
         <div className="flex items-center justify-center bg-white shadow-lg rounded-xl w-2/4">
           <div
             ref={formBgRef}
@@ -41,9 +59,9 @@ const Register = () => {
               <Link to="/login">Sign Up</Link>
             </Button>
           </div>
-          <div ref={formRegisterRef} className="w-1/2 p-8">
-            <Form layout="vertical" name="form-login">
-              <h3 className="text-center font-bold mb-16 text-transparent text-6xl bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
+          <div ref={formRegisterRef} className="w-1/2 px-8 py-6">
+            <Form layout="vertical" name="form-login" onFinish={handleRegister}>
+              <h3 className="text-center font-bold mb-14 text-transparent text-6xl bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
                 REGISTER
               </h3>
               <Form.Item
@@ -58,30 +76,71 @@ const Register = () => {
               >
                 <Input />
               </Form.Item>
+
               <Form.Item
-                label="Password"
-                name="password!"
+                label="Email"
+                name="email"
                 rules={[
                   {
                     required: true,
-                    message: "Please input your password!",
-                  },
-                  {
-                    min: 6,
-                    message: "Password must be at least 6 characters!",
+                    message: "Please input your username",
                   },
                 ]}
               >
-                <Input.Password
-                  visibilityToggle={{
-                    visible: passwordVisible,
-                    onVisibleChange: setPasswordVisible,
+                <Input />
+              </Form.Item>
+
+              <Form.Item className="mb-0">
+                <Form.Item
+                  label="Password"
+                  name="password"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input your password!",
+                    },
+                    {
+                      min: 6,
+                      message: "Password must be at least 6 characters!",
+                    },
+                  ]}
+                  style={{ display: "inline-block", width: "calc(50% - 8px)" }}
+                >
+                  <Input.Password
+                    visibilityToggle={{
+                      visible: passwordVisible,
+                      onVisibleChange: setPasswordVisible,
+                    }}
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="Comfirm Password"
+                  name="comfirmPassword!"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input your password!",
+                    },
+                    {
+                      min: 6,
+                      message: "Password must be at least 6 characters!",
+                    },
+                  ]}
+                  style={{
+                    display: "inline-block",
+                    width: "calc(50% - 8px)",
+                    marginLeft: "5px",
                   }}
-                />
+                >
+                  <Input.Password
+                    visibilityToggle={{
+                      visible: passwordVisible,
+                      onVisibleChange: setPasswordVisible,
+                    }}
+                  />
+                </Form.Item>
               </Form.Item>
-              <Form.Item name="remember" valuePropName="checked" label={null}>
-                <Checkbox>Remember me</Checkbox>
-              </Form.Item>
+
               <Form.Item>
                 <Button type="primary" block htmlType="submit" size="large">
                   Register
@@ -89,6 +148,12 @@ const Register = () => {
               </Form.Item>
             </Form>
           </div>
+        </div>
+        <div
+          ref={flyAnimationRef}
+          className="z-10 w-[100px] h-auto translate-x-[-770px] translate-y-[400px] opacity-0"
+        >
+          <img className="w-full h-auto object-cover" src={Fly} alt="fly" />
         </div>
       </div>
     </>

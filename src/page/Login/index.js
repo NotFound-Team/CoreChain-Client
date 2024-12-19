@@ -1,6 +1,10 @@
 import { Button, Checkbox, Form, Input } from "antd";
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
+
+import imgBackGround from "../../image/thumb-1920-1297452.jpg";
+import Fly from "../../image/Lovepik_com-380197117-blue-aircraft-rocket-clip-art.gif";
+
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 
@@ -8,11 +12,12 @@ const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const formLoginRef = useRef(null);
   const formBgRef = useRef(null);
+  const flyAnimationRef = useRef(null);
 
   useGSAP(() => {
     gsap.fromTo(
       formLoginRef.current,
-      { x: 200, duration: 1.5, ease: "expo.out" },
+      { x: 500, duration: 1.5, ease: "expo.out" },
       { x: 0, duration: 1.5, ease: "expo.out" }
     );
     gsap.fromTo(
@@ -21,12 +26,26 @@ const Login = () => {
       { x: 0, duration: 1.5, ease: "back.out(1.7)" }
     );
   }, []);
+
+  const handleLogin = () => {
+    gsap.to(flyAnimationRef.current, {
+      y: -window.innerHeight,
+      opacity: 5,
+      scale: 1.5,
+      duration: 5,
+      ease: "slow(0.7,0.7,false)",
+    });
+  };
+
   return (
     <>
-      <div className="bg-gray-600 h-screen flex items-center justify-center">
+      <div
+        style={{ backgroundImage: `url(${imgBackGround})` }}
+        className="flex items-center justify-center w-full bg-cover h-screen shadow-2xl"
+      >
         <div className="flex items-center justify-center bg-white shadow-lg rounded-xl w-2/4">
           <div ref={formLoginRef} className="w-1/2 p-8">
-            <Form layout="vertical" name="form-login">
+            <Form layout="vertical" name="form-login" onFinish={handleLogin}>
               <h3 className="text-center font-bold mb-16 text-transparent text-6xl bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
                 LOGIN
               </h3>
@@ -87,6 +106,12 @@ const Login = () => {
               <Link to="/register">Sign Up</Link>
             </Button>
           </div>
+        </div>
+        <div
+          ref={flyAnimationRef}
+          className="z-10 w-[100px] h-auto translate-x-[-770px] translate-y-[400px] opacity-0"
+        >
+          <img className="w-full h-auto object-cover" src={Fly} alt="fly" />
         </div>
       </div>
     </>
