@@ -43,10 +43,10 @@ const Login = () => {
         style={{ backgroundImage: `url(${imgBackGround})` }}
         className="flex items-center justify-center w-full bg-cover h-screen shadow-2xl"
       >
-        <div className="flex items-center justify-center bg-white shadow-lg rounded-xl w-2/4">
-          <div ref={formLoginRef} className="w-1/2 p-8">
+        <div className="flex items-center justify-center bg-white shadow-lg rounded-xl w-2/4 max-md:w-[80%]">
+          <div ref={formLoginRef} className="w-1/2 p-8 max-md:w-full">
             <Form layout="vertical" name="form-login" onFinish={handleLogin}>
-              <h3 className="text-center font-bold mb-16 text-transparent text-6xl bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
+              <h3 className="text-center font-bold mb-16 text-transparent text-6xl bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 max-md:text-3xl max-md:mb-8">
                 LOGIN
               </h3>
               <Form.Item
@@ -83,7 +83,12 @@ const Login = () => {
                 />
               </Form.Item>
               <Form.Item name="remember" valuePropName="checked" label={null}>
-                <Checkbox>Remember me</Checkbox>
+                <div className="flex items-center justify-between">
+                  <Checkbox>Remember me</Checkbox>
+                  <div className="md:hidden max-md:block">
+                    <Link to={"/register"}>Register?</Link>
+                  </div>
+                </div>
               </Form.Item>
               <Form.Item>
                 <Button type="primary" block htmlType="submit" size="large">
@@ -92,9 +97,11 @@ const Login = () => {
               </Form.Item>
             </Form>
           </div>
+
+          {/* background right */}
           <div
             ref={formBgRef}
-            className="flex-1 h-[500px] flex flex-col items-center justify-center bg-orange-600 rounded-r-xl text-white"
+            className="flex-1 h-[500px] flex flex-col items-center justify-center bg-orange-600 rounded-r-xl text-white max-md:hidden"
           >
             <h3 className="text-2xl font-semibold mb-4">New Here?</h3>
             <p className="mb-4">Create an account to enjoy our services.</p>
@@ -109,7 +116,7 @@ const Login = () => {
         </div>
         <div
           ref={flyAnimationRef}
-          className="z-10 w-[100px] h-auto translate-x-[-770px] translate-y-[400px] opacity-0"
+          className="z-10 w-[100px] h-auto translate-x-[-770px] translate-y-[400px] opacity-0 max-md:hidden"
         >
           <img className="w-full h-auto object-cover" src={Fly} alt="fly" />
         </div>

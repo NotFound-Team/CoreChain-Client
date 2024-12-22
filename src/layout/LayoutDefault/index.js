@@ -1,25 +1,41 @@
-import React from "react";
+import React, { Suspense } from "react";
+
+import { Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 
 import { Boxes } from "../../components/ui/background-boxes";
-import { WorldMap } from "../../components/ui/world-map";
+// import { WorldMap } from "../../components/ui/world-map";
 
 import TeamWork from "../../image/Influencer Marketing on Food Products.png";
 import ImgBlockChain from "../../image/blockchain.png";
 
 import { cn } from "../../lib/utils";
 import { motion } from "motion/react";
-import { IoLogoWindows } from "react-icons/io";
-import { BsAndroid2, BsApple } from "react-icons/bs";
-import Slider from "../../components/HomePage/Slider";
-import Header from "../../components/HomePage/Header";
-import Footer from "../../components/HomePage/Footer";
 
+// import Slider from "../../components/HomePage/Slider";
+import Header from "../../components/HomePage/Header";
+// import Subitle from "../../components/HomePage/Subtitle";
+// import Footer from "../../components/HomePage/Footer";
+
+// lazy loading
+const WorldMap = React.lazy(() => import("../../components/ui/world-map"));
+const Footer = React.lazy(() => import("../../components/HomePage/Footer"));
+const Slider = React.lazy(() => import("../../components/HomePage/Slider"));
+const Subitle = React.lazy(() => import("../../components/HomePage/Subtitle"));
 
 function LayoutDefault() {
   return (
     <>
+      <Suspense
+        fallback={
+          <Spin
+            fullscreen
+            tip="Loading..."
+            indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />}
+          />
+        }
+      >
         <div className="bg-[#053F7E] dark:bg-gray-900 dark:text-gray-100">
-
           {/* Header  */}
           <Header />
 
@@ -60,7 +76,8 @@ function LayoutDefault() {
             </div>
           </div>
         </div>
-
+        {/* Slider */}
+        <Slider />
         {/* Word map  */}
         <div className="dark:bg-gray-900 dark:text-gray-100">
           <div className="container mx-auto max-md:px-4">
@@ -148,41 +165,13 @@ function LayoutDefault() {
             </div>
           </div>
         </div>
-        
-        {/* Slider */}
-        <Slider />
 
         {/* Subtitle  */}
-        <div className="dark:bg-gray-900 dark:text-gray-100 bg-[#043873] py-16">
-          <div className="container mx-auto max-md:px-4">
-            <div className="text-white flex-col gap-y-2.5 text-center flex-center">
-              <h2 className="max-w-[500px] text-6xl font-bold mb-4 max-md:text-2xl">
-                Try Whitepace today
-              </h2>
-              <p className="text-md mb-4 max-w-[350px] max-md:text-sm">
-                Get started for free. Add your whole team as your needs grow.
-              </p>
-              <a href="/" className="bg-[#4F9CF9] py-4 px-10 rounded-xl max-md:py-2 max-md:px-6">
-                Try Whitepace free
-              </a>
-              <p>On a big team? Contact sales</p>
-              <div className="flex-center gap-x-2.5">
-                <a href="/" className="text-6xl max-md:text-4xl">
-                  <BsApple />
-                </a>
-                <a href="/" className="text-6xl max-md:text-4xl">
-                  <IoLogoWindows />
-                </a>
-                <a href="/" className="text-6xl max-md:text-4xl">
-                  <BsAndroid2 />
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
+        <Subitle />
 
         {/* Footer  */}
         <Footer />
+      </Suspense>
     </>
   );
 }

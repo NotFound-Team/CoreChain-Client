@@ -44,10 +44,10 @@ const Register = () => {
         style={{ backgroundImage: `url(${imgBackGround})` }}
         className="flex items-center justify-center w-full bg-cover h-screen shadow-2xl"
       >
-        <div className="flex items-center justify-center bg-white shadow-lg rounded-xl w-2/4">
+        <div className="flex items-center justify-center bg-white shadow-lg rounded-xl w-2/4 max-md:w-[80%]">
           <div
             ref={formBgRef}
-            className="flex-1 h-[500px] flex flex-col items-center justify-center bg-orange-600 rounded-l-xl text-white z-10"
+            className="flex-1 h-[500px] flex flex-col items-center justify-center bg-orange-600 rounded-l-xl text-white z-10 max-md:hidden  "
           >
             <h3 className="text-2xl font-semibold mb-4">New Here?</h3>
             <p className="mb-4">Create an account to enjoy our services.</p>
@@ -59,9 +59,9 @@ const Register = () => {
               <Link to="/login">Sign Up</Link>
             </Button>
           </div>
-          <div ref={formRegisterRef} className="w-1/2 px-8 py-6">
+          <div ref={formRegisterRef} className="w-1/2 px-8 py-6 max-md:w-full">
             <Form layout="vertical" name="form-login" onFinish={handleRegister}>
-              <h3 className="text-center font-bold mb-14 text-transparent text-6xl bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
+              <h3 className="text-center font-bold mb-14 text-transparent text-6xl bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 max-md:text-2xl max-md:mb-8">
                 REGISTER
               </h3>
               <Form.Item
@@ -90,8 +90,9 @@ const Register = () => {
                 <Input />
               </Form.Item>
 
-              <Form.Item className="mb-0">
+              <Form.Item className="w-full mb-0">
                 <Form.Item
+                  className="inline-block w-1/2 max-md:w-full"
                   label="Password"
                   name="password"
                   rules={[
@@ -104,7 +105,7 @@ const Register = () => {
                       message: "Password must be at least 6 characters!",
                     },
                   ]}
-                  style={{ display: "inline-block", width: "calc(50% - 8px)" }}
+                  // style={{ display: "inline-block", width: "calc(50% - 8px)" }}
                 >
                   <Input.Password
                     visibilityToggle={{
@@ -114,6 +115,7 @@ const Register = () => {
                   />
                 </Form.Item>
                 <Form.Item
+                  className="inline-block w-1/2 max-md:w-full"
                   label="Comfirm Password"
                   name="comfirmPassword!"
                   rules={[
@@ -126,11 +128,11 @@ const Register = () => {
                       message: "Password must be at least 6 characters!",
                     },
                   ]}
-                  style={{
-                    display: "inline-block",
-                    width: "calc(50% - 8px)",
-                    marginLeft: "5px",
-                  }}
+                  // style={{
+                  //   display: "inline-block",
+                  //   width: "calc(50% - 8px)",
+                  //   marginLeft: "5px",
+                  // }}
                 >
                   <Input.Password
                     visibilityToggle={{
@@ -145,13 +147,17 @@ const Register = () => {
                 <Button type="primary" block htmlType="submit" size="large">
                   Register
                 </Button>
+
+                <div className="md:hidden max-md:block">
+                  <Link to="/login">Login?</Link>
+                </div>
               </Form.Item>
             </Form>
           </div>
         </div>
         <div
           ref={flyAnimationRef}
-          className="z-10 w-[100px] h-auto translate-x-[-770px] translate-y-[400px] opacity-0"
+          className="z-10 w-[100px] h-auto translate-x-[-770px] translate-y-[400px] opacity-0 max-md:hidden"
         >
           <img className="w-full h-auto object-cover" src={Fly} alt="fly" />
         </div>

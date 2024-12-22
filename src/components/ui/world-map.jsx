@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 import DottedMap from "dotted-map";
 import { useTheme } from "../../theme/ThemeProvider/index.jsx"; // Import đúng từ file ThemeProvider
 
-export function WorldMap({
+export default function WorldMap({
   dots = [],
   lineColor = "#0ea5e9"
 }) {
