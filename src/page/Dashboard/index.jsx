@@ -5,23 +5,47 @@ const Dashboard = () => {
     <>
       <Row gutter={[20, 20]}>
         <Col xxl={6} xl={6} lg={6} md={12} sm={24} xs={24}>
-          <div className="border-solid border-2 border-gray-400 bg-white px-[10px] py-[20px]">
-            Box 1
+          <div className="shadow-md rounded-lg bg-white px-[10px] py-[20px]">
+            <p>Today’s Sales</p>
+            <div className="text-2xl font-bold">
+              $53,000
+              <span className="text-sm font-extralight text-green-500">
+                +30%
+              </span>
+            </div>
           </div>
         </Col>
         <Col xxl={6} xl={6} lg={6} md={12} sm={24} xs={24}>
-          <div className="border-solid border-2 border-gray-400 bg-white px-[10px] py-[20px]">
-            Box 2
+          <div className="shadow-md rounded-lg bg-white px-[10px] py-[20px]">
+            <p>Today’s Users</p>
+            <div className="text-2xl font-bold">
+              3,200
+              <span className="text-sm font-extralight text-green-500">
+                +20%
+              </span>
+            </div>
           </div>
         </Col>
         <Col xxl={6} xl={6} lg={6} md={12} sm={24} xs={24}>
-          <div className="border-solid border-2 border-gray-400 bg-white px-[10px] py-[20px]">
-            Box 3
+          <div className="shadow-md rounded-lg bg-white px-[10px] py-[20px]">
+            <p>New Clients</p>
+            <div className="text-2xl font-bold">
+              +1,200
+              <span className="text-sm font-extralight text-red-500">
+                -20%
+              </span>
+            </div>
           </div>
         </Col>
         <Col xxl={6} xl={6} lg={6} md={12} sm={24} xs={24}>
-          <div className="border-solid border-2 border-gray-400 bg-white px-[10px] py-[20px]">
-            Box 4
+          <div className="shadow-md rounded-lg bg-white px-[10px] py-[20px]">
+            <p>New Orders</p>
+            <div className="text-2xl font-bold">
+            $13,200
+              <span className="text-sm font-extralight text-green-500">
+                +10%
+              </span>
+            </div>
           </div>
         </Col>
       </Row>

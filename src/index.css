@@ -2,18 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom */
-.flex-center {
-  @apply flex items-center justify-center;
-}
-/* End Custom */
-
-/* Notify  */
-.notify__body .ant-dropdown-menu {
-  box-shadow: none;
-}
-/* End Notify  */
-
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
@@ -26,4 +14,41 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+/* Custom */
+.flex-center {
+  @apply flex items-center justify-center;
+}
+/* End Custom */
+
+/* Notify  */
+.notify__body .ant-dropdown-menu {
+  box-shadow: none;
+}
+/* End Notify  */
+
+/* Header  */
+.ant-layout .ant-layout-header {
+  position: fixed;
+  z-index: 99;
+  width: 100%;
+  top: 0;
+  left: 0;
+}
+/* End Header  */
+
+/* Sider Menu  */
+.ant-layout .ant-layout-sider {
+  position: fixed;
+  z-index: 99;
+  height: 100vh;
+  top: 64px;
+  left: 0;
+}
+/* End Sider Menu  */
+
+/* Content */
+.ant-layout .ant-layout-content {
+  transition: margin-left 0.3s ease; /* Thêm hiệu ứng chuyển động khi thay đổi chiều rộng */
 }

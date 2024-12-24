@@ -1,9 +1,9 @@
-import { Button, Layout } from "antd";
+import { Breadcrumb, Button, Layout } from "antd";
 import LogoMain from "../../image/Logo.svg";
 import LogoIcon from "../../image/Logo Icon.svg";
 import Notify from "../../components/Notify";
 import MenuSider from "../../components/MenuSider";
-import { Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { MenuFoldOutlined } from "@ant-design/icons";
 import { FaRegUser } from "react-icons/fa";
@@ -12,6 +12,22 @@ const { Header, Sider, Content } = Layout;
 
 const Manager = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const location = useLocation();
+
+  const pathSnippets = location.pathname.split("/").filter((i) => i);
+  const breadcrumbItems = [
+    <Breadcrumb.Item key="home">
+      <Link to="/">Home</Link>
+    </Breadcrumb.Item>,
+    ...pathSnippets.map((_, index) => {
+      const url = `/${pathSnippets.slice(0, index + 1).join("/")}`;
+      return (
+        <Breadcrumb.Item key={url}>
+          <Link to={url}>{_}</Link>
+        </Breadcrumb.Item>
+      );
+    }),
+  ];
 
   return (
     <>
@@ -47,7 +63,14 @@ const Manager = () => {
           <Sider trigger={null} collapsible collapsed={collapsed} theme="light">
             <MenuSider />
           </Sider>
-          <Content>
+          <Content
+            className={`${
+              collapsed ? "ml-[80px]" : "ml-[200px]"
+            } mt-[64px] transition-all p-4`}
+          >
+            <Breadcrumb style={{ marginBottom: "16px" }}>
+              {breadcrumbItems}
+            </Breadcrumb>
             <Outlet />
           </Content>
         </Layout>

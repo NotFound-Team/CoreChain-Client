@@ -3,6 +3,9 @@ import LayoutDefault from "../layout/LayoutDefault";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import Dashboard from "../page/Dashboard";
+import Profile from "../page/Profile";
+import ListTask from "../page/ListTask";
+import TeamWork from "../page/TeamWork";
 // import Login from "../page/Login";
 // import Register from "../page/Register";
 
@@ -41,7 +44,12 @@ export const routes = [
   {
     path: "/manager",
     element: LazyLoad(Manager),
-    children: [{ path: "/manager", element: <Dashboard /> }],
+    children: [
+      { path: "/manager", element: <Dashboard /> },
+      { path: "profile", element: <Profile /> },
+      { path: "list-task", element: <ListTask /> },
+      { path: "team-work", element: <TeamWork /> },
+    ],
   },
   {
     path: "/user",
