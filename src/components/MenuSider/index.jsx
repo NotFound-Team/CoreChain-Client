@@ -39,8 +39,14 @@ const MenuSider = () => {
       children: [
         {
           key: "accountProfile",
-          label: <NavLink to="/manager/profile">Profile</NavLink>,
+          label: <NavLink to="/manager/profile/details">Profile</NavLink>,
           icon: <FaRegUser />,
+          children: [
+            {
+              key: "details",
+              label: <NavLink to="/manager/profile/details">Details</NavLink>,
+            },
+          ],
         },
         {
           key: "signIn",

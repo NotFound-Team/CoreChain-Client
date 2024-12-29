@@ -1,12 +1,19 @@
+// React
+import { useRef, useState } from "react";
+//React Router Dom
+import { Link } from "react-router-dom";
+// Hook gsap
 import { useGSAP } from "@gsap/react";
-import { Button, Form, Input } from "antd";
 
+// ** Antd
+import { Button, Form, Input, message } from "antd";
+
+// ** Image
 import imgBackGround from "../../image/thumb-1920-1297452.jpg"; //https://images4.alphacoders.com/129/1297452.png
 import Fly from "../../image/Lovepik_com-380197117-blue-aircraft-rocket-clip-art.gif";
 
+// ** GSAP
 import gsap from "gsap";
-import { useRef, useState } from "react";
-import { Link } from "react-router-dom";
 
 const Register = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -28,7 +35,19 @@ const Register = () => {
     );
   }, []);
 
-  const handleRegister = () => {
+  const handleRegister = (e) => {
+    // Method POST
+    const registerInformation = {
+      username: e.username,
+      email: e.email,
+      password: e.password,
+      role: "guest"
+    }
+    if(registerInformation) {
+      message.success("Registered successfully!")
+    }
+    console.log("registerInformation", registerInformation);
+
     gsap.to(flyAnimationRef.current, {
       y: -window.innerHeight,
       opacity: 5,
@@ -117,16 +136,24 @@ const Register = () => {
                 <Form.Item
                   className="inline-block w-1/2 max-md:w-full"
                   label="Comfirm Password"
-                  name="comfirmPassword!"
+                  name="comfirmPassword"
+                  dependencies={["password"]}
                   rules={[
                     {
                       required: true,
                       message: "Please input your password!",
                     },
-                    {
-                      min: 6,
-                      message: "Password must be at least 6 characters!",
-                    },
+                    ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        console.log(value);
+                        if (!value || getFieldValue("password") === value) {
+                          return Promise.resolve();
+                        }
+                        return Promise.reject(
+                          new Error("Passwords are not the same")
+                        );
+                      },
+                    }),
                   ]}
                   // style={{
                   //   display: "inline-block",

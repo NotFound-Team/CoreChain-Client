@@ -1,10 +1,17 @@
-import { Button, Checkbox, Form, Input } from "antd";
+// ** React
 import { useRef, useState } from "react";
+
+// React Router Dom
 import { Link } from "react-router-dom";
 
+// ** Antd
+import { Button, Checkbox, Form, Input, message } from "antd";
+
+// ** Image
 import imgBackGround from "../../image/thumb-1920-1297452.jpg";
 import Fly from "../../image/Lovepik_com-380197117-blue-aircraft-rocket-clip-art.gif";
 
+// ** GSAP
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 
@@ -27,7 +34,16 @@ const Login = () => {
     );
   }, []);
 
-  const handleLogin = () => {
+  const handleLogin = (e) => {
+    // Method POST
+    const loginInformation = {
+      username: e.username,
+      pasword: e.pasword,
+    };
+    if(loginInformation) {
+      message.success("Login successfully!")
+    }
+    console.log("loginInformation", loginInformation);
     gsap.to(flyAnimationRef.current, {
       y: -window.innerHeight,
       opacity: 5,
@@ -63,7 +79,7 @@ const Login = () => {
               </Form.Item>
               <Form.Item
                 label="Password"
-                name="password!"
+                name="password"
                 rules={[
                   {
                     required: true,

@@ -2,10 +2,10 @@ import React, { Suspense } from "react";
 import LayoutDefault from "../layout/LayoutDefault";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-import Dashboard from "../page/Dashboard";
-import Profile from "../page/Profile";
-import ListTask from "../page/ListTask";
-import TeamWork from "../page/TeamWork";
+// import Dashboard from "../page/Dashboard";
+// import Profile from "../page/Profile";
+// import ListTask from "../page/ListTask";
+// import TeamWork from "../page/TeamWork";
 // import Login from "../page/Login";
 // import Register from "../page/Register";
 
@@ -13,6 +13,11 @@ const Login = React.lazy(() => import("../page/Login"));
 const Register = React.lazy(() => import("../page/Register"));
 const Manager = React.lazy(() => import("../page/Manager"));
 const User = React.lazy(() => import("../page/User"));
+const Profile = React.lazy(() => import("../page/Profile"));
+const ListTask = React.lazy(() => import("../page/ListTask"));
+const TeamWork = React.lazy(() => import("../page/TeamWork"));
+const Dashboard = React.lazy(() => import("../page/Dashboard"));
+const Details = React.lazy(() => import("../page/Profile/Details"));
 
 const LazyLoad = (Component) => (
   <Suspense
@@ -45,10 +50,19 @@ export const routes = [
     path: "/manager",
     element: LazyLoad(Manager),
     children: [
-      { path: "/manager", element: <Dashboard /> },
-      { path: "profile", element: <Profile /> },
-      { path: "list-task", element: <ListTask /> },
-      { path: "team-work", element: <TeamWork /> },
+      { path: "/manager", element: LazyLoad(Dashboard) },
+      {
+        path: "profile",
+        element: LazyLoad(Profile),
+        children: [
+          {
+            path: "details",
+            element: LazyLoad(Details),
+          },
+        ],
+      },
+      { path: "list-task", element: LazyLoad(ListTask) },
+      { path: "team-work", element: LazyLoad(TeamWork) },
     ],
   },
   {

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-axios.defaults.baseURL = "";
+axios.defaults.baseURL = "http://localhost:3002";
 axios.defaults.headers = {
   "Content-Type": "application/json",
 };
