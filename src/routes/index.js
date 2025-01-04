@@ -18,6 +18,7 @@ const ListTask = React.lazy(() => import("../page/ListTask"));
 const TeamWork = React.lazy(() => import("../page/TeamWork"));
 const Dashboard = React.lazy(() => import("../page/Dashboard"));
 const Details = React.lazy(() => import("../page/Profile/Details"));
+const NotFound = React.lazy(() => import("../page/NotFound"));
 
 const LazyLoad = (Component) => (
   <Suspense
@@ -68,5 +69,9 @@ export const routes = [
   {
     path: "/user",
     element: LazyLoad(User),
+  },
+  {
+    path: "*",
+    element: LazyLoad(NotFound),
   },
 ];
