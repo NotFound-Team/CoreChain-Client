@@ -14,7 +14,6 @@ import {
 import { AntDesignOutlined, UserOutlined } from "@ant-design/icons";
 
 const TableTask = ({ data }) => {
-  // console.log(data);
   return (
     <>
       <Row gutter={[20, 20]} className="h-screen">

@@ -1,6 +1,7 @@
-import { Tabs } from "antd";
+import { Avatar, Tabs } from "antd";
 import UserProfileDetailsPage from "./Details";
 import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
+import { UserOutlined } from "@ant-design/icons";
 
 const Profile = () => {
   const location = useLocation();
@@ -27,7 +28,7 @@ const Profile = () => {
 
   // Lấy key của tab dựa trên đường dẫn hiện tại
   // Cắt bỏ phần /manager/profile/ từ đường dẫn và lấy phần còn lại
-  const activeKey = location.pathname.split("/").pop() || "1";  // Nếu không có phần con thì mặc định là "1"
+  const activeKey = location.pathname.split("/").pop() || "1"; // Nếu không có phần con thì mặc định là "1"
 
   const onTabChange = (key) => {
     switch (key) {
@@ -47,11 +48,18 @@ const Profile = () => {
 
   return (
     <>
-      <Tabs
-        activeKey={activeKey}
-        items={items}
-        onChange={onTabChange}
-      />
+      <div className="shadow-xl rounded-2xl">
+        <div className="bg-gradient-to-r from-purple-500 to-blue-500 w-full inline-block rounded-2xl py-6 px-4">
+          <Avatar size={80} icon={<UserOutlined />} />
+          <div className="text-white font-medium">
+            Name: <span className="font-light">Jack97</span>
+          </div>
+          <div className="text-white font-medium">
+            Position: <span className="font-light">Leader</span>
+          </div>
+        </div>
+      </div>
+      <Tabs activeKey={activeKey} items={items} onChange={onTabChange} />
       <Outlet />
     </>
   );

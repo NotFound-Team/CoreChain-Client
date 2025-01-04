@@ -12,6 +12,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 const Login = React.lazy(() => import("../page/Login"));
 const Register = React.lazy(() => import("../page/Register"));
 const Manager = React.lazy(() => import("../page/Manager"));
+const Admin = React.lazy(() => import("../page/Admin/index"));
 const User = React.lazy(() => import("../page/User"));
 const Profile = React.lazy(() => import("../page/Profile"));
 const ListTask = React.lazy(() => import("../page/ListTask"));
@@ -47,6 +48,8 @@ export const routes = [
     path: "/register",
     element: LazyLoad(Register),
   },
+
+  // ** manager
   {
     path: "/manager",
     element: LazyLoad(Manager),
@@ -66,10 +69,20 @@ export const routes = [
       { path: "team-work", element: LazyLoad(TeamWork) },
     ],
   },
+  // end manager
+  // **use
   {
     path: "/user",
     element: LazyLoad(User),
   },
+  // end user
+
+  // ** admin
+  {
+    path: "/admin",
+    element: LazyLoad(Admin),
+  },
+  // end admin
   {
     path: "*",
     element: LazyLoad(NotFound),

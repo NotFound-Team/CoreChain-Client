@@ -3,7 +3,6 @@ import { Menu } from "antd";
 import {
   CalendarOutlined,
   DashboardOutlined,
-  FormOutlined,
   TeamOutlined,
 } from "@ant-design/icons";
 
@@ -23,18 +22,13 @@ const MenuSider = () => {
       icon: <DashboardOutlined />,
     },
     {
-      key: "task",
-      label: "Task",
-      icon: <FormOutlined />,
-    },
-    {
-      key: "TeamWork",
-      label: <NavLink to="/manager/team-work">TeamWork</NavLink>,
+      key: "AllUsers",
+      label: <NavLink to="/admin">All Users</NavLink>,
       icon: <TeamOutlined />,
     },
     {
-      key: "ListTask",
-      label: <NavLink to="/manager/list-task">List Task</NavLink>,
+      key: "TaskList",
+      label: <NavLink to="/admin/task-list">Task List</NavLink>,
       icon: <CalendarOutlined />,
     },
     {
@@ -44,12 +38,12 @@ const MenuSider = () => {
       children: [
         {
           key: "accountProfile",
-          label: <NavLink to="/manager/profile/details">Profile</NavLink>,
+          label: <NavLink to="/admin/profile/details">Profile</NavLink>,
           icon: <FaRegUser />,
           children: [
             {
               key: "details",
-              label: <NavLink to="/manager/profile/details">Details</NavLink>,
+              label: <NavLink to="/admin/profile/details">Details</NavLink>,
             },
           ],
         },
