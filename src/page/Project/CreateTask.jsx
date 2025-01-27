@@ -4,21 +4,23 @@ import {
   DatePicker,
   Form,
   Input,
+  message,
   Modal,
   Select,
   Space,
-  Upload,
 } from "antd";
 import { useForm } from "antd/es/form/Form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoAddCircleOutline } from "react-icons/io5";
-import { UploadOutlined, UserOutlined } from "@ant-design/icons";
+import { UserOutlined } from "@ant-design/icons";
+import fetchApi from "../../services/fetchApi";
 const { Option } = Select;
 
 const CreateTask = () => {
   const [form] = useForm();
-  const { RangePicker } = DatePicker;
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [date, setDate] = useState("");
+  const [dataPost, setDataPost] = useState(null);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -28,29 +30,47 @@ const CreateTask = () => {
     setIsModalOpen(false);
   };
 
-  const handlSubmit = () => {
-
+  const handlSubmit = (e) => {
+    if (!date) {
+      message.error("Please select a deadline.");
+      return;
+    }
+    e.deadline = date;
+    setDataPost({
+      ...e,
+      projectId: Date.now(),
+      tasks: [],
+      completed: false,
+    });
   };
-
-  const props = {
-    action: "/api/upload",
-    onChange({ file, fileList }) {
-      console.log(file);
-      console.log(fileList);
-      // if (file.status !== "uploading") {
-      //   console.log(file, fileList);
-      // }
-    },
-    defaultFileList: [],
-  };
+  useEffect(() => {
+    if (dataPost) {
+      const projectPost = async () => {
+        try {
+          await fetchApi("/projects", "POST", dataPost);
+          message.open({
+            type: "success",
+            content: "Create success!",
+          });
+          setIsModalOpen(false);
+          form.resetFields();
+          setDataPost(null);
+        } catch (error) {
+          message.open({
+            type: "error",
+            content: `${error}`,
+          });
+        }
+      };
+      projectPost();
+    }
+  }, [dataPost]);
 
   return (
     <>
-      <Button
-        type="primary"
-        icon={<IoAddCircleOutline />}
-        onClick={showModal}
-      >Create Project</Button>
+      <Button type="primary" icon={<IoAddCircleOutline />} onClick={showModal}>
+        Create Project
+      </Button>
       <Modal
         title="Create Project"
         open={isModalOpen}
@@ -59,7 +79,7 @@ const CreateTask = () => {
       >
         <Form
           layout="vertical"
-          name="create-task"
+          name="create-project"
           form={form}
           onFinish={handlSubmit}
         >
@@ -71,14 +91,10 @@ const CreateTask = () => {
           </Form.Item>
           <Form.Item label="Deadline" name="deadline">
             <Space direction="vertical" size={12}>
-              <RangePicker
-                showTime={{
-                  format: "HH:mm",
-                }}
-                format="YYYY-MM-DD HH:mm"
-                onChange={(value, dateString) => {
-                  console.log("Selected Time: ", value);
-                  console.log("Formatted Selected Time: ", dateString);
+              <DatePicker
+                format="DD-MM-YYYY"
+                onChange={(date, dateString) => {
+                  setDate(dateString);
                 }}
               />
             </Space>
@@ -89,11 +105,6 @@ const CreateTask = () => {
                 <Avatar size={16} icon={<UserOutlined />} ti /> Jack
               </Option>
             </Select>
-          </Form.Item>
-          <Form.Item label="Upload attachments" name="file">
-            <Upload {...props}>
-              <Button icon={<UploadOutlined />}>Select Files</Button>
-            </Upload>
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit">

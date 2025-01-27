@@ -19,8 +19,8 @@ const Project = () => {
       }
     };
     fetchTask();
-  }, []);
-  console.log(dataTask);
+  }, [dataTask]);
+  // console.log(dataTask);
   return (
     <>
       <div className="flex items-center justify-between">
