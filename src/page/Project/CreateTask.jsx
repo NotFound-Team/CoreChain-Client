@@ -28,7 +28,9 @@ const CreateTask = () => {
     setIsModalOpen(false);
   };
 
-  const handlSubmit = () => {};
+  const handlSubmit = () => {
+
+  };
 
   const props = {
     action: "/api/upload",
@@ -48,9 +50,9 @@ const CreateTask = () => {
         type="primary"
         icon={<IoAddCircleOutline />}
         onClick={showModal}
-      ></Button>
+      >Create Project</Button>
       <Modal
-        title="Add Task"
+        title="Create Project"
         open={isModalOpen}
         onCancel={handleCancel}
         footer={null}
@@ -61,13 +63,13 @@ const CreateTask = () => {
           form={form}
           onFinish={handlSubmit}
         >
-          <Form.Item label="Task name" name="name">
+          <Form.Item label="Project Name" name="projectName">
             <Input />
           </Form.Item>
           <Form.Item label="Title" name="title">
             <Input />
           </Form.Item>
-          <Form.Item label="Date" name="data">
+          <Form.Item label="Deadline" name="deadline">
             <Space direction="vertical" size={12}>
               <RangePicker
                 showTime={{
@@ -95,7 +97,7 @@ const CreateTask = () => {
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit">
-              Add
+              Create
             </Button>
           </Form.Item>
         </Form>

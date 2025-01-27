@@ -15,7 +15,7 @@ const Manager = React.lazy(() => import("../page/Manager"));
 const Admin = React.lazy(() => import("../page/Admin/index"));
 const User = React.lazy(() => import("../page/User"));
 const Profile = React.lazy(() => import("../page/Profile"));
-const ListTask = React.lazy(() => import("../page/ListTask"));
+const Project = React.lazy(() => import("../page/Project"));
 const TeamWork = React.lazy(() => import("../page/TeamWork"));
 const Dashboard = React.lazy(() => import("../page/Dashboard"));
 const Details = React.lazy(() => import("../page/Profile/Details"));
@@ -65,12 +65,12 @@ export const routes = [
           },
         ],
       },
-      { path: "list-task", element: LazyLoad(ListTask) },
+      { path: "project", element: LazyLoad(Project) },
       { path: "team-work", element: LazyLoad(TeamWork) },
     ],
   },
   // end manager
-  // **use
+  // **user
   {
     path: "/user",
     element: LazyLoad(User),

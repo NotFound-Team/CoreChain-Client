@@ -33,12 +33,12 @@ const MenuSider = () => {
       icon: <TeamOutlined />,
     },
     {
-      key: "ListTask",
-      label: <NavLink to="/manager/list-task">List Task</NavLink>,
+      key: "Project",
+      label: <NavLink to="/manager/project">Project</NavLink>,
       icon: <CalendarOutlined />,
     },
     {
-      key: "grp",
+      key: "account-page",
       label: <h4 className="font-bold">ACCOUNT PAGES</h4>,
       type: "group",
       children: [

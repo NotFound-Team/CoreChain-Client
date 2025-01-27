@@ -2,6 +2,7 @@
 import {
   Avatar,
   Badge,
+  Button,
   Card,
   Col,
   Popconfirm,
@@ -20,8 +21,8 @@ const TableTask = ({ data }) => {
         {data.map((item) => (
           <Col xxl={6} xl={6} lg={6} md={12} sm={24} xs={24} key={item.id}>
             <Badge.Ribbon
-              text={item.status ? "complete" : "working"}
-              color={item.status ? "green" : "red"}
+              text={item.completed ? "complete" : "working"}
+              color={item.completed ? "green" : "red"}
             >
               <Card
                 title={
@@ -38,14 +39,18 @@ const TableTask = ({ data }) => {
                   </div>
                 }
               >
-                <p className="font-bold text-lg mb-6">{item.description}</p>
-                <p className="border-[1px] border-slate-600 px-2 py-1 rounded-xl w-[150px] mb-6">
-                  deadline: 28/01/2025
+                <p className="font-bold text-lg mb-6">{item.projectName}</p>
+                <p className="border-[1px] border-slate-600 px-2 py-1 rounded-xl w-[150px] text-center mb-4">
+                  Deadline:{item.deadline}
                 </p>
-                <div>
-                  <Progress percent={100} size="small" />
+                <div className="mb-4">
+                  {item.completed ? (
+                    <Progress percent={100} size="small" />
+                  ) : (
+                    <Progress percent={50} showInfo={false} />
+                  )}
                 </div>
-                <div>
+                <div className="flex items-center justify-between">
                   <Avatar.Group>
                     <Avatar
                       size="small"
@@ -78,6 +83,11 @@ const TableTask = ({ data }) => {
                       icon={<AntDesignOutlined />}
                     />
                   </Avatar.Group>
+                  <div>
+                    <Button color="default" variant="outlined">
+                      Detail
+                    </Button>
+                  </div>
                 </div>
               </Card>
             </Badge.Ribbon>

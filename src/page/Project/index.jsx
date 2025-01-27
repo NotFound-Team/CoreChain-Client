@@ -4,7 +4,7 @@ import fetchAPI from "../../services/fetchApi";
 import { message } from "antd";
 import CreateTask from "./CreateTask";
 
-const ListTask = () => {
+const Project = () => {
   const [dataTask, setDataTask] = useState([]);
   useEffect(() => {
     const fetchTask = async () => {
@@ -20,11 +20,11 @@ const ListTask = () => {
     };
     fetchTask();
   }, []);
-  // console.log(dataTask);
+  console.log(dataTask);
   return (
     <>
       <div className="flex items-center justify-between">
-        <h3 className="font-bold">List Task</h3>
+        <h3 className="font-bold">Project List</h3>
         <CreateTask />
       </div>
       <TableTask data={dataTask} />
@@ -32,4 +32,4 @@ const ListTask = () => {
   );
 };
 
-export default ListTask;
+export default Project;
