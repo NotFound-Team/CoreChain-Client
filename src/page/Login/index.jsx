@@ -1,8 +1,8 @@
 // ** React
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // React Router Dom
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // ** Antd
 import { Button, Checkbox, Form, Input, message } from "antd";
@@ -15,11 +15,14 @@ import Fly from "../../image/Lovepik_com-380197117-blue-aircraft-rocket-clip-art
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 
+import fetchApi from "../../services/fetchApi";
+
 const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const formLoginRef = useRef(null);
   const formBgRef = useRef(null);
   const flyAnimationRef = useRef(null);
+  const navigate = useNavigate();
 
   useGSAP(() => {
     gsap.fromTo(
@@ -34,24 +37,44 @@ const Login = () => {
     );
   }, []);
 
-  const handleLogin = (e) => {
-    // Method POST
-    const loginInformation = {
-      username: e.username,
-      pasword: e.pasword,
+  const handleLogin = async (e) => {
+    const loginData = {
+      data: {
+        email: e.email,
+        password: e.password,
+      },
     };
-    if(loginInformation) {
-      message.success("Login successfully!")
+    try {
+      const response = await fetchApi("/auth/login", "POST", loginData);
+      if (response.status === 200) {
+        message.success("Login successfully!");
+        navigate("/manager");
+      }
+
+      gsap.to(flyAnimationRef.current, {
+        y: -window.innerHeight,
+        opacity: 5,
+        scale: 1.5,
+        duration: 5,
+        ease: "slow(0.7,0.7,false)",
+      });
+    } catch (error) {
+      message.error("User not found!");
+      console.log("error", error);
     }
-    console.log("loginInformation", loginInformation);
-    gsap.to(flyAnimationRef.current, {
-      y: -window.innerHeight,
-      opacity: 5,
-      scale: 1.5,
-      duration: 5,
-      ease: "slow(0.7,0.7,false)",
-    });
   };
+
+  useEffect(() => {
+    const isAuthenticated = async () => {
+      try {
+        const response = await fetchApi("/auth/isAuthenticated");
+        console.log(response);
+      } catch (error) {
+        console.log("error", error);
+      }
+    };
+    isAuthenticated();
+  }, []);
 
   return (
     <>
@@ -66,12 +89,16 @@ const Login = () => {
                 LOGIN
               </h3>
               <Form.Item
-                label="Username"
-                name="username"
+                label="Email"
+                name="email"
                 rules={[
                   {
                     required: true,
                     message: "Please input your username",
+                  },
+                  {
+                    type: "email",
+                    message: "The input is not a valid email!",
                   },
                 ]}
               >

@@ -1,7 +1,6 @@
 import axios from "axios";
 
-const apiUrl = process.env.REACT_APP_BASE_URL_API;
-
+const apiUrl = process.env.REACT_APP_BASE_URL_API || "http://localhost:3002";
 axios.defaults.baseURL = apiUrl;
 axios.defaults.headers = {
   "Content-Type": "application/json",
@@ -15,10 +14,10 @@ const fetchAPI = async (url, method = "GET", data = null, headers = {}) => {
       data,
       headers,
     });
-    return response.data;
+    return response;
   } catch (error) {
-    console.error("Data faild:", error);
-    throw error();
+    console.error("Data failed:", error.response?.data || error.message);
+    throw error;
   }
 };
 
