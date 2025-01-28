@@ -2,12 +2,6 @@ import React, { Suspense } from "react";
 import LayoutDefault from "../layout/LayoutDefault";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-// import Dashboard from "../page/Dashboard";
-// import Profile from "../page/Profile";
-// import ListTask from "../page/ListTask";
-// import TeamWork from "../page/TeamWork";
-// import Login from "../page/Login";
-// import Register from "../page/Register";
 
 const Login = React.lazy(() => import("../page/Login"));
 const Register = React.lazy(() => import("../page/Register"));
@@ -19,6 +13,7 @@ const Project = React.lazy(() => import("../page/Project"));
 const TeamWork = React.lazy(() => import("../page/TeamWork"));
 const Dashboard = React.lazy(() => import("../page/Dashboard"));
 const Details = React.lazy(() => import("../page/Profile/Details"));
+const detailProject = React.lazy(() => import("../page/Project/detailProject.jsx"));
 const NotFound = React.lazy(() => import("../page/NotFound"));
 
 const LazyLoad = (Component) => (
@@ -65,7 +60,16 @@ export const routes = [
           },
         ],
       },
-      { path: "project", element: LazyLoad(Project) },
+      {
+        path: "project",
+        element: LazyLoad(Project),
+        children: [
+          {
+            path: "details/:id",
+            element: LazyLoad(detailProject),
+          },
+        ],
+      },
       { path: "team-work", element: LazyLoad(TeamWork) },
     ],
   },

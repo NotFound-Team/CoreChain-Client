@@ -13,13 +13,14 @@ import {
 } from "antd";
 
 import { AntDesignOutlined, UserOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
 
 const TableTask = ({ data }) => {
   return (
     <>
       <Row gutter={[20, 20]} className="h-screen">
-        {data.map((item) => (
-          <Col xxl={6} xl={6} lg={6} md={12} sm={24} xs={24} key={item.id}>
+        {data.map((item,index) => (
+          <Col xxl={6} xl={6} lg={6} md={12} sm={24} xs={24} key={item.id || index}>
             <Badge.Ribbon
               text={item.completed ? "complete" : "working"}
               color={item.completed ? "green" : "red"}
@@ -84,9 +85,11 @@ const TableTask = ({ data }) => {
                     />
                   </Avatar.Group>
                   <div>
-                    <Button color="default" variant="outlined">
-                      Detail
-                    </Button>
+                    <Link to={`/manager/project/details/${item.projectId}`}>
+                      <Button type="default" shape="round">
+                        Detail
+                      </Button>
+                    </Link>
                   </div>
                 </div>
               </Card>

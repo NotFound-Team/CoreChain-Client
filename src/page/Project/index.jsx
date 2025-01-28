@@ -3,9 +3,12 @@ import TableTask from "./TableTask";
 import fetchAPI from "../../services/fetchApi";
 import { message } from "antd";
 import CreateTask from "./CreateTask";
+import { Outlet, useLocation } from "react-router-dom";
 
 const Project = () => {
   const [dataTask, setDataTask] = useState([]);
+  const location = useLocation();
+
   useEffect(() => {
     const fetchTask = async () => {
       try {
@@ -19,15 +22,20 @@ const Project = () => {
       }
     };
     fetchTask();
-  }, [dataTask]);
-  // console.log(dataTask);
+  }, []);
+  const isDetailPage = location.pathname.includes("details");
   return (
     <>
-      <div className="flex items-center justify-between">
-        <h3 className="font-bold">Project List</h3>
-        <CreateTask />
-      </div>
-      <TableTask data={dataTask} />
+      {!isDetailPage && (
+        <>
+          <div className="flex items-center justify-between">
+            <h3 className="font-bold">Project List</h3>
+            <CreateTask />
+          </div>
+          <TableTask data={dataTask} />
+        </>
+      )}
+      <Outlet />
     </>
   );
 };
