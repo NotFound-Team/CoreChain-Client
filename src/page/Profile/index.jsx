@@ -6,7 +6,6 @@ import { UserOutlined } from "@ant-design/icons";
 const Profile = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  console.log(location);
 
   const items = [
     {

@@ -1,27 +1,61 @@
-import { Button, Col, Form, Input, Radio, Row, Select, Typography } from "antd";
+import {
+  Button,
+  Col,
+  Form,
+  Input,
+  message,
+  Radio,
+  Row,
+  Select,
+  Typography,
+  Spin,
+} from "antd";
 import { SaveOutlined } from "@ant-design/icons";
+import { useEffect, useState } from "react";
+import fetchApi from "../../services/fetchApi";
 
 const UserProfileDetailsPage = () => {
-  const onFinish = (values) => {
-    console.log("Success:", values);
+  const [dataUser, setDataUser] = useState(null); 
+  const [loading, setLoading] = useState(true);
+  const [form] = Form.useForm();
+
+  useEffect(() => {
+    const dataGet = async () => {
+      try {
+        const data = await fetchApi("/users");
+        setDataUser(data[0]);
+        setLoading(false);
+        form.setFieldsValue({
+          ...data[0],
+          subscription: "pro",
+          status: "active",
+        });
+      } catch (error) {
+        message.error(`Failed to fetch user data: ${error.message}`);
+        setLoading(false);
+      }
+    };
+    dataGet();
+  }, [form]);
+
+  const onFinish = (e) => {
+    console.log(e);
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <Spin size="large" />
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white shadow-xl py-6 px-4 rounded-2xl">
       <Form
+        form={form}
         name="user-profile-details-form"
         layout="vertical"
-        initialValues={{
-          id: "474e2cd2-fc79-49b8-98fe-dab443facede",
-          username: "kelvink96",
-          firstName: "Kelvin",
-          middleName: "Kiptum",
-          lastName: "Kiprop",
-          company: "Design Sparx",
-          email: "kelvin.kiprop96@gmail.com",
-          subscription: "pro",
-          status: "active",
-        }}
         onFinish={onFinish}
         autoComplete="on"
         requiredMark={false}
@@ -30,7 +64,7 @@ const UserProfileDetailsPage = () => {
           <Col sm={24} lg={24}>
             <Form.Item
               label="User ID"
-              name="id"
+              name="identifiNumber"
               rules={[{ required: true, message: "Please input your id!" }]}
             >
               <Input
@@ -44,34 +78,12 @@ const UserProfileDetailsPage = () => {
               />
             </Form.Item>
           </Col>
-          <Col sm={24} lg={8}>
+          <Col sm={24} lg={12}>
             <Form.Item
-              label="First name"
-              name="firstName"
+              label="Full name"
+              name="fullName"
               rules={[
-                { required: true, message: "Please input your first name!" },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-          </Col>
-          <Col sm={24} lg={8}>
-            <Form.Item
-              label="Middle name"
-              name="middleName"
-              rules={[
-                { required: true, message: "Please input your middle name!" },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-          </Col>
-          <Col sm={24} lg={8}>
-            <Form.Item
-              label="Last name"
-              name="lastName"
-              rules={[
-                { required: true, message: "Please input your last name!" },
+                { required: true, message: "Please input your full name!" },
               ]}
             >
               <Input />
@@ -89,7 +101,7 @@ const UserProfileDetailsPage = () => {
           <Col sm={24} lg={12}>
             <Form.Item
               label="Username"
-              name="username"
+              name="userName"
               rules={[
                 { required: true, message: "Please input your username!" },
               ]}
@@ -103,6 +115,17 @@ const UserProfileDetailsPage = () => {
               name="company"
               rules={[
                 { required: true, message: "Please input your company!" },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col sm={24} lg={24}>
+            <Form.Item
+              label="Address"
+              name="address"
+              rules={[
+                { required: true, message: "Please input your address!" },
               ]}
             >
               <Input />
