@@ -48,19 +48,22 @@ const Login = () => {
       const response = await fetchApi("/auth/login", "POST", loginData);
       if (response.status === 200) {
         message.success("Login successfully!");
+        setTimeout(() => {
+          gsap.to(flyAnimationRef.current, {
+            y: -window.innerHeight,
+            opacity: 5,
+            scale: 1.5,
+            duration: 5,
+            ease: "slow(0.7,0.7,false)",
+          });
+        }, 3000);
         navigate("/manager");
+      } else {
+        message.error("Login failed, please try again.");
       }
-
-      gsap.to(flyAnimationRef.current, {
-        y: -window.innerHeight,
-        opacity: 5,
-        scale: 1.5,
-        duration: 5,
-        ease: "slow(0.7,0.7,false)",
-      });
     } catch (error) {
-      message.error("User not found!");
-      console.log("error", error);
+      console.error("Error during login:", error);
+      message.error("An error occurred. Please try again later.");
     }
   };
 

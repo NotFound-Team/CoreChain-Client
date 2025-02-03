@@ -1,7 +1,7 @@
 // React
 import { useRef, useState } from "react";
 //React Router Dom
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 // Hook gsap
 import { useGSAP } from "@gsap/react";
 
@@ -14,6 +14,7 @@ import Fly from "../../image/Lovepik_com-380197117-blue-aircraft-rocket-clip-art
 
 // ** GSAP
 import gsap from "gsap";
+import fetchAPI from "../../services/fetchApi";
 
 const Register = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -21,6 +22,8 @@ const Register = () => {
   const formRegisterRef = useRef(null);
   const formBgRef = useRef(null);
   const flyAnimationRef = useRef(null);
+
+  const navigate = useNavigate();
 
   useGSAP(() => {
     gsap.fromTo(
@@ -35,26 +38,39 @@ const Register = () => {
     );
   }, []);
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     // Method POST
-    const registerInformation = {
-      username: e.username,
-      email: e.email,
-      password: e.password,
-      role: "guest"
+    const registerData = {
+      data: {
+        email: e.email,
+        phone: e.phone,
+        password: e.password,
+        role: "guest",
+      },
+    };
+    console.log(registerData);
+    try {
+      const response = await fetchAPI("/auth/register", "POST", registerData);
+      console.log(response);
+      if (response.status === 201) {
+        message.success("Registered successfully!");
+        setTimeout(() => {
+          gsap.to(flyAnimationRef.current, {
+            y: -window.innerHeight,
+            opacity: 5,
+            scale: 1.5,
+            duration: 5,
+            ease: "slow(0.7,0.7,false)",
+          });
+        }, 3000);
+        navigate("/login");
+      } else {
+        message.error("Registration failed, please try again.");
+      }
+    } catch (error) {
+      console.error("Error during registration:", error);
+      message.error("An error occurred. Please try again later.");
     }
-    if(registerInformation) {
-      message.success("Registered successfully!")
-    }
-    console.log("registerInformation", registerInformation);
-
-    gsap.to(flyAnimationRef.current, {
-      y: -window.innerHeight,
-      opacity: 5,
-      scale: 1.5,
-      duration: 5,
-      ease: "slow(0.7,0.7,false)",
-    });
   };
 
   return (
@@ -83,18 +99,6 @@ const Register = () => {
               <h3 className="text-center font-bold mb-14 text-transparent text-6xl bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 max-md:text-2xl max-md:mb-8">
                 REGISTER
               </h3>
-              <Form.Item
-                label="Username"
-                name="username"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input your username",
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
 
               <Form.Item
                 label="Email"
@@ -102,7 +106,20 @@ const Register = () => {
                 rules={[
                   {
                     required: true,
-                    message: "Please input your username",
+                    message: "Please input your email",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+
+              <Form.Item
+                label="Phone"
+                name="phone"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your phone",
                   },
                 ]}
               >
@@ -145,7 +162,6 @@ const Register = () => {
                     },
                     ({ getFieldValue }) => ({
                       validator(_, value) {
-                        console.log(value);
                         if (!value || getFieldValue("password") === value) {
                           return Promise.resolve();
                         }
