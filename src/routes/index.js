@@ -1,7 +1,9 @@
 import React, { Suspense } from "react";
-import LayoutDefault from "../layout/LayoutDefault";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
+import LayoutDefault from "../layout/LayoutDefault";
+import PrivateRoute from "./PrivateRoute"; // Import PrivateRoute
+// import { useAuth } from "../context/AuthContext";
 
 const Login = React.lazy(() => import("../page/Login"));
 const Register = React.lazy(() => import("../page/Register"));
@@ -13,7 +15,9 @@ const Project = React.lazy(() => import("../page/Project"));
 const TeamWork = React.lazy(() => import("../page/TeamWork"));
 const Dashboard = React.lazy(() => import("../page/Dashboard"));
 const Details = React.lazy(() => import("../page/Profile/Details"));
-const detailProject = React.lazy(() => import("../page/Project/detailProject.jsx"));
+const detailProject = React.lazy(() =>
+  import("../page/Project/detailProject.jsx")
+);
 const NotFound = React.lazy(() => import("../page/NotFound"));
 
 const LazyLoad = (Component) => (
@@ -44,10 +48,14 @@ export const routes = [
     element: LazyLoad(Register),
   },
 
-  // ** manager
+  // ** Quản lý (Chỉ cho role: manager, admin)
   {
     path: "/manager",
-    element: LazyLoad(Manager),
+    element: (
+      <PrivateRoute roles={["manager", "admin"]}>
+        {LazyLoad(Manager)}
+      </PrivateRoute>
+    ),
     children: [
       { path: "/manager", element: LazyLoad(Dashboard) },
       {
@@ -73,20 +81,24 @@ export const routes = [
       { path: "team-work", element: LazyLoad(TeamWork) },
     ],
   },
-  // end manager
-  // **user
+
+  // ** User (Chỉ cho role: user, manager, admin)
   {
     path: "/user",
-    element: LazyLoad(User),
+    element: (
+      <PrivateRoute roles={["user", "manager", "admin"]}>
+        {LazyLoad(User)}
+      </PrivateRoute>
+    ),
   },
-  // end user
 
-  // ** admin
+  // ** Admin (Chỉ cho role: admin)
   {
     path: "/admin",
-    element: LazyLoad(Admin),
+    element: <PrivateRoute roles={["admin"]}>{LazyLoad(Admin)}</PrivateRoute>,
   },
-  // end admin
+
+  // ** Trang 404
   {
     path: "*",
     element: LazyLoad(NotFound),

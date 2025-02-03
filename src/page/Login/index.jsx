@@ -1,8 +1,8 @@
 // ** React
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 // React Router Dom
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 
 // ** Antd
 import { Button, Checkbox, Form, Input, message } from "antd";
@@ -16,14 +16,17 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 
 import fetchApi from "../../services/fetchApi";
+import { useAuth } from "../../context/AuthContext";
 
 const Login = () => {
+  const { isAuthenticated, user } = useAuth();
   const [passwordVisible, setPasswordVisible] = useState(false);
   const formLoginRef = useRef(null);
   const formBgRef = useRef(null);
   const flyAnimationRef = useRef(null);
   const navigate = useNavigate();
-
+  console.log("isAuthenticated", isAuthenticated);
+  console.log("user", user);
   useGSAP(() => {
     gsap.fromTo(
       formLoginRef.current,
@@ -46,6 +49,7 @@ const Login = () => {
     };
     try {
       const response = await fetchApi("/auth/login", "POST", loginData);
+      // console.log(response);
       if (response.status === 200) {
         message.success("Login successfully!");
         setTimeout(() => {
@@ -57,7 +61,7 @@ const Login = () => {
             ease: "slow(0.7,0.7,false)",
           });
         }, 3000);
-        navigate("/manager");
+        navigate(`/${response.data}`);
       } else {
         message.error("Login failed, please try again.");
       }
@@ -67,106 +71,98 @@ const Login = () => {
     }
   };
 
-  useEffect(() => {
-    const isAuthenticated = async () => {
-      try {
-        const response = await fetchApi("/auth/isAuthenticated");
-        console.log(response);
-      } catch (error) {
-        console.log("error", error);
-      }
-    };
-    isAuthenticated();
-  }, []);
-
   return (
     <>
-      <div
-        style={{ backgroundImage: `url(${imgBackGround})` }}
-        className="flex items-center justify-center w-full bg-cover h-screen shadow-2xl"
-      >
-        <div className="flex items-center justify-center bg-white shadow-lg rounded-xl w-2/4 max-md:w-[80%]">
-          <div ref={formLoginRef} className="w-1/2 p-8 max-md:w-full">
-            <Form layout="vertical" name="form-login" onFinish={handleLogin}>
-              <h3 className="text-center font-bold mb-16 text-transparent text-6xl bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 max-md:text-3xl max-md:mb-8">
-                LOGIN
-              </h3>
-              <Form.Item
-                label="Email"
-                name="email"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input your username",
-                  },
-                  {
-                    type: "email",
-                    message: "The input is not a valid email!",
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                label="Password"
-                name="password"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input your password!",
-                  },
-                  {
-                    min: 6,
-                    message: "Password must be at least 6 characters!",
-                  },
-                ]}
-              >
-                <Input.Password
-                  visibilityToggle={{
-                    visible: passwordVisible,
-                    onVisibleChange: setPasswordVisible,
-                  }}
-                />
-              </Form.Item>
-              <Form.Item name="remember" valuePropName="checked" label={null}>
-                <div className="flex items-center justify-between">
-                  <Checkbox>Remember me</Checkbox>
-                  <div className="md:hidden max-md:block">
-                    <Link to={"/register"}>Register?</Link>
-                  </div>
-                </div>
-              </Form.Item>
-              <Form.Item>
-                <Button type="primary" block htmlType="submit" size="large">
-                  Login
-                </Button>
-              </Form.Item>
-            </Form>
-          </div>
-
-          {/* background right */}
-          <div
-            ref={formBgRef}
-            className="flex-1 h-[500px] flex flex-col items-center justify-center bg-orange-600 rounded-r-xl text-white max-md:hidden"
-          >
-            <h3 className="text-2xl font-semibold mb-4">New Here?</h3>
-            <p className="mb-4">Create an account to enjoy our services.</p>
-            <Button
-              type="ghost"
-              size="large"
-              className="bg-white text-orange-600"
-            >
-              <Link to="/register">Sign Up</Link>
-            </Button>
-          </div>
-        </div>
+      {!isAuthenticated ? (
         <div
-          ref={flyAnimationRef}
-          className="z-10 w-[100px] h-auto translate-x-[-770px] translate-y-[400px] opacity-0 max-md:hidden"
+          style={{ backgroundImage: `url(${imgBackGround})` }}
+          className="flex items-center justify-center w-full bg-cover h-screen shadow-2xl"
         >
-          <img className="w-full h-auto object-cover" src={Fly} alt="fly" />
+          <div className="flex items-center justify-center bg-white shadow-lg rounded-xl w-2/4 max-md:w-[80%]">
+            <div ref={formLoginRef} className="w-1/2 p-8 max-md:w-full">
+              <Form layout="vertical" name="form-login" onFinish={handleLogin}>
+                <h3 className="text-center font-bold mb-16 text-transparent text-6xl bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 max-md:text-3xl max-md:mb-8">
+                  LOGIN
+                </h3>
+                <Form.Item
+                  label="Email"
+                  name="email"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input your username",
+                    },
+                    {
+                      type: "email",
+                      message: "The input is not a valid email!",
+                    },
+                  ]}
+                >
+                  <Input />
+                </Form.Item>
+                <Form.Item
+                  label="Password"
+                  name="password"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input your password!",
+                    },
+                    {
+                      min: 6,
+                      message: "Password must be at least 6 characters!",
+                    },
+                  ]}
+                >
+                  <Input.Password
+                    visibilityToggle={{
+                      visible: passwordVisible,
+                      onVisibleChange: setPasswordVisible,
+                    }}
+                  />
+                </Form.Item>
+                <Form.Item name="remember" valuePropName="checked" label={null}>
+                  <div className="flex items-center justify-between">
+                    <Checkbox>Remember me</Checkbox>
+                    <div className="md:hidden max-md:block">
+                      <Link to={"/register"}>Register?</Link>
+                    </div>
+                  </div>
+                </Form.Item>
+                <Form.Item>
+                  <Button type="primary" block htmlType="submit" size="large">
+                    Login
+                  </Button>
+                </Form.Item>
+              </Form>
+            </div>
+
+            {/* background right */}
+            <div
+              ref={formBgRef}
+              className="flex-1 h-[500px] flex flex-col items-center justify-center bg-orange-600 rounded-r-xl text-white max-md:hidden"
+            >
+              <h3 className="text-2xl font-semibold mb-4">New Here?</h3>
+              <p className="mb-4">Create an account to enjoy our services.</p>
+              <Button
+                type="ghost"
+                size="large"
+                className="bg-white text-orange-600"
+              >
+                <Link to="/register">Sign Up</Link>
+              </Button>
+            </div>
+          </div>
+          <div
+            ref={flyAnimationRef}
+            className="z-10 w-[100px] h-auto translate-x-[-770px] translate-y-[400px] opacity-0 max-md:hidden"
+          >
+            <img className="w-full h-auto object-cover" src={Fly} alt="fly" />
+          </div>
         </div>
-      </div>
+      ) : (
+        <Navigate to={`/${user.role}`} />
+      )}
     </>
   );
 };
