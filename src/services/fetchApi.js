@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const apiUrl = process.env.REACT_APP_BASE_URL_API || "http://localhost:3001";
-// const apiUrl = "http://localhost:3001";
+// const apiUrl = process.env.REACT_APP_BASE_URL_API || "http://localhost:3001";
+const apiUrl = "http://localhost:3001";
 axios.defaults.baseURL = apiUrl;
 axios.defaults.headers = {
   "Content-Type": "application/json",

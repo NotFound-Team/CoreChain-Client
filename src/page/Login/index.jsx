@@ -19,7 +19,7 @@ import fetchApi from "../../services/fetchApi";
 import { useAuth } from "../../context/AuthContext";
 
 const Login = () => {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, checkAuth } = useAuth();
   const [passwordVisible, setPasswordVisible] = useState(false);
   const formLoginRef = useRef(null);
   const formBgRef = useRef(null);
@@ -61,6 +61,7 @@ const Login = () => {
             ease: "slow(0.7,0.7,false)",
           });
         }, 3000);
+        checkAuth();
         navigate(`/${response.data}`);
       } else {
         message.error("Login failed, please try again.");
