@@ -1,17 +1,34 @@
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import checkAuth from "../services/checkAuth";
+import { useEffect, useState } from "react";
 
 const PrivateRoute = ({ children, roles = [] }) => {
-  const { isAuthenticated, user } = useAuth();
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
+    const [auth, setAuth] = useState({
+        loading: true,
+        isAuthenticated: false,
+        user: null,
+    });
 
-  if (roles.length > 0 && !roles.includes(user?.role)) {
-    return <Navigate to="*" replace />;
-  }
+    useEffect(() => {
+        (async () => {
+            const data = await checkAuth();
+            setAuth({ loading: false, ...data });
+        })();
+    }, []);
 
-  return children;
+    if (auth.loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (!auth.isAuthenticated) {
+        return <Navigate to="/login" replace />;
+    }
+
+    if (roles.length > 0 && !roles.includes(auth.user?.role)) {
+        return <Navigate to="*" replace />;
+    }
+
+    return children;
 };
 
 export default PrivateRoute;

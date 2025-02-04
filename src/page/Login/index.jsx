@@ -1,5 +1,5 @@
 // ** React
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // React Router Dom
 import { Link, Navigate, useNavigate } from "react-router-dom";
@@ -16,10 +16,13 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 
 import fetchApi from "../../services/fetchApi";
-import { useAuth } from "../../context/AuthContext";
+// import { useAuth } from "../../context/AuthContext";
+
+import checkAuth from "../../services/checkAuth";
 
 const Login = () => {
-  const { isAuthenticated, user, checkAuth } = useAuth();
+  const [ isAuthenticated, setIsAuthenticated ] = useState(false);
+  const [user, setUser] = useState(null);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const formLoginRef = useRef(null);
   const formBgRef = useRef(null);
@@ -61,7 +64,6 @@ const Login = () => {
             ease: "slow(0.7,0.7,false)",
           });
         }, 3000);
-        checkAuth();
         navigate(`/${response.data}`);
       } else {
         message.error("Login failed, please try again.");
@@ -71,6 +73,16 @@ const Login = () => {
       message.error("An error occurred. Please try again later.");
     }
   };
+  useEffect(() => {
+    (
+        async () => {
+            const {isAuthenticated: isAuth, user} = await checkAuth();
+            if (isAuth) {
+                navigate(`/${user.role}`);
+            }
+          }
+      )();
+  }, [navigate])
 
   return (
     <>
