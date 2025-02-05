@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 
 // React Router Dom
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // ** Antd
 import { Button, Checkbox, Form, Input, message } from "antd";
@@ -21,15 +21,11 @@ import fetchApi from "../../services/fetchApi";
 import checkAuth from "../../services/checkAuth";
 
 const Login = () => {
-  const [ isAuthenticated, setIsAuthenticated ] = useState(false);
-  const [user, setUser] = useState(null);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const formLoginRef = useRef(null);
   const formBgRef = useRef(null);
   const flyAnimationRef = useRef(null);
   const navigate = useNavigate();
-  console.log("isAuthenticated", isAuthenticated);
-  console.log("user", user);
   useGSAP(() => {
     gsap.fromTo(
       formLoginRef.current,
@@ -74,108 +70,102 @@ const Login = () => {
     }
   };
   useEffect(() => {
-    (
-        async () => {
-            const {isAuthenticated: isAuth, user} = await checkAuth();
-            if (isAuth) {
-                navigate(`/${user.role}`);
-            }
-          }
-      )();
-  }, [navigate])
+    (async () => {
+      const { isAuthenticated, user } = await checkAuth();
+      if (isAuthenticated) {
+        navigate(`/${user.role}`);
+      }
+    })();
+  }, [navigate]);
 
   return (
     <>
-      {!isAuthenticated ? (
-        <div
-          style={{ backgroundImage: `url(${imgBackGround})` }}
-          className="flex items-center justify-center w-full bg-cover h-screen shadow-2xl"
-        >
-          <div className="flex items-center justify-center bg-white shadow-lg rounded-xl w-2/4 max-md:w-[80%]">
-            <div ref={formLoginRef} className="w-1/2 p-8 max-md:w-full">
-              <Form layout="vertical" name="form-login" onFinish={handleLogin}>
-                <h3 className="text-center font-bold mb-16 text-transparent text-6xl bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 max-md:text-3xl max-md:mb-8">
-                  LOGIN
-                </h3>
-                <Form.Item
-                  label="Email"
-                  name="email"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input your username",
-                    },
-                    {
-                      type: "email",
-                      message: "The input is not a valid email!",
-                    },
-                  ]}
-                >
-                  <Input />
-                </Form.Item>
-                <Form.Item
-                  label="Password"
-                  name="password"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input your password!",
-                    },
-                    {
-                      min: 6,
-                      message: "Password must be at least 6 characters!",
-                    },
-                  ]}
-                >
-                  <Input.Password
-                    visibilityToggle={{
-                      visible: passwordVisible,
-                      onVisibleChange: setPasswordVisible,
-                    }}
-                  />
-                </Form.Item>
-                <Form.Item name="remember" valuePropName="checked" label={null}>
-                  <div className="flex items-center justify-between">
-                    <Checkbox>Remember me</Checkbox>
-                    <div className="md:hidden max-md:block">
-                      <Link to={"/register"}>Register?</Link>
-                    </div>
-                  </div>
-                </Form.Item>
-                <Form.Item>
-                  <Button type="primary" block htmlType="submit" size="large">
-                    Login
-                  </Button>
-                </Form.Item>
-              </Form>
-            </div>
-
-            {/* background right */}
-            <div
-              ref={formBgRef}
-              className="flex-1 h-[500px] flex flex-col items-center justify-center bg-orange-600 rounded-r-xl text-white max-md:hidden"
-            >
-              <h3 className="text-2xl font-semibold mb-4">New Here?</h3>
-              <p className="mb-4">Create an account to enjoy our services.</p>
-              <Button
-                type="ghost"
-                size="large"
-                className="bg-white text-orange-600"
+      <div
+        style={{ backgroundImage: `url(${imgBackGround})` }}
+        className="flex items-center justify-center w-full bg-cover h-screen shadow-2xl"
+      >
+        <div className="flex items-center justify-center bg-white shadow-lg rounded-xl w-2/4 max-md:w-[80%]">
+          <div ref={formLoginRef} className="w-1/2 p-8 max-md:w-full">
+            <Form layout="vertical" name="form-login" onFinish={handleLogin}>
+              <h3 className="text-center font-bold mb-16 text-transparent text-6xl bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 max-md:text-3xl max-md:mb-8">
+                LOGIN
+              </h3>
+              <Form.Item
+                label="Email"
+                name="email"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your username",
+                  },
+                  {
+                    type: "email",
+                    message: "The input is not a valid email!",
+                  },
+                ]}
               >
-                <Link to="/register">Sign Up</Link>
-              </Button>
-            </div>
+                <Input />
+              </Form.Item>
+              <Form.Item
+                label="Password"
+                name="password"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your password!",
+                  },
+                  {
+                    min: 6,
+                    message: "Password must be at least 6 characters!",
+                  },
+                ]}
+              >
+                <Input.Password
+                  visibilityToggle={{
+                    visible: passwordVisible,
+                    onVisibleChange: setPasswordVisible,
+                  }}
+                />
+              </Form.Item>
+              <Form.Item name="remember" valuePropName="checked" label={null}>
+                <div className="flex items-center justify-between">
+                  <Checkbox>Remember me</Checkbox>
+                  <div className="md:hidden max-md:block">
+                    <Link to={"/register"}>Register?</Link>
+                  </div>
+                </div>
+              </Form.Item>
+              <Form.Item>
+                <Button type="primary" block htmlType="submit" size="large">
+                  Login
+                </Button>
+              </Form.Item>
+            </Form>
           </div>
+
+          {/* background right */}
           <div
-            ref={flyAnimationRef}
-            className="z-10 w-[100px] h-auto translate-x-[-770px] translate-y-[400px] opacity-0 max-md:hidden"
+            ref={formBgRef}
+            className="flex-1 h-[500px] flex flex-col items-center justify-center bg-orange-600 rounded-r-xl text-white max-md:hidden"
           >
-            <img className="w-full h-auto object-cover" src={Fly} alt="fly" />
+            <h3 className="text-2xl font-semibold mb-4">New Here?</h3>
+            <p className="mb-4">Create an account to enjoy our services.</p>
+            <Button
+              type="ghost"
+              size="large"
+              className="bg-white text-orange-600"
+            >
+              <Link to="/register">Sign Up</Link>
+            </Button>
           </div>
         </div>
-      ) : (
-        <Navigate to={`/${user.role}`} />
-      )}
+        <div
+          ref={flyAnimationRef}
+          className="z-10 w-[100px] h-auto translate-x-[-770px] translate-y-[400px] opacity-0 max-md:hidden"
+        >
+          <img className="w-full h-auto object-cover" src={Fly} alt="fly" />
+        </div>
+      </div>
     </>
   );
 };
