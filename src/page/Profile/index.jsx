@@ -1,7 +1,9 @@
-import { Avatar, Tabs } from "antd";
+import { Avatar, message, Spin, Tabs } from "antd";
 import UserProfileDetailsPage from "./Details";
 import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { UserOutlined } from "@ant-design/icons";
+import { useEffect, useState } from "react";
+import fetchAPI from "../../services/fetchApi";
 
 const Profile = () => {
   const location = useLocation();
@@ -45,21 +47,45 @@ const Profile = () => {
     }
   };
 
+  const [dataUser, setDataUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const dataGet = async () => {
+      try {
+        const data = await fetchAPI("/auth/profile");
+        setDataUser(data.data);
+        setLoading(false);
+      } catch (error) {
+        message.error(`Failed to fetch user data: ${error.message}`);
+        setLoading(false);
+      }
+    };
+    dataGet();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <Spin size="large" />
+      </div>
+    );
+  }
   return (
     <>
       <div className="shadow-xl rounded-2xl">
         <div className="bg-gradient-to-r from-purple-500 to-blue-500 w-full inline-block rounded-2xl py-6 px-4">
           <Avatar size={80} icon={<UserOutlined />} />
           <div className="text-white font-medium">
-            Name: <span className="font-light">Jack97</span>
+            Name: <span className="font-light">{dataUser.fullName ? dataUser.fullName : "Jack"}</span>
           </div>
           <div className="text-white font-medium">
-            Position: <span className="font-light">Leader</span>
+            Position: <span className="font-light">{dataUser.role}</span>
           </div>
         </div>
       </div>
       <Tabs activeKey={activeKey} items={items} onChange={onTabChange} />
-      <Outlet />
+      <Outlet context={{ dataUser }} />
     </>
   );
 };

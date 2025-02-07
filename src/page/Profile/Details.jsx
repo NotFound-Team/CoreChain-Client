@@ -1,54 +1,18 @@
-import {
-  Button,
-  Col,
-  Form,
-  Input,
-  message,
-  Radio,
-  Row,
-  Select,
-  Typography,
-  Spin,
-} from "antd";
+import { Button, Col, Form, Input, Radio, Row, Select, Typography } from "antd";
 import { SaveOutlined } from "@ant-design/icons";
-import { useEffect, useState } from "react";
-import fetchApi from "../../services/fetchApi";
+// import { useEffect, useState } from "react";
+// import fetchApi from "../../services/fetchApi";
+import { useOutletContext } from "react-router-dom";
 
 const UserProfileDetailsPage = () => {
-  const [dataUser, setDataUser] = useState(null); 
-  const [loading, setLoading] = useState(true);
+  const { dataUser } = useOutletContext();
+  // const [dataUser, setDataUser] = useState(null);
+  // const [loading, setLoading] = useState(true);
   const [form] = Form.useForm();
-
-  useEffect(() => {
-    const dataGet = async () => {
-      try {
-        const data = await fetchApi("/users");
-        setDataUser(data[0]);
-        setLoading(false);
-        form.setFieldsValue({
-          ...data[0],
-          subscription: "pro",
-          status: "active",
-        });
-      } catch (error) {
-        message.error(`Failed to fetch user data: ${error.message}`);
-        setLoading(false);
-      }
-    };
-    dataGet();
-  }, [form]);
 
   const onFinish = (e) => {
     console.log(e);
   };
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-full">
-        <Spin size="large" />
-      </div>
-    );
-  }
 
   return (
     <div className="bg-white shadow-xl py-6 px-4 rounded-2xl">
@@ -56,6 +20,15 @@ const UserProfileDetailsPage = () => {
         form={form}
         name="user-profile-details-form"
         layout="vertical"
+        initialValues={{
+          identifiNumber: "474e2cd2-fc79-49b8-98fe-dab443facede",
+          phone: dataUser.phone || "",
+          fullName: dataUser.fulname,
+          company: "Design Sparx",
+          email: dataUser.email,
+          subscription: "pro",
+          status: "active",
+        }}
         onFinish={onFinish}
         autoComplete="on"
         requiredMark={false}
@@ -100,11 +73,9 @@ const UserProfileDetailsPage = () => {
           </Col>
           <Col sm={24} lg={12}>
             <Form.Item
-              label="Username"
-              name="userName"
-              rules={[
-                { required: true, message: "Please input your username!" },
-              ]}
+              label="Phone"
+              name="phone"
+              rules={[{ required: true, message: "Please input your phone!" }]}
             >
               <Input />
             </Form.Item>

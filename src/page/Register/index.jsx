@@ -1,5 +1,5 @@
 // React
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 //React Router Dom
 import { Link, useNavigate } from "react-router-dom";
 // Hook gsap
@@ -15,6 +15,7 @@ import Fly from "../../image/Lovepik_com-380197117-blue-aircraft-rocket-clip-art
 // ** GSAP
 import gsap from "gsap";
 import fetchAPI from "../../services/fetchApi";
+import checkAuth from "../../services/checkAuth";
 
 const Register = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -72,6 +73,15 @@ const Register = () => {
       message.error("An error occurred. Please try again later.");
     }
   };
+
+  useEffect(() => {
+    (async () => {
+      const { isAuthenticated, user } = await checkAuth();
+      if (isAuthenticated) {
+        navigate(`/${user.role}`);
+      }
+    })();
+  }, [navigate]);
 
   return (
     <>
