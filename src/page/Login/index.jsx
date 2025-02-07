@@ -130,6 +130,7 @@ const Login = () => {
               <Form.Item name="remember" valuePropName="checked" label={null}>
                 <div className="flex items-center justify-between">
                   <Checkbox>Remember me</Checkbox>
+                  <Link to={"/forgot-password/phone"}>Forgot password?</Link>
                   <div className="md:hidden max-md:block">
                     <Link to={"/register"}>Register?</Link>
                   </div>
