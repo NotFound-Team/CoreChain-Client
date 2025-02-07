@@ -1,5 +1,5 @@
 // antd
-import { Menu } from "antd";
+import { Menu, message } from "antd";
 import {
   CalendarOutlined,
   DashboardOutlined,
@@ -8,14 +8,24 @@ import {
 } from "@ant-design/icons";
 
 // react-icon
-import { GiArchiveRegister } from "react-icons/gi";
-import { FaRegUser, FaSignInAlt } from "react-icons/fa";
+import { FaRegUser } from "react-icons/fa";
 import { IoLogOut } from "react-icons/io5";
 
 // react-router-dom
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+
+// Service
+import fetchApi from "../../services/fetchApi";
 
 const MenuSider = () => {
+  const handleLogout = async () => {
+    const response = await fetchApi("/auth/logout", "DELETE");
+    if (response.status === 200) {
+      message.success("Logout successfully!");
+    } else {
+      message.error("Logout fail!");
+    }
+  };
   const items = [
     {
       key: "dashboard",
@@ -54,18 +64,8 @@ const MenuSider = () => {
           ],
         },
         {
-          key: "signIn",
-          label: <Link to="/login">Sign In</Link>,
-          icon: <FaSignInAlt />,
-        },
-        {
-          key: "signUp",
-          label: <Link to="/register">Sign Up</Link>,
-          icon: <GiArchiveRegister />,
-        },
-        {
           key: "logout",
-          label: "Logout",
+          label: <button onClick={handleLogout}>Logout</button>,
           icon: <IoLogOut />,
         },
       ],
