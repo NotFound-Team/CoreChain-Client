@@ -5,7 +5,7 @@ import {
   Form,
   Input,
   message,
-  Radio,
+  // Radio,
   Row,
   Select,
   Typography,
@@ -37,7 +37,15 @@ const UserProfileDetailsPage = () => {
     filteredData.birthday = date;
     console.log(filteredData);
     try {
-      await fetchApi("/auth/profile", "POST", {data: filteredData});
+      const response = await fetchApi("/auth/profile", "POST", {
+        data: filteredData,
+      });
+      if (response.status === 200) {
+        message.open({
+          type: "success",
+          content: response.data.message,
+        });
+      }
     } catch (error) {
       message.open({
         type: "error",
@@ -57,7 +65,9 @@ const UserProfileDetailsPage = () => {
           phone: dataUser.phone || "",
           fullName: dataUser.fullName || "",
           company: "Core Chain",
-          email: dataUser.email,
+          address: dataUser.address || "",
+          email: dataUser.email || "",
+          birthday: formatDate(dataUser.birthday),
           subscription: "pro",
           status: "active",
         }}
@@ -173,8 +183,7 @@ const UserProfileDetailsPage = () => {
               // ]}
             >
               <DatePicker
-                defaultValue={formatDate(dataUser.birthday)}
-                format={"DD/MM/YYYY"}
+                format={"YYYY-MM-DD"}
                 onChange={(date, dateString) => {
                   setDate(dateString);
                 }}

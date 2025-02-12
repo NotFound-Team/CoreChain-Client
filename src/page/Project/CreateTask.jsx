@@ -64,7 +64,7 @@ const CreateTask = () => {
       };
       projectPost();
     }
-  }, [dataPost]);
+  }, [form, dataPost]);
 
   return (
     <>

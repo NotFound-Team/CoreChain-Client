@@ -4,7 +4,7 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 dayjs.extend(customParseFormat);
 
 const formatDate = (date) => {
-  const result = dayjs(date, "DD/MM/YYYY");
+  const result = dayjs(date, "YYYY-MM-DD");
   return result.isValid() ? result : null;
 };
 
