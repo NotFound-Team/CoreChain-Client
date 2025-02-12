@@ -9,6 +9,7 @@
     "axios": "^1.7.9",
     "clsx": "^2.1.1",
     "cra-template": "1.2.0",
+    "dayjs": "^1.11.13",
     "dotenv": "^16.4.7",
     "dotted-map": "^2.2.3",
     "framer-motion": "^11.14.4",

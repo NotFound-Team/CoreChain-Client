@@ -1,17 +1,49 @@
-import { Button, Col, Form, Input, Radio, Row, Select, Typography } from "antd";
+import {
+  Button,
+  Col,
+  DatePicker,
+  Form,
+  Input,
+  message,
+  Radio,
+  Row,
+  Select,
+  Typography,
+} from "antd";
 import { SaveOutlined } from "@ant-design/icons";
 // import { useEffect, useState } from "react";
-// import fetchApi from "../../services/fetchApi";
+import fetchApi from "../../services/fetchApi";
 import { useOutletContext } from "react-router-dom";
+import formatDate from "../../helpers/date";
+import { useState } from "react";
 
 const UserProfileDetailsPage = () => {
   const { dataUser } = useOutletContext();
+  const [date, setDate] = useState("");
   // const [dataUser, setDataUser] = useState(null);
   // const [loading, setLoading] = useState(true);
   const [form] = Form.useForm();
 
-  const onFinish = (e) => {
-    console.log(e);
+  const onFinish = async (e) => {
+    const {
+      phone,
+      email,
+      identifiNumber,
+      status,
+      company,
+      subscription,
+      ...filteredData
+    } = e;
+    filteredData.birthday = date;
+    console.log(filteredData);
+    try {
+      await fetchApi("/auth/profile", "POST", filteredData);
+    } catch (error) {
+      message.open({
+        type: "error",
+        content: `${error}`,
+      });
+    }
   };
 
   return (
@@ -23,8 +55,8 @@ const UserProfileDetailsPage = () => {
         initialValues={{
           identifiNumber: "474e2cd2-fc79-49b8-98fe-dab443facede",
           phone: dataUser.phone || "",
-          fullName: dataUser.fulname,
-          company: "Design Sparx",
+          fullName: dataUser.fullName || "",
+          company: "Core Chain",
           email: dataUser.email,
           subscription: "pro",
           status: "active",
@@ -68,7 +100,7 @@ const UserProfileDetailsPage = () => {
               name="email"
               rules={[{ required: true, message: "Please input your email!" }]}
             >
-              <Input />
+              <Input readOnly={true} />
             </Form.Item>
           </Col>
           <Col sm={24} lg={12}>
@@ -77,7 +109,7 @@ const UserProfileDetailsPage = () => {
               name="phone"
               rules={[{ required: true, message: "Please input your phone!" }]}
             >
-              <Input />
+              <Input readOnly={true} />
             </Form.Item>
           </Col>
           <Col sm={24} lg={12}>
@@ -121,7 +153,7 @@ const UserProfileDetailsPage = () => {
             </Form.Item>
           </Col>
           <Col span={24}>
-            <Form.Item
+            {/* <Form.Item
               label="Status"
               name="status"
               rules={[
@@ -132,6 +164,21 @@ const UserProfileDetailsPage = () => {
                 <Radio value="active">Active</Radio>
                 <Radio value="inactive">Inactive</Radio>
               </Radio.Group>
+            </Form.Item> */}
+            <Form.Item
+              label="Birthday"
+              name="birthday"
+              // rules={[
+              //   { required: true, message: "Please select your birthday!" },
+              // ]}
+            >
+              <DatePicker
+                defaultValue={formatDate(dataUser.birthday)}
+                format={"DD/MM/YYYY"}
+                onChange={(date, dateString) => {
+                  setDate(dateString);
+                }}
+              />
             </Form.Item>
           </Col>
         </Row>
