@@ -37,7 +37,7 @@ const UserProfileDetailsPage = () => {
     filteredData.birthday = date;
     console.log(filteredData);
     try {
-      await fetchApi("/auth/profile", "POST", filteredData);
+      await fetchApi("/auth/profile", "POST", {data: filteredData});
     } catch (error) {
       message.open({
         type: "error",
