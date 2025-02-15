@@ -12,18 +12,25 @@ import { FaRegUser } from "react-icons/fa";
 import { IoLogOut } from "react-icons/io5";
 
 // react-router-dom
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 // Service
 import fetchApi from "../../services/fetchApi";
 
 const MenuSider = () => {
+  const navigate = useNavigate();
   const handleLogout = async () => {
-    const response = await fetchApi("/auth/logout", "DELETE");
-    if (response.status === 200) {
-      message.success("Logout successfully!");
-    } else {
-      message.error("Logout fail!");
+    try {
+      const response = await fetchApi("/auth/logout", "POST", {});
+      console.log(response);
+      if (response.status === 200) {
+        message.success("Logout successfully!");
+        navigate("/login");
+      } else {
+        message.error("Logout fail!");
+      }
+    } catch (error) {
+      console.log("ERROR", error);
     }
   };
   const items = [
