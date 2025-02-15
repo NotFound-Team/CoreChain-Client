@@ -7,7 +7,6 @@ import {
   message,
   // Radio,
   Row,
-  Select,
   Typography,
 } from "antd";
 import { SaveOutlined } from "@ant-design/icons";
@@ -76,7 +75,7 @@ const UserProfileDetailsPage = () => {
         requiredMark={false}
       >
         <Row gutter={[16, 0]}>
-          <Col sm={24} lg={24}>
+          <Col xs={24} sm={24} lg={24}>
             <Form.Item
               label="User ID"
               name="identifiNumber"
@@ -93,7 +92,8 @@ const UserProfileDetailsPage = () => {
               />
             </Form.Item>
           </Col>
-          <Col sm={24} lg={12}>
+
+          <Col xs={24} sm={24} lg={12}>
             <Form.Item
               label="Full name"
               name="fullName"
@@ -104,7 +104,8 @@ const UserProfileDetailsPage = () => {
               <Input />
             </Form.Item>
           </Col>
-          <Col sm={24} lg={12}>
+
+          <Col xs={24} sm={24} lg={12}>
             <Form.Item
               label="Email"
               name="email"
@@ -113,7 +114,8 @@ const UserProfileDetailsPage = () => {
               <Input readOnly={true} />
             </Form.Item>
           </Col>
-          <Col sm={24} lg={12}>
+
+          <Col xs={24} sm={24} lg={12}>
             <Form.Item
               label="Phone"
               name="phone"
@@ -122,7 +124,8 @@ const UserProfileDetailsPage = () => {
               <Input readOnly={true} />
             </Form.Item>
           </Col>
-          <Col sm={24} lg={12}>
+
+          <Col xs={24} sm={24} lg={12}>
             <Form.Item
               label="Company"
               name="company"
@@ -133,7 +136,8 @@ const UserProfileDetailsPage = () => {
               <Input />
             </Form.Item>
           </Col>
-          <Col sm={24} lg={24}>
+
+          <Col xs={24} sm={24} lg={12}>
             <Form.Item
               label="Address"
               name="address"
@@ -144,44 +148,9 @@ const UserProfileDetailsPage = () => {
               <Input />
             </Form.Item>
           </Col>
-          <Col sm={24} lg={12}>
-            <Form.Item
-              label="Subscription"
-              name="subscription"
-              rules={[
-                { required: true, message: "Please select your subscription!" },
-              ]}
-            >
-              <Select
-                options={[
-                  { value: "free", label: "Free" },
-                  { value: "pro", label: "Pro" },
-                  { value: "enterprise", label: "Enterprise" },
-                  { value: "custom", label: "Custom", disabled: true },
-                ]}
-              />
-            </Form.Item>
-          </Col>
-          <Col span={24}>
-            {/* <Form.Item
-              label="Status"
-              name="status"
-              rules={[
-                { required: true, message: "Please select your status!" },
-              ]}
-            >
-              <Radio.Group>
-                <Radio value="active">Active</Radio>
-                <Radio value="inactive">Inactive</Radio>
-              </Radio.Group>
-            </Form.Item> */}
-            <Form.Item
-              label="Birthday"
-              name="birthday"
-              // rules={[
-              //   { required: true, message: "Please select your birthday!" },
-              // ]}
-            >
+
+          <Col xs={24} sm={24} lg={12}>
+            <Form.Item label="Birthday" name="birthday">
               <DatePicker
                 format={"YYYY-MM-DD"}
                 onChange={(date, dateString) => {
