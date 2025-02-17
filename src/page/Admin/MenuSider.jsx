@@ -1,5 +1,5 @@
 // antd
-import { Menu } from "antd";
+import { Menu, message } from "antd";
 import {
   CalendarOutlined,
   DashboardOutlined,
@@ -11,9 +11,25 @@ import { FaRegUser } from "react-icons/fa";
 import { IoLogOut } from "react-icons/io5";
 
 // react-router-dom
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import fetchAPI from "../../services/fetchApi";
 
 const MenuSider = () => {
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+    try {
+      const response = await fetchAPI("/auth/logout", "POST", {});
+      console.log(response);
+      if (response.status === 200) {
+        message.success("Logout successfully!");
+        navigate("/login");
+      } else {
+        message.error("Logout fail!");
+      }
+    } catch (error) {
+      console.log("ERROR", error);
+    }
+  };
   const items = [
     {
       key: "dashboard",
@@ -48,7 +64,7 @@ const MenuSider = () => {
         },
         {
           key: "logout",
-          label: "Logout",
+          label: <button onClick={handleLogout}>Logout</button>,
           icon: <IoLogOut />,
         },
       ],
