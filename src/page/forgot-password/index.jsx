@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from "react-router-dom";
-import imgForgotPassword from "../../image/forgot-password.png";
+import imgForgotPassword from "../../assets/images/forgot-password.png";
 import { IoCheckmarkCircleSharp } from "react-icons/io5";
 
 const ForgotPassword = () => {

@@ -1,6 +1,6 @@
 import { Breadcrumb, Button, Layout } from "antd";
-import LogoMain from "../../image/Logo.svg";
-import LogoIcon from "../../image/Logo Icon.svg";
+import LogoMain from "../../assets/images/Logo.svg";
+import LogoIcon from "../../assets/images/Logo Icon.svg";
 import Notify from "../../components/Notify";
 import MenuSider from "../../components/MenuSider";
 import { Link, Outlet, useLocation } from "react-router-dom";

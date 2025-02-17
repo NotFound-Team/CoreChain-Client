@@ -6,8 +6,8 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { Boxes } from "../../components/ui/background-boxes";
 // import { WorldMap } from "../../components/ui/world-map";
 
-import TeamWork from "../../image/Influencer Marketing on Food Products.png";
-import ImgBlockChain from "../../image/blockchain.png";
+import TeamWork from "../../assets/images/Influencer Marketing on Food Products.png";
+import ImgBlockChain from "../../assets/images/blockchain.png";
 
 import { cn } from "../../lib/utils";
 import { motion } from "motion/react";

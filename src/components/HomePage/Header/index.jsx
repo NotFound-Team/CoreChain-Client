@@ -3,7 +3,7 @@ import { RiArrowDownSLine } from "react-icons/ri";
 import { FaBars } from "react-icons/fa";
 
 import { useTheme } from "../../../theme/ThemeProvider";
-import LogoMain from "../../../image/Logo.svg";
+import LogoMain from "../../../assets/images/Logo.svg";
 import { Link } from "react-router-dom";
 
 function Header() {

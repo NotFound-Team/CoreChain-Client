@@ -15,8 +15,8 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 import { FaRegUser } from "react-icons/fa";
 
 // images
-import LogoMain from "../../image/Logo.svg";
-import LogoIcon from "../../image/Logo Icon.svg";
+import LogoMain from "../../assets/images/Logo.svg";
+import LogoIcon from "../../assets/images/Logo Icon.svg";
 
 const { Header, Sider, Content } = Layout;
 

@@ -8,8 +8,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button, Checkbox, Form, Input, message } from "antd";
 
 // ** Image
-import imgBackGround from "../../image/thumb-1920-1297452.jpg";
-import Fly from "../../image/Lovepik_com-380197117-blue-aircraft-rocket-clip-art.gif";
+import imgBackGround from "../../assets/images/thumb-1920-1297452.jpg";
+import Fly from "../../assets/images/Lovepik_com-380197117-blue-aircraft-rocket-clip-art.gif";
 
 // ** GSAP
 import { useGSAP } from "@gsap/react";

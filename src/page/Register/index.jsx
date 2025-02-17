@@ -9,8 +9,8 @@ import { useGSAP } from "@gsap/react";
 import { Button, Form, Input, message } from "antd";
 
 // ** Image
-import imgBackGround from "../../image/thumb-1920-1297452.jpg"; //https://images4.alphacoders.com/129/1297452.png
-import Fly from "../../image/Lovepik_com-380197117-blue-aircraft-rocket-clip-art.gif";
+import imgBackGround from "../../assets/images/thumb-1920-1297452.jpg"; //https://images4.alphacoders.com/129/1297452.png
+import Fly from "../../assets/images/Lovepik_com-380197117-blue-aircraft-rocket-clip-art.gif";
 
 // ** GSAP
 import gsap from "gsap";
