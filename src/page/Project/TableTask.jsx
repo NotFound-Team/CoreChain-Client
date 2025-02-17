@@ -16,6 +16,7 @@ import { AntDesignOutlined, UserOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 
 const TableTask = ({ data }) => {
+  console.log({data});
   return (
     <>
       <Row gutter={[20, 20]} className="h-screen">

@@ -12,8 +12,9 @@ const Project = () => {
   useEffect(() => {
     const fetchTask = async () => {
       try {
-        const data = await fetchAPI("/projects");
-        setDataTask(data);
+        const data = await fetchAPI("/auth/manager/project"); 
+        if (data.status === 200 || data.status === 204)
+          setDataTask(data.data.data);
       } catch (error) {
         message.open({
           type: "error",
