@@ -7,28 +7,27 @@ import {
 } from "@ant-design/icons";
 
 // react-icon
-import { GiArchiveRegister } from "react-icons/gi";
-import { FaRegUser, FaSignInAlt } from "react-icons/fa";
+import { FaRegUser } from "react-icons/fa";
 import { IoLogOut } from "react-icons/io5";
 
 // react-router-dom
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 const MenuSider = () => {
   const items = [
     {
       key: "dashboard",
-      label: <NavLink to="/manager">Dashboard</NavLink>,
+      label: <NavLink to="/admin">Dashboard</NavLink>,
       icon: <DashboardOutlined />,
     },
     {
       key: "AllUsers",
-      label: <NavLink to="/admin">All Users</NavLink>,
+      label: <NavLink to="/admin/all-user">All Users</NavLink>,
       icon: <TeamOutlined />,
     },
     {
       key: "TaskList",
-      label: <NavLink to="/admin/task-list">Task List</NavLink>,
+      label: <NavLink to="/admin/project-list">Project List</NavLink>,
       icon: <CalendarOutlined />,
     },
     {
@@ -46,16 +45,6 @@ const MenuSider = () => {
               label: <NavLink to="/admin/profile/details">Details</NavLink>,
             },
           ],
-        },
-        {
-          key: "signIn",
-          label: <Link to="/login">Sign In</Link>,
-          icon: <FaSignInAlt />,
-        },
-        {
-          key: "signUp",
-          label: <Link to="/register">Sign Up</Link>,
-          icon: <GiArchiveRegister />,
         },
         {
           key: "logout",

@@ -22,13 +22,16 @@ const phoneForgotPassword = React.lazy(() =>
   import("../page/forgot-password/phoneForgotPassword.jsx")
 );
 const emailForgotPassword = React.lazy(() =>
-    import("../page/forgot-password/emailForgotPassword.jsx")
-  );
+  import("../page/forgot-password/emailForgotPassword.jsx")
+);
 const detailProject = React.lazy(() =>
   import("../page/Project/detailProject.jsx")
 );
 const NotFound = React.lazy(() => import("../page/NotFound"));
-
+// Admin
+const productList = React.lazy(() =>
+  import("../page/Admin/project-list/index.jsx")
+);
 const LazyLoad = (Component) => (
   <Suspense
     fallback={
@@ -63,7 +66,7 @@ export const routes = [
       {
         path: "phone",
         element: LazyLoad(phoneForgotPassword),
-      },    
+      },
       {
         path: "email",
         element: LazyLoad(emailForgotPassword),
@@ -119,6 +122,23 @@ export const routes = [
   {
     path: "/admin",
     element: <PrivateRoute roles={["admin"]}>{LazyLoad(Admin)}</PrivateRoute>,
+    children: [
+      { path: "/admin", element: LazyLoad(Dashboard) },
+      {
+        path: "project-list",
+        element: LazyLoad(productList),
+      },
+      {
+        path: "profile",
+        element: LazyLoad(Profile),
+        children: [
+          {
+            path: "details",
+            element: LazyLoad(Details),
+          },
+        ],
+      },
+    ],
   },
 
   // ** Trang 404
