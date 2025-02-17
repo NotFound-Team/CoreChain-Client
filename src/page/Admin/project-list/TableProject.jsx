@@ -85,7 +85,7 @@ const TableProject = ({ data }) => {
                     />
                   </Avatar.Group>
                   <div>
-                    <Link to={`/manager/project/details/${item.projectId}`}>
+                    <Link to={`/manager/project/details/${item._id}`}>
                       <Button type="default" shape="round">
                         Detail
                       </Button>

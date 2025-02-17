@@ -16,7 +16,7 @@ import { UserOutlined } from "@ant-design/icons";
 import fetchApi from "../../../services/fetchApi";
 const { Option } = Select;
 
-const CreateProject = () => {
+const CreateProject = ({ managerList }) => {
   const [form] = useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [date, setDate] = useState("");
@@ -38,16 +38,13 @@ const CreateProject = () => {
     e.deadline = date;
     setDataPost({
       ...e,
-      projectId: Date.now(),
-      tasks: [],
-      completed: false,
     });
   };
   useEffect(() => {
     if (dataPost) {
       const projectPost = async () => {
         try {
-          await fetchApi("/projects", "POST", dataPost);
+          await fetchApi("/auth/admin/project", "POST", dataPost);
           message.open({
             type: "success",
             content: "Create success!",
@@ -86,7 +83,7 @@ const CreateProject = () => {
           <Form.Item label="Project Name" name="projectName">
             <Input />
           </Form.Item>
-          <Form.Item label="Title" name="title">
+          <Form.Item label="Description" name="description">
             <Input />
           </Form.Item>
           <Form.Item label="Deadline" name="deadline">
@@ -99,11 +96,14 @@ const CreateProject = () => {
               />
             </Space>
           </Form.Item>
-          <Form.Item label="Chose Manager">
-            <Select mode="multiple" allowClear style={{ width: "100%" }}>
-              <Option value="Wifi">
-                <Avatar size={16} icon={<UserOutlined />} ti /> Jack
-              </Option>
+          <Form.Item label="Chose Manager" name="managerId">
+            <Select allowClear style={{ width: "100%" }}>
+              {managerList.map((item) => (
+                <Option value={item._id} key={item._id}>
+                  <Avatar size={16} icon={<UserOutlined />} ti />{" "}
+                  {item.fullName}
+                </Option>
+              ))}
             </Select>
           </Form.Item>
           <Form.Item>
