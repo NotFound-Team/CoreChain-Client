@@ -3,6 +3,8 @@ import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AntDesignOutlined, UserOutlined } from "@ant-design/icons";
 import { FiUser } from "react-icons/fi";
+import TimeLine from "./TimeLine";
+import TaskList from "./TaskList";
 
 const DetailProject = () => {
   const { id } = useParams();
@@ -12,12 +14,12 @@ const DetailProject = () => {
     {
       key: "1",
       label: "Timeline",
-      children: "Content of Tab Pane 1",
+      children: <TimeLine />,
     },
     {
       key: "2",
-      label: "Tab 2",
-      children: "Content of Tab Pane 2",
+      label: "Task List",
+      children: <TaskList />,
     },
     {
       key: "3",
@@ -29,10 +31,10 @@ const DetailProject = () => {
   const onTabChange = (key) => {
     switch (key) {
       case "1":
-        navigate("Timeline");
+        navigate("timeline");
         break;
       case "2":
-        // navigate("activity");
+        navigate("task-list");
         break;
       case "3":
         // navigate("security");
@@ -46,11 +48,9 @@ const DetailProject = () => {
     <div className="p-4">
       <Card
         title={
-          <h1 className="font-bold text-3xl text-primary">
-            PROJECT | Project Detail
-          </h1>
+          <h1 className="font-bold text-3xl text-primary">Project Detail</h1>
         }
-        className="shadow-md"
+        className="shadow-lg"
         bordered={false}
       >
         <p className="text-base mb-4 text-gray-700">
@@ -92,32 +92,31 @@ const DetailProject = () => {
         <div className="mb-4">
           <span className="text-lg font-semibold">Deadline:</span> yyyy-mm-dd
         </div>
-        <div>
+
+        <div className="mb-4">
           <span className="text-lg font-semibold">Team Members:</span>
-          <Avatar.Group>
-            <Avatar
-              size="small"
-              src="https://api.dicebear.com/7.x/miniavs/svg?seed=1"
-            />
-            <Tooltip title="User K">
-              <Avatar size="small" style={{ backgroundColor: "#f56a00" }}>
-                K
-              </Avatar>
+          <Avatar.Group maxCount={4} size="small">
+            <Tooltip title="User A">
+              <Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=1" />
             </Tooltip>
-            <Tooltip title="Ant User">
+            <Tooltip title="User B">
+              <Avatar style={{ backgroundColor: "#f56a00" }}>B</Avatar>
+            </Tooltip>
+            <Tooltip title="User C">
               <Avatar
-                size="small"
                 style={{ backgroundColor: "#87d068" }}
                 icon={<UserOutlined />}
               />
             </Tooltip>
-            <Avatar
-              size="small"
-              style={{ backgroundColor: "#1677ff" }}
-              icon={<AntDesignOutlined />}
-            />
+            <Tooltip title="User D">
+              <Avatar
+                style={{ backgroundColor: "#1677ff" }}
+                icon={<AntDesignOutlined />}
+              />
+            </Tooltip>
           </Avatar.Group>
         </div>
+
         <Tabs items={items} onChange={onTabChange} />
       </Card>
     </div>

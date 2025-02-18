@@ -16,7 +16,7 @@ const TeamWork = React.lazy(() => import("../page/TeamWork"));
 const Dashboard = React.lazy(() => import("../page/Dashboard"));
 const Details = React.lazy(() => import("../page/Profile/Details"));
 const ProjectDetailsAdmin = React.lazy(() =>
-  import("../page/Admin/project-list/detailProject.jsx")
+  import("../page/Admin/project-list/details/index.jsx")
 );
 const forgotPassword = React.lazy(() =>
   import("../page/forgot-password/index.jsx")
@@ -34,6 +34,12 @@ const NotFound = React.lazy(() => import("../page/NotFound"));
 // Admin
 const productList = React.lazy(() =>
   import("../page/Admin/project-list/index.jsx")
+);
+const TimeLine = React.lazy(() =>
+  import("../page/Admin/project-list/details/TimeLine.jsx")
+);
+const TaskList = React.lazy(() =>
+  import("../page/Admin/project-list/details/TaskList.jsx")
 );
 const LazyLoad = (Component) => (
   <Suspense
@@ -134,6 +140,16 @@ export const routes = [
           {
             path: "details/:id",
             element: LazyLoad(ProjectDetailsAdmin),
+            children: [
+              {
+                path: "timeline",
+                element: LazyLoad(TimeLine),
+              },
+              {
+                path: "task-list",
+                element: LazyLoad(TaskList),
+              },
+            ],
           },
         ],
       },
