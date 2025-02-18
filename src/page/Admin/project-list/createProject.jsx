@@ -10,17 +10,17 @@ import {
   Space,
 } from "antd";
 import { useForm } from "antd/es/form/Form";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { IoAddCircleOutline } from "react-icons/io5";
 import { UserOutlined } from "@ant-design/icons";
 import fetchApi from "../../../services/fetchApi";
+import dayjs from "dayjs";
 const { Option } = Select;
 
-const CreateProject = ({ managerList }) => {
+const CreateProject = ({ managerList, onAddProject }) => {
   const [form] = useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [date, setDate] = useState("");
-  const [dataPost, setDataPost] = useState(null);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -30,38 +30,27 @@ const CreateProject = ({ managerList }) => {
     setIsModalOpen(false);
   };
 
-  const handlSubmit = (e) => {
+  const handleSubmit = async (values) => {
     if (!date) {
       message.error("Please select a deadline.");
       return;
     }
-    e.deadline = date;
-    setDataPost({
-      ...e,
-    });
-  };
-  useEffect(() => {
-    if (dataPost) {
-      const projectPost = async () => {
-        try {
-          await fetchApi("/auth/admin/project", "POST", { data: dataPost });
-          message.open({
-            type: "success",
-            content: "Create success!",
-          });
-          setIsModalOpen(false);
-          form.resetFields();
-          setDataPost(null);
-        } catch (error) {
-          message.open({
-            type: "error",
-            content: `${error}`,
-          });
-        }
-      };
-      projectPost();
+    const newProject = { ...values, deadline: date };
+
+    try {
+      const response = await fetchApi("/auth/admin/project", "POST", {
+        data: newProject,
+      });
+      message.success("Create success!");
+
+      onAddProject(response.status);
+
+      setIsModalOpen(false);
+      form.resetFields();
+    } catch (error) {
+      message.error(`${error}`);
     }
-  }, [form, dataPost]);
+  };
 
   return (
     <>
@@ -78,7 +67,7 @@ const CreateProject = ({ managerList }) => {
           layout="vertical"
           name="create-project"
           form={form}
-          onFinish={handlSubmit}
+          onFinish={handleSubmit}
         >
           <Form.Item label="Project Name" name="projectName">
             <Input />
@@ -90,8 +79,8 @@ const CreateProject = ({ managerList }) => {
             <Space direction="vertical" size={12}>
               <DatePicker
                 format="DD-MM-YYYY"
-                onChange={(date, dateString) => {
-                  setDate(dateString);
+                onChange={(date) => {
+                  setDate(dayjs(date).format("YYYY-MM-DDTHH:mm:ss"));
                 }}
               />
             </Space>
@@ -100,8 +89,7 @@ const CreateProject = ({ managerList }) => {
             <Select allowClear style={{ width: "100%" }}>
               {managerList.map((item) => (
                 <Option value={item._id} key={item._id}>
-                  <Avatar size={16} icon={<UserOutlined />} ti />{" "}
-                  {item.fullName}
+                  <Avatar size={16} icon={<UserOutlined />} /> {item.fullName}
                 </Option>
               ))}
             </Select>
