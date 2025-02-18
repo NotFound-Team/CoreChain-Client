@@ -44,7 +44,7 @@ const CreateProject = ({ managerList }) => {
     if (dataPost) {
       const projectPost = async () => {
         try {
-          await fetchApi("/auth/admin/project", "POST", dataPost);
+          await fetchApi("/auth/admin/project", "POST", { data: dataPost });
           message.open({
             type: "success",
             content: "Create success!",
