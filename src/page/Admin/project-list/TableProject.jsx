@@ -1,16 +1,5 @@
 // ** Atnd
-import {
-  Avatar,
-  Badge,
-  Button,
-  Card,
-  Col,
-  Popconfirm,
-  Progress,
-  Row,
-  Switch,
-  Tooltip,
-} from "antd";
+import { Avatar, Badge, Button, Card, Col, Progress, Row, Tooltip } from "antd";
 import dayjs from "dayjs";
 import { AntDesignOutlined, UserOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
@@ -41,19 +30,8 @@ const TableProject = ({ data }) => {
               color={item.completed ? "green" : "red"}
             >
               <Card
-                title={
-                  <Popconfirm
-                    placement="top"
-                    title="Completed?"
-                    description="Are you sure it's complete?"
-                    okText="Yes"
-                    cancelText="No"
-                  >
-                    <Switch checked={item.completed} />
-                  </Popconfirm>
-                }
+                title={<p className="font-bold text-lg">{item.projectName}</p>}
               >
-                <p className="font-bold text-lg mb-6">{item.projectName}</p>
                 <p className="border border-slate-600 px-2 py-1 rounded-xl w-[150px] text-center mb-4">
                   Deadline: {deadline}
                 </p>
@@ -87,11 +65,13 @@ const TableProject = ({ data }) => {
                     />
                   </Avatar.Group>
 
-                  <Link to={`/manager/project/details/${item._id}`}>
-                    <Button type="default" shape="round">
-                      Detail
-                    </Button>
-                  </Link>
+                  <div>
+                    <Link to={`/admin/project/details/${item._id}`}>
+                      <Button type="default" shape="round">
+                        Detail
+                      </Button>
+                    </Link>
+                  </div>
                 </div>
               </Card>
             </Badge.Ribbon>

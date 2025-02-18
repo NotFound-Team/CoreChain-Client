@@ -15,6 +15,9 @@ const Project = React.lazy(() => import("../page/Project"));
 const TeamWork = React.lazy(() => import("../page/TeamWork"));
 const Dashboard = React.lazy(() => import("../page/Dashboard"));
 const Details = React.lazy(() => import("../page/Profile/Details"));
+const ProjectDetailsAdmin = React.lazy(() =>
+  import("../page/Admin/project-list/detailProject.jsx")
+);
 const forgotPassword = React.lazy(() =>
   import("../page/forgot-password/index.jsx")
 );
@@ -125,8 +128,14 @@ export const routes = [
     children: [
       { path: "/admin", element: LazyLoad(Dashboard) },
       {
-        path: "project-list",
+        path: "project",
         element: LazyLoad(productList),
+        children: [
+          {
+            path: "details/:id",
+            element: LazyLoad(ProjectDetailsAdmin),
+          },
+        ],
       },
       {
         path: "profile",

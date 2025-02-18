@@ -43,7 +43,7 @@ const MenuSider = () => {
     },
     {
       key: "TaskList",
-      label: <NavLink to="/admin/project-list">Project List</NavLink>,
+      label: <NavLink to="/admin/project">Project List</NavLink>,
       icon: <CalendarOutlined />,
     },
     {
