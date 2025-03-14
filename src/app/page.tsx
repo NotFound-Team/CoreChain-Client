@@ -1,8 +1,9 @@
+import PlatformIntro from "@/components/PlatformIntro";
 
 export default function Home() {
   return (
     <>
-      <div>Hello word!</div>
+      <PlatformIntro />
     </>
   );
 }
