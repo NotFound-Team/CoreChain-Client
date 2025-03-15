@@ -69,7 +69,7 @@ export default function Header() {
               <Link href={"/login"}>Sign In</Link>
             </li>
             <li className="bg-[#651FFF] text-white font-bold px-6 py-2 rounded-md">
-              <Link href={"/login"}>Create an account</Link>
+              <Link href={"/register"}>Create an account</Link>
             </li>
           </ul>
         </div>
@@ -82,9 +82,7 @@ export default function Header() {
       <div
         ref={menuRef}
         className={`fixed top-0 right-0 w-64 h-full bg-white shadow-lg py-4 transform ${
-          isMenuOpen
-            ? "translate-x-0 opacity-100"
-            : "translate-x-full opacity-0"
+          isMenuOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
         } transition-all ease-in-out`}
       >
         <div className="cursor-pointer text-xl mb-4 px-4" onClick={toggleMenu}>
@@ -100,7 +98,7 @@ export default function Header() {
             <Link href={"/login"}>Sign In</Link>
           </li>
           <li className="hover:bg-[#651FFF] hover:text-white transition-all duration-300 py-2">
-            <Link href={"/login"}>Create an account</Link>
+            <Link href={"/register"}>Create an account</Link>
           </li>
         </ul>
       </div>
