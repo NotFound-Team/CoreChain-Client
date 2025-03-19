@@ -9,8 +9,8 @@ export default function Home() {
     <>
       <PlatformIntro />
       <FeatureHighlights />
-      <Steps />
       <Pricing />
+      <Steps />
       <ButtonMode />
     </>
   );
