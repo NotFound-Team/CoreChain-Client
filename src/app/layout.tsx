@@ -38,7 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <div
               className={`
               bg-white absolute left-0 right-0 z-50 
-              ${showHeader && "fixed -top-[72px] translate-y-[72px] transition-transform duration-400"}
+              ${showHeader && "fixed -top-[72px] translate-y-[72px] transition-transform duration-400 shadow-md"}
             `}
             >
               <div className="container mx-auto w-full max-sm:px-4">
