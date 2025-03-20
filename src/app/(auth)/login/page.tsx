@@ -1,13 +1,29 @@
 "use client";
 
-import { Box, Button, CssBaseline, IconButton, TextField, Typography, useTheme } from "@mui/material";
 import Image from "next/image";
+import Link from "next/link";
+
+// -- MUI --
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import IconButton from "@mui/material/IconButton";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import useTheme from "@mui/material/styles/useTheme";
+
+// -- Config
 import { EMAIL_REG, PASSWORD_REG } from "@/configs/regex";
+
+// -- Types --
 import { UserLogin } from "@/types/auth";
+
+// -- React-hook-form --
 import { Controller, useForm } from "react-hook-form";
+
+// -- hookform/resolvers/yup --
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import Link from "next/link";
 
 const schema = yup.object({
   email: yup

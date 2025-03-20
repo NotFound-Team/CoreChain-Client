@@ -2,9 +2,15 @@
 
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+
+// -- Components --
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+
+// -- Context --
 import { ThemeProviderWrapper } from "@/context/ThemeProviderWrapper";
+
+// -- React --
 import { useEffect, useState } from "react";
 
 const geistSans = Geist({

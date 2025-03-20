@@ -1,3 +1,4 @@
+// -- Next --
 import { TiTick } from "react-icons/ti";
 
 export default function Pricing() {

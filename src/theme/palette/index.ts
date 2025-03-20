@@ -1,3 +1,4 @@
+// -- MUI --
 import { Palette, PaletteMode } from "@mui/material";
 
 const DefaultPalette = (mode: PaletteMode): Palette => {

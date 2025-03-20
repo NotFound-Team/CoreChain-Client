@@ -1,3 +1,4 @@
+// -- React-icon --
 import { FaFreeCodeCamp, FaShieldAlt } from "react-icons/fa";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { MdMoneyOff } from "react-icons/md";

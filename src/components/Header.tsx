@@ -1,11 +1,17 @@
 "use client";
-
+// -- React --
 import React, { useState } from "react";
+
+// -- Next --
 import Image from "next/image";
 import Link from "next/link";
+
+// -- Reac-icon --
 import { IoIosMenu } from "react-icons/io";
-import { gsap } from "gsap";
 import { IoClose } from "react-icons/io5";
+
+// -- GSAP
+import { gsap } from "gsap";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
