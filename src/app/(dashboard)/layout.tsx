@@ -1,5 +1,6 @@
 "use client";
 
+import ButtonMode from "@/components/ButtonMode";
 // -- MUI --
 import {
   AppBar,
@@ -23,6 +24,7 @@ import React, { useState } from "react";
 
 // -- React-icon
 import { AiOutlineMenuFold, AiOutlineMenuUnfold } from "react-icons/ai";
+import { IoIosChatbubbles } from "react-icons/io";
 
 // -- React-icon --
 import { MdMenu, MdDashboard, MdSettings, MdExitToApp } from "react-icons/md";
@@ -47,12 +49,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     {
       title: "Settings",
       icon: <MdSettings size={24} />,
-      href: "/setting ",
+      href: "/setting",
     },
     {
       title: "Logout",
       icon: <MdExitToApp size={24} />,
-      href: "/logout ",
+      href: "/logout",
+    },
+    {
+      title: "Chat",
+      icon: <IoIosChatbubbles size={24} />,
+      href: "/chat",
     },
   ];
 
@@ -117,6 +124,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <Typography variant="h6" noWrap>
                   Dashboard
                 </Typography>
+                <ButtonMode />
               </Toolbar>
             </AppBar>
           </Box>
