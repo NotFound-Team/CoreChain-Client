@@ -1,3 +1,5 @@
+"use client";
+
 import { FaFileImage, FaMicrophone, FaPaperPlane, FaVideo } from "react-icons/fa";
 import { IoMdInformationCircle } from "react-icons/io";
 import { BsEmojiSmile } from "react-icons/bs";
@@ -5,8 +7,45 @@ import { FaLocationDot } from "react-icons/fa6";
 import Image from "next/image";
 import { IconButton, InputBase, Paper } from "@mui/material";
 import { IoCall } from "react-icons/io5";
+import io from "socket.io-client";
+import { useEffect, useRef, useState } from "react";
+
+const socket = io("http://localhost:5000");
+
+interface Tchat {
+  message: string;
+}
 
 export default function Conversation({ chatId }: { chatId: string }) {
+  const [message, setMessage] = useState("");
+  const [listMessages, setListMessages] = useState<Tchat[]>([]);
+  const scollChat = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleMessage = (data: Tchat) => {
+      console.log("Received message:", data);
+      setListMessages((prev) => [...prev, data]);
+    };
+
+    socket.on("receiveMessage", handleMessage);
+
+    if (scollChat.current !== null) {
+      scollChat.current.scrollTop = scollChat.current.scrollHeight;
+    }
+
+    return () => {
+      socket.off("receiveMessage", handleMessage);
+    };
+  }, []);
+
+  const sendMessage = () => {
+    if (message.trim() !== "") {
+      socket.emit("sendMessage", { message });
+      setMessage("");
+    }
+  };
+  console.log(listMessages);
+
   return (
     <section className="flex-1 bg-[#F2F3F7] flex flex-col h-screen z-20">
       <div className="flex items-center justify-between shadow-md">
@@ -37,9 +76,9 @@ export default function Conversation({ chatId }: { chatId: string }) {
         </ul>
       </div>
 
-      <div className="flex-1 py-6 overflow-y-auto">
+      <div ref={scollChat} className="flex-1 py-6 overflow-y-auto">
         <ul className="flex flex-col gap-y-4 px-2">
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].map((item, index) => (
+          {/* {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].map((item, index) => (
             <li key={index} className={item % 2 === 0 ? "mr-auto" : "ml-auto"}>
               <div className="flex items-center gap-x-4">
                 {item % 2 === 0 && (
@@ -65,6 +104,21 @@ export default function Conversation({ chatId }: { chatId: string }) {
                 )}
               </div>
             </li>
+          ))} */}
+          {listMessages.map((message, index) => (
+            <li key={index} className="ml-auto">
+              <div className="flex items-center gap-x-4">
+                <Image
+                  src="/images/img_avatar.png"
+                  alt="avatar"
+                  width={51}
+                  height={50}
+                  style={{ height: "auto" }}
+                  className="overflow-hidden rounded-full"
+                />
+                <div className="text-white rounded-2xl bg-[#5051F9] px-[24px] py-[8px]">{message.message}</div>
+              </div>
+            </li>
           ))}
         </ul>
       </div>
@@ -72,6 +126,7 @@ export default function Conversation({ chatId }: { chatId: string }) {
       <div className="bg-[#ECEFFA] sticky bottom-2 left-0 right-0 py-4 px-6 z-20">
         <Paper
           component="form"
+          onSubmit={(e) => e.preventDefault()}
           sx={{
             p: "2px 4px",
             display: "flex",
@@ -110,12 +165,26 @@ export default function Conversation({ chatId }: { chatId: string }) {
               borderRadius: 20,
               boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
             }}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                console.log("ENTER");
+                e.preventDefault();
+                sendMessage();
+              }
+            }}
             placeholder="Add a comment..."
             inputProps={{ "aria-label": "Add a comment..." }}
           />
 
           {/* Send Button Icon */}
-          <IconButton type="button" sx={{ p: "8px", color: "#4A90E2" }} aria-label="send">
+          <IconButton
+            type="button"
+            sx={{ p: "8px", color: "#4A90E2" }}
+            aria-label="send"
+            onClick={sendMessage}
+          >
             <FaPaperPlane />
           </IconButton>
         </Paper>
