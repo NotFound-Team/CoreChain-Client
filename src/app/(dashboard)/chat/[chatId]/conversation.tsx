@@ -10,7 +10,7 @@ import { IoCall } from "react-icons/io5";
 import io from "socket.io-client";
 import { useEffect, useRef, useState } from "react";
 
-const socket = io("http://localhost:5000");
+const socket = io(process.env.API_URL);
 
 interface Tchat {
   message: string;
