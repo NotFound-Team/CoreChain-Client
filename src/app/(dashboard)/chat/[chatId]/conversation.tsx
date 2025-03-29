@@ -7,40 +7,53 @@ import { FaLocationDot } from "react-icons/fa6";
 import Image from "next/image";
 import { IconButton, InputBase, Paper } from "@mui/material";
 import { IoCall } from "react-icons/io5";
-import io from "socket.io-client";
+import io, { Socket } from "socket.io-client";
 import { useEffect, useRef, useState } from "react";
-
-const socket = io(process.env.API_URL);
 
 interface Tchat {
   message: string;
 }
 
+const token = localStorage.getItem("token");
+
+const socket = io(`${process.env.API_URL}/chat`, {
+  transports: ["websocket"],
+  withCredentials: true,
+  auth: {
+    token,
+  },
+});
+
 export default function Conversation({ chatId }: { chatId: string }) {
   const [message, setMessage] = useState("");
   const [listMessages, setListMessages] = useState<Tchat[]>([]);
   const scollChat = useRef<HTMLDivElement>(null);
+  const socketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
+    console.log(socket)
     const handleMessage = (data: Tchat) => {
       console.log("Received message:", data);
       setListMessages((prev) => [...prev, data]);
     };
 
-    socket.on("receiveMessage", handleMessage);
+    socket.on("newMessage", handleMessage);
 
     if (scollChat.current !== null) {
       scollChat.current.scrollTop = scollChat.current.scrollHeight;
     }
 
     return () => {
-      socket.off("receiveMessage", handleMessage);
+      if (socket) {
+        socket.off("newMessage", handleMessage);
+        socket.disconnect();
+      }
     };
-  }, []);
+  }, [chatId]);
 
   const sendMessage = () => {
-    if (message.trim() !== "") {
-      socket.emit("sendMessage", { message });
+    if (message.trim() !== "" && socket) {
+      socket.emit("getMessages", { message });
       setMessage("");
     }
   };
@@ -179,12 +192,7 @@ export default function Conversation({ chatId }: { chatId: string }) {
           />
 
           {/* Send Button Icon */}
-          <IconButton
-            type="button"
-            sx={{ p: "8px", color: "#4A90E2" }}
-            aria-label="send"
-            onClick={sendMessage}
-          >
+          <IconButton type="button" sx={{ p: "8px", color: "#4A90E2" }} aria-label="send" onClick={sendMessage}>
             <FaPaperPlane />
           </IconButton>
         </Paper>

@@ -13,7 +13,6 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
   React.useEffect(() => {
     if (arrayPathname.includes("chat")) {
       document.body.style.overflow = "hidden";
-      console.log("OK");
     }
 
     return () => {

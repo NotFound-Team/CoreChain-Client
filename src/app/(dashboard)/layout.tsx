@@ -52,6 +52,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       href: "/dashboard",
     },
     {
+      title: "Chat",
+      icon: <IoIosChatbubbles size={24} />,
+      href: "/chat",
+    },
+    {
       title: "Settings",
       icon: <MdSettings size={24} />,
       href: "/setting",
@@ -60,11 +65,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       title: "Logout",
       icon: <MdExitToApp size={24} />,
       href: "/logout",
-    },
-    {
-      title: "Chat",
-      icon: <IoIosChatbubbles size={24} />,
-      href: "/chat",
     },
   ];
 
