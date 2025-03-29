@@ -26,7 +26,8 @@ const fetchApi = async <T>(
     const config: AxiosRequestConfig = {
       method,
       url,
-      ...(data ? { data } : {}),
+      // ...(data ? { data } : {}),
+      data,
       headers: {
         ...extraHeaders,
       },
