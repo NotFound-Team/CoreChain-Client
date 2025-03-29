@@ -53,12 +53,6 @@ export default function Login() {
   });
 
   const onSubmit = async (data: UserLogin) => {
-    console.log(data);
-    // const response = await axios.post("http://localhost:3001/api/v1/auth/login", {
-    //   username: "test2@gmail.com",
-    //   password: "123123",
-    // });
-    // console.log(response);
     try {
       await login(data);
     } catch (error) {

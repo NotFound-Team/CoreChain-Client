@@ -29,20 +29,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       router.push("/login");
       return;
     }
-
-    const fetchUser = async () => {
-      try {
-        // const userData = await fetchApi<User>("/api/auth/me", "GET");
-        // setUser(userData);
-        router.push("/dashboard");
-      } catch {
-        logout();
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUser();
   }, [router]);
 
   const login = async ({ username, password }: UserLogin) => {
