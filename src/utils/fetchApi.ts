@@ -1,7 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { BASE_URL } from "@/configs/api";
 
-// Tạo một instance Axios với cấu hình mặc định
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
   headers: {
@@ -9,7 +8,6 @@ const axiosInstance = axios.create({
   },
 });
 
-// Thêm interceptor để tự động đính kèm token vào request
 axiosInstance.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {
@@ -18,24 +16,25 @@ axiosInstance.interceptors.request.use((config) => {
   return config;
 });
 
-const useFetch = async (
+const fetchApi = async <T>(
   url: string,
   method: "GET" | "POST" | "PUT" | "DELETE" = "GET",
-  data: null,
+  data?: T,
   extraHeaders: Record<string, string> = {}
 ) => {
   try {
     const config: AxiosRequestConfig = {
       method,
       url,
+      // ...(data ? { data } : {}),
       data,
       headers: {
-        ...extraHeaders, // Thêm headers nếu có
+        ...extraHeaders,
       },
     };
 
     const response = await axiosInstance(config);
-    return response.data; // Trả về dữ liệu thay vì toàn bộ response
+    return response.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       console.error("API Error:", error.response?.data?.message || error.message);
@@ -46,4 +45,4 @@ const useFetch = async (
   }
 };
 
-export default useFetch;
+export default fetchApi;

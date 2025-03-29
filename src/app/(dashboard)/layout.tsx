@@ -1,6 +1,11 @@
 "use client";
 
+// -- Components --
 import ButtonMode from "@/components/ButtonMode";
+
+// -- Context --
+import { AuthProvider } from "@/context/AuthContext";
+
 // -- MUI --
 import {
   AppBar,
@@ -89,72 +94,79 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <html>
       <body>
-        <Box sx={{ display: "flex" }}>
-          <CssBaseline />
+        <AuthProvider>
+          <Box sx={{ display: "flex" }}>
+            <CssBaseline />
 
-          {/* vertical */}
-          <Box sx={{ height: appBarHeight }}>
-            <AppBar
-              position="fixed"
-              sx={{ width: { sm: `calc(100% - ${drawerWidth}px)` }, ml: { sm: `${drawerWidth}px` } }}
-            >
-              <Toolbar>
-                {mobileOpen ? (
+            {/* vertical */}
+            <Box sx={{ height: appBarHeight }}>
+              <AppBar
+                position="fixed"
+                sx={{ width: { sm: `calc(100% - ${drawerWidth}px)` }, ml: { sm: `${drawerWidth}px` } }}
+              >
+                <Toolbar>
+                  {mobileOpen ? (
+                    <IconButton
+                      color="inherit"
+                      edge="start"
+                      onClick={handleDrawerToggle}
+                      sx={{ display: { sm: "block", xs: "none" } }}
+                    >
+                      <AiOutlineMenuFold size={24} />
+                    </IconButton>
+                  ) : (
+                    <IconButton
+                      color="inherit"
+                      edge="start"
+                      onClick={handleDrawerToggle}
+                      sx={{ display: { sm: "block", xs: "none" } }}
+                    >
+                      <AiOutlineMenuUnfold size={24} />
+                    </IconButton>
+                  )}
                   <IconButton
                     color="inherit"
                     edge="start"
                     onClick={handleDrawerToggle}
-                    sx={{ display: { sm: "block", xs: "none" } }}
+                    sx={{ display: { sm: "none" } }}
                   >
-                    <AiOutlineMenuFold size={24} />
+                    <MdMenu size={24} />
                   </IconButton>
-                ) : (
-                  <IconButton
-                    color="inherit"
-                    edge="start"
-                    onClick={handleDrawerToggle}
-                    sx={{ display: { sm: "block", xs: "none" } }}
-                  >
-                    <AiOutlineMenuUnfold size={24} />
-                  </IconButton>
-                )}
-                <IconButton color="inherit" edge="start" onClick={handleDrawerToggle} sx={{ display: { sm: "none" } }}>
-                  <MdMenu size={24} />
-                </IconButton>
-                <Typography variant="h6" noWrap>
-                  Dashboard
-                </Typography>
-                <ButtonMode />
-              </Toolbar>
-            </AppBar>
-          </Box>
+                  <Typography variant="h6" noWrap>
+                    Dashboard
+                  </Typography>
+                  <ButtonMode />
+                </Toolbar>
+              </AppBar>
+            </Box>
 
-          {/* Horizontal mobile */}
-          <Drawer
-            variant="temporary"
-            open={mobileOpen}
-            onClose={handleDrawerToggle}
-            sx={{ display: { xs: "block", sm: "none" }, "& .MuiDrawer-paper": { width: drawerWidth } }}
-          >
-            {drawer}
-          </Drawer>
-
-          {/* Horizontal default web */}
-          <Box sx={{ width: { xs: 0, sm: drawerWidth } }}>
+            {/* Horizontal mobile */}
             <Drawer
-              variant="permanent"
-              sx={{ display: { xs: "none", sm: "block" }, "& .MuiDrawer-paper": { width: drawerWidth } }}
+              variant="temporary"
               open={mobileOpen}
               onClose={handleDrawerToggle}
+              sx={{ display: { xs: "block", sm: "none" }, "& .MuiDrawer-paper": { width: drawerWidth } }}
             >
               {drawer}
             </Drawer>
-          </Box>
 
-          <Box sx={{ flex: 1, paddingLeft: 3, paddingRight: 3, marginTop: 10 }}>
-            <main className="w-full h-full flex flex-col">{children}</main>
+            {/* Horizontal default web */}
+            <Box sx={{ width: { xs: 0, sm: drawerWidth } }}>
+              <Drawer
+                variant="permanent"
+                sx={{ display: { xs: "none", sm: "block" }, "& .MuiDrawer-paper": { width: drawerWidth } }}
+                open={mobileOpen}
+                onClose={handleDrawerToggle}
+              >
+                {drawer}
+              </Drawer>
+            </Box>
+
+            <Box sx={{ flex: 1, paddingLeft: 3, paddingRight: 3, marginTop: 10 }}>
+              <main className="w-full h-full flex flex-col">{children}</main>
+            </Box>
           </Box>
-        </Box>
+        </AuthProvider>
       </body>
     </html>
   );

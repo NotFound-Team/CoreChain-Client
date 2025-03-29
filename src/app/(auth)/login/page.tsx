@@ -24,9 +24,11 @@ import { Controller, useForm } from "react-hook-form";
 // -- hookform/resolvers/yup --
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useAuth } from "@/hooks/useAuth";
+// import axios from "axios";
 
 const schema = yup.object({
-  email: yup
+  username: yup
     .string()
     .required("The field is required")
     .matches(EMAIL_REG, "Invalid email. Please enter a valid email format."),
@@ -38,18 +40,30 @@ const schema = yup.object({
 
 export default function Login() {
   const theme = useTheme();
+  const { login } = useAuth();
+
   const {
     handleSubmit,
     control,
     formState: { errors },
   } = useForm<UserLogin>({
-    defaultValues: { email: "", password: "" },
+    defaultValues: { username: "", password: "" },
     mode: "onBlur",
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data: UserLogin) => {
-    console.log("Data form:", data);
+  const onSubmit = async (data: UserLogin) => {
+    console.log(data);
+    // const response = await axios.post("http://localhost:3001/api/v1/auth/login", {
+    //   username: "test2@gmail.com",
+    //   password: "123123",
+    // });
+    // console.log(response);
+    try {
+      await login(data);
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
   };
 
   return (
@@ -86,7 +100,7 @@ export default function Login() {
           </Typography>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Controller
-              name="email"
+              name="username"
               control={control}
               render={({ field }) => (
                 <TextField
@@ -94,8 +108,8 @@ export default function Login() {
                   label="Email"
                   fullWidth
                   margin="normal"
-                  error={!!errors.email}
-                  helperText={errors.email?.message}
+                  error={!!errors.username}
+                  helperText={errors.username?.message}
                 />
               )}
             />

@@ -1,9 +1,7 @@
-export const BASE_URL = process.env.API_URL;
-
-const version = "v1";
+export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export const CONFIG_API = {
   AUTH: {
-    LOGIN: `/${version}/auth/login`,
+    LOGIN: `/auth/login`,
   },
 };
