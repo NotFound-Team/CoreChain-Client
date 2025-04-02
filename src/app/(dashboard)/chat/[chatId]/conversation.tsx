@@ -1,63 +1,102 @@
 "use client";
 
+// -- react-icon --
 import { FaFileImage, FaMicrophone, FaPaperPlane, FaVideo } from "react-icons/fa";
 import { IoMdInformationCircle } from "react-icons/io";
 import { BsEmojiSmile } from "react-icons/bs";
 import { FaLocationDot } from "react-icons/fa6";
-import Image from "next/image";
-import { IconButton, InputBase, Paper } from "@mui/material";
 import { IoCall } from "react-icons/io5";
-import io, { Socket } from "socket.io-client";
-import { useEffect, useRef, useState } from "react";
 
-interface Tchat {
-  message: string;
-}
+// -- next --
+import Image from "next/image";
 
-const token = localStorage.getItem("token");
+// -- mui --
+import IconButton from "@mui/material/IconButton";
+import InputBase from "@mui/material/InputBase";
+import Paper from "@mui/material/Paper";
 
-const socket = io(`${process.env.API_URL}/chat`, {
-  transports: ["websocket"],
-  withCredentials: true,
-  auth: {
-    token,
-  },
-});
+// --react --
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useSocket } from "@/hooks/useSocket";
+import { useParams } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
+import { Message } from "@/types/message";
 
 export default function Conversation({ chatId }: { chatId: string }) {
   const [message, setMessage] = useState("");
-  const [listMessages, setListMessages] = useState<Tchat[]>([]);
+  const [listMessages, setListMessages] = useState<Message[]>([]);
   const scollChat = useRef<HTMLDivElement>(null);
-  const socketRef = useRef<Socket | null>(null);
+  const socket = useSocket();
+  const { user } = useAuth();
+  const params = useParams();
+  const conversationId = params.chatId?.toString();
 
+  // List message
+  const renderedMessages = useMemo(() => {
+    return listMessages.map((item) => (
+      <li key={item._id} className={item.senderId === user?._id ? "ml-auto" : "mr-auto"}>
+        <div className="flex items-center gap-x-4">
+          {item.senderId !== user?._id && (
+            <Image
+              src="/images/img_avatar.png"
+              alt="avatar"
+              width={51}
+              height={50}
+              style={{ height: "auto" }}
+              className="overflow-hidden rounded-full"
+            />
+          )}
+          <div className="text-white rounded-2xl bg-[#5051F9] px-[24px] py-[8px]">{item.content}</div>
+        </div>
+      </li>
+    ));
+  }, [listMessages, user]);
+
+  // Send message
+  const sendMessage = useCallback(() => {
+    if (message.trim() !== "" && socket) {
+      socket.emit(
+        "sendMessage",
+        {
+          conversationId,
+          senderId: user?._id,
+          content: message,
+        },
+        (ack: Message) => {
+          setListMessages((prev) => [...prev, ack]);
+        }
+      );
+      setMessage(""); // Clear message input after sending
+    }
+  }, [message, socket, conversationId, user]);
+
+  // Fetch messages on component mount and subscribe to new messages
   useEffect(() => {
-    console.log(socket)
-    const handleMessage = (data: Tchat) => {
-      console.log("Received message:", data);
-      setListMessages((prev) => [...prev, data]);
+    socket?.emit("getMessages", { conversationId }, (data: Message[]) => {
+      const reversedData = [...data].reverse();
+      setListMessages(reversedData);
+    });
+
+    const handleNewMessage = (msg: Message) => {
+      setListMessages((prev) => [msg, ...prev]);
+      console.log("New Message", msg);
     };
 
-    socket.on("newMessage", handleMessage);
-
-    if (scollChat.current !== null) {
-      scollChat.current.scrollTop = scollChat.current.scrollHeight;
-    }
+    socket?.on("newMessage", handleNewMessage);
 
     return () => {
       if (socket) {
-        socket.off("newMessage", handleMessage);
-        socket.disconnect();
+        socket.off("newMessage", handleNewMessage);
       }
     };
-  }, [chatId]);
+  }, [socket, conversationId]);
 
-  const sendMessage = () => {
-    if (message.trim() !== "" && socket) {
-      socket.emit("getMessages", { message });
-      setMessage("");
+  // Scroll to the bottom when messages change
+  useEffect(() => {
+    if (scollChat.current) {
+      scollChat.current.scrollTop = scollChat.current.scrollHeight;
     }
-  };
-  console.log(listMessages);
+  }, [listMessages]);
 
   return (
     <section className="flex-1 bg-[#F2F3F7] flex flex-col h-screen z-20">
@@ -90,53 +129,10 @@ export default function Conversation({ chatId }: { chatId: string }) {
       </div>
 
       <div ref={scollChat} className="flex-1 py-6 overflow-y-auto">
-        <ul className="flex flex-col gap-y-4 px-2">
-          {/* {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].map((item, index) => (
-            <li key={index} className={item % 2 === 0 ? "mr-auto" : "ml-auto"}>
-              <div className="flex items-center gap-x-4">
-                {item % 2 === 0 && (
-                  <Image
-                    src="/images/img_avatar.png"
-                    alt="avatar"
-                    width={51}
-                    height={50}
-                    style={{ height: "auto" }}
-                    className="overflow-hidden rounded-full"
-                  />
-                )}
-                <div className="text-white rounded-2xl bg-[#5051F9] px-[24px] py-[8px]">Hello</div>
-                {item % 2 !== 0 && (
-                  <Image
-                    src="/images/img_avatar.png"
-                    alt="avatar"
-                    width={51}
-                    height={50}
-                    style={{ height: "auto" }}
-                    className="overflow-hidden rounded-full"
-                  />
-                )}
-              </div>
-            </li>
-          ))} */}
-          {listMessages.map((message, index) => (
-            <li key={index} className="ml-auto">
-              <div className="flex items-center gap-x-4">
-                <Image
-                  src="/images/img_avatar.png"
-                  alt="avatar"
-                  width={51}
-                  height={50}
-                  style={{ height: "auto" }}
-                  className="overflow-hidden rounded-full"
-                />
-                <div className="text-white rounded-2xl bg-[#5051F9] px-[24px] py-[8px]">{message.message}</div>
-              </div>
-            </li>
-          ))}
-        </ul>
+        <ul className="flex flex-col gap-y-4 px-2 pb-20">{renderedMessages}</ul>
       </div>
 
-      <div className="bg-[#ECEFFA] sticky bottom-2 left-0 right-0 py-4 px-6 z-20">
+      <div className="bg-[#ECEFFA] sticky bottom-0 left-0 right-0 py-3 px-6 z-20">
         <Paper
           component="form"
           onSubmit={(e) => e.preventDefault()}
@@ -149,27 +145,19 @@ export default function Conversation({ chatId }: { chatId: string }) {
             boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
           }}
         >
-          {/* Microphone Icon */}
           <IconButton sx={{ p: "8px", color: "#4A90E2" }} aria-label="microphone">
             <FaMicrophone />
           </IconButton>
-
-          {/* Image Upload Icon */}
           <IconButton sx={{ p: "8px", color: "#4A90E2" }} aria-label="image upload">
             <FaFileImage />
           </IconButton>
-
-          {/* Emoji Icon */}
           <IconButton sx={{ p: "8px", color: "#4A90E2" }} aria-label="emoji">
             <BsEmojiSmile />
           </IconButton>
-
-          {/* Location Icon */}
           <IconButton sx={{ p: "8px", color: "#4A90E2" }} aria-label="location">
             <FaLocationDot />
           </IconButton>
 
-          {/* Input Field */}
           <InputBase
             sx={{
               ml: 1,
@@ -182,7 +170,6 @@ export default function Conversation({ chatId }: { chatId: string }) {
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                console.log("ENTER");
                 e.preventDefault();
                 sendMessage();
               }
@@ -191,7 +178,6 @@ export default function Conversation({ chatId }: { chatId: string }) {
             inputProps={{ "aria-label": "Add a comment..." }}
           />
 
-          {/* Send Button Icon */}
           <IconButton type="button" sx={{ p: "8px", color: "#4A90E2" }} aria-label="send" onClick={sendMessage}>
             <FaPaperPlane />
           </IconButton>

@@ -20,7 +20,7 @@ const fetchApi = async <T>(
   url: string,
   method: "GET" | "POST" | "PUT" | "DELETE" = "GET",
   data?: T,
-  extraHeaders: Record<string, string> = {}
+  extraOptions: Omit<AxiosRequestConfig, "url" | "method" | "data"> = {}
 ) => {
   try {
     const config: AxiosRequestConfig = {
@@ -28,9 +28,7 @@ const fetchApi = async <T>(
       url,
       // ...(data ? { data } : {}),
       data,
-      headers: {
-        ...extraHeaders,
-      },
+      ...extraOptions,
     };
 
     const response = await axiosInstance(config);

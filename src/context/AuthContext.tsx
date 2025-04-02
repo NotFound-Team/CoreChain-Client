@@ -29,6 +29,31 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       router.push("/login");
       return;
     }
+    const fetchUser = async () => {
+      try {
+        const response = await fetchApi(CONFIG_API.USER.ACCOUNT, "GET", undefined, {
+          withCredentials: true,
+        });
+        if (response.statusCode === 200 && response.data) {
+          const newUser = { ...response.data.user, token };
+          setUser(newUser);
+        } else {
+          throw new Error("User data not found");
+        }
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.error("Failed to fetch user data:", error.message);
+          router.push("/login");
+        } else {
+          console.error("Unknown error occurred while fetching user data");
+          router.push("/login");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
   }, [router]);
 
   const login = async ({ username, password }: UserLogin) => {
@@ -37,8 +62,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.log(response.data);
       if (response) {
         const { user, access_token } = response.data;
+        const newUser = { ...user, access_token };
         localStorage.setItem("token", access_token);
-        setUser(user);
+        setUser(newUser);
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -55,6 +81,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem("token");
     setUser(null);
   };
+
+  if (loading) {
+    return <div>Loading...</div>; // Hoặc có thể render spinner, hoặc gì đó cho trạng thái loading
+  }
 
   return <AuthContext.Provider value={{ user, loading, setUser, login, logout }}>{children}</AuthContext.Provider>;
 };

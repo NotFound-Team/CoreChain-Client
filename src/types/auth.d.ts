@@ -9,11 +9,12 @@ type RoleType = {
   name: string;
 };
 type User = {
-  id: string;
+  _id: string;
   name: string;
   email: string;
   role: RoleType;
   permissions?: Array;
+  token: string;
 };
 
 export type AuthContextType = {

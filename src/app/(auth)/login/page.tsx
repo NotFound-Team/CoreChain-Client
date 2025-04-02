@@ -25,6 +25,8 @@ import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useAuth } from "@/hooks/useAuth";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 // import axios from "axios";
 
 const schema = yup.object({
@@ -41,6 +43,9 @@ const schema = yup.object({
 export default function Login() {
   const theme = useTheme();
   const { login } = useAuth();
+  const { user } = useAuth();
+
+  const router = useRouter();
 
   const {
     handleSubmit,
@@ -55,10 +60,18 @@ export default function Login() {
   const onSubmit = async (data: UserLogin) => {
     try {
       await login(data);
+      router.push("/dashboard");
     } catch (error) {
       console.error("Login failed:", error);
     }
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token && user) {
+      router.push("/dashboard");
+    }
+  }, [router, user]);
 
   return (
     <Box
