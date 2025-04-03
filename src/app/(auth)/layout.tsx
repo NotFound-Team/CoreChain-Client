@@ -10,6 +10,8 @@ import { Metadata } from "next";
 // -- Components --
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+
+// -- Context --
 import { AuthProvider } from "@/context/AuthContext";
 
 const geistSans = Geist({

@@ -1,19 +1,24 @@
 "use client";
 
+// -- Next --
+import { usePathname } from "next/navigation";
+import Image from "next/image";
+// -- React -- 
 import * as React from "react";
+// -- MUI --
 import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
+import Button from "@mui/material/Button";
+
+// -- React-icon
 import { IoCall, IoSearch } from "react-icons/io5";
-import Image from "next/image";
 import { FaFileImage, FaMicrophone, FaPaperPlane, FaVideo } from "react-icons/fa";
 import { IoMdInformationCircle, IoMdNotificationsOff } from "react-icons/io";
 import { BsEmojiSmile } from "react-icons/bs";
 import { FaLocationDot } from "react-icons/fa6";
 import { TbUsersGroup } from "react-icons/tb";
 import { GrContactInfo } from "react-icons/gr";
-import { Button } from "@mui/material";
-import { usePathname } from "next/navigation";
 
 export default function Chat() {
   const pathname = usePathname();

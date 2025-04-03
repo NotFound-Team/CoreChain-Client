@@ -8,6 +8,7 @@ import { FaLocationDot } from "react-icons/fa6";
 import { IoCall } from "react-icons/io5";
 
 // -- next --
+import { useParams } from "next/navigation";
 import Image from "next/image";
 
 // -- mui --
@@ -17,9 +18,12 @@ import Paper from "@mui/material/Paper";
 
 // --react --
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
+// -- hook --
 import { useSocket } from "@/hooks/useSocket";
-import { useParams } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
+
+// -- Types --
 import { Message } from "@/types/message";
 
 export default function Conversation({ chatId }: { chatId: string }) {
@@ -73,14 +77,17 @@ export default function Conversation({ chatId }: { chatId: string }) {
     }
   }, [message, socket, conversationId, user]);
 
-  const handleNewMessage = useCallback((msg: Message) => {
-    setListMessages((prev) => [...prev, msg]);
-    console.log("New Message", msg);
-  }, [setListMessages]);
+  const handleNewMessage = useCallback(
+    (msg: Message) => {
+      setListMessages((prev) => [...prev, msg]);
+      console.log("New Message", msg);
+    },
+    [setListMessages]
+  );
 
   // Fetch messages on component mount and subscribe to new messages
   useEffect(() => {
-    console.log("FETCH MESSAGE")
+    console.log("FETCH MESSAGE");
     socket?.emit("getMessages", { conversationId }, (data: Message[]) => {
       const reversedData = [...data].reverse();
       setListMessages(reversedData);

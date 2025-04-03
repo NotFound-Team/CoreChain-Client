@@ -2,6 +2,7 @@
 
 // -- Next --
 import Image from "next/image";
+import Link from "next/link";
 // -- Mui --
 import IconButton from "@mui/material/IconButton";
 import InputBase from "@mui/material/InputBase";
@@ -15,7 +16,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { useEffect, useState } from "react";
 // -- Types --
 import { ConversationItem } from "@/types/chat";
-import Link from "next/link";
 
 export default function ListConversation() {
   const socket = useSocket();

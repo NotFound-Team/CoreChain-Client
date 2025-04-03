@@ -1,4 +1,6 @@
+// -- Axios --
 import axios, { AxiosRequestConfig } from "axios";
+// -- Configs --
 import { BASE_URL } from "@/configs/api";
 
 // Tạo một instance Axios với cấu hình mặc định

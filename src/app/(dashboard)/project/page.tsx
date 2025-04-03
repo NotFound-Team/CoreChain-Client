@@ -1,19 +1,25 @@
-"use client"
+"use client";
 
+// -- React --
 import * as React from "react";
+
+// -- MUI --
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
+import Avatar from "@mui/material/Avatar";
+import AvatarGroup from "@mui/material/AvatarGroup";
 import Typography from "@mui/material/Typography";
-import { Avatar, AvatarGroup, Badge, BadgeProps, styled } from "@mui/material";
+import Badge from "@mui/material/Badge";
+import { BadgeProps, styled } from "@mui/material";
 
 const StyledBadge = styled(Badge)<BadgeProps>(() => ({
-  '& .MuiBadge-badge': {
+  "& .MuiBadge-badge": {
     right: 20,
     top: 10,
-    padding: '0 4px',
+    padding: "0 4px",
   },
 }));
 

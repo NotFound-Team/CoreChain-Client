@@ -1,8 +1,12 @@
 "use client";
 
+// -- Context --
 import { SocketProvider } from "@/context/SocketContext";
+// -- Next --
 import { usePathname } from "next/navigation";
+// -- React --
 import React from "react";
+
 import ListConversation from "./listConversation";
 
 export default function ChatLayout({ children }: { children: React.ReactNode }) {

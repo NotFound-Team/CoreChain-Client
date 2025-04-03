@@ -1,5 +1,7 @@
 "use client";
 
+// -- Next --
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -24,10 +26,11 @@ import { Controller, useForm } from "react-hook-form";
 // -- hookform/resolvers/yup --
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+
+// -- Hook
 import { useAuth } from "@/hooks/useAuth";
+// -- React --
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-// import axios from "axios";
 
 const schema = yup.object({
   username: yup
