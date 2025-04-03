@@ -31,8 +31,11 @@ export default function Conversation({ chatId }: { chatId: string }) {
   const params = useParams();
   const conversationId = params.chatId?.toString();
 
+  console.log("RE-render golbal");
+
   // List message
   const renderedMessages = useMemo(() => {
+    console.log("RE-render");
     return listMessages.map((item) => (
       <li key={item._id} className={item.senderId === user?._id ? "ml-auto" : "mr-auto"}>
         <div className="flex items-center gap-x-4">
@@ -70,17 +73,18 @@ export default function Conversation({ chatId }: { chatId: string }) {
     }
   }, [message, socket, conversationId, user]);
 
+  const handleNewMessage = useCallback((msg: Message) => {
+    setListMessages((prev) => [...prev, msg]);
+    console.log("New Message", msg);
+  }, [setListMessages]);
+
   // Fetch messages on component mount and subscribe to new messages
   useEffect(() => {
+    console.log("FETCH MESSAGE")
     socket?.emit("getMessages", { conversationId }, (data: Message[]) => {
       const reversedData = [...data].reverse();
       setListMessages(reversedData);
     });
-
-    const handleNewMessage = (msg: Message) => {
-      setListMessages((prev) => [msg, ...prev]);
-      console.log("New Message", msg);
-    };
 
     socket?.on("newMessage", handleNewMessage);
 
@@ -89,7 +93,7 @@ export default function Conversation({ chatId }: { chatId: string }) {
         socket.off("newMessage", handleNewMessage);
       }
     };
-  }, [socket, conversationId]);
+  }, [socket, conversationId, handleNewMessage]);
 
   // Scroll to the bottom when messages change
   useEffect(() => {
