@@ -30,6 +30,7 @@ import React, { useState } from "react";
 // -- React-icon
 import { AiOutlineMenuFold, AiOutlineMenuUnfold } from "react-icons/ai";
 import { IoIosChatbubbles } from "react-icons/io";
+import { GoProject } from "react-icons/go";
 
 // -- React-icon --
 import { MdMenu, MdDashboard, MdSettings, MdExitToApp } from "react-icons/md";
@@ -50,6 +51,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       title: "Dashboard",
       icon: <MdDashboard size={24} />,
       href: "/dashboard",
+    },
+    {
+      title: "Project",
+      icon: <GoProject size={24} />,
+      href: "/project",
     },
     {
       title: "Chat",
