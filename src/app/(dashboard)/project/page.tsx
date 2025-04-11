@@ -1,173 +1,70 @@
 "use client";
 
+// -- React --
 import * as React from "react";
-import {
-  Card,
-  CardActions,
-  CardContent,
-  CardMedia,
-  Button,
-  Avatar,
-  AvatarGroup,
-  Typography,
-  Badge,
-  IconButton,
-  Chip,
-  LinearProgress,
-  Box,
-} from "@mui/material";
-import { styled } from "@mui/material/styles";
+
+// -- MUI
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+
+// -- React-icon --
 import { MdAddBox, MdOutlineGridView } from "react-icons/md";
 import { LuRows3 } from "react-icons/lu";
-import Link from "next/link";
-import { Grow } from "@mui/material";
 
-const StatusBadge = styled(Badge)(({ theme }) => ({
-  "& .MuiBadge-badge": {
-    right: 16,
-    top: 16,
-    padding: theme.spacing(0.5),
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: theme.palette.success.main,
-    color: theme.palette.common.white,
-    fontSize: theme.typography.caption.fontSize,
-  },
-}));
+// -- Components
+import ProjectCard from "./ProjectCard";
 
-const ProjectCard = ({ id }: { id: string }) => (
-  <Link href={`/project/${id}`} passHref legacyBehavior>
-    <Box
-      component="a"
-      sx={{
-        display: "block",
-        textDecoration: "none",
-        "&:hover": { 
-          transform: "translateY(-4px)",
-          transition: "transform 0.3s ease",
-        },
-      }}
-    >
-      <Grow in={true} timeout={500 + Number(id) * 100}>
-        <Card
-          sx={{
-            height: 380,
-            display: "flex",
-            flexDirection: "column",
-            borderRadius: 2,
-            boxShadow: 2,
-            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-            "&:hover": {
-              boxShadow: 6,
-              "& .project-image": {
-              },
-            },
-          }}
-        >
-          <Box position="relative">
-            <CardMedia
-              className="project-image"
-              component="img"
-              alt="Project thumbnail"
-              image="https://www.shutterstock.com/image-vector/this-cat-pixel-art-colorful-260nw-2346901397.jpg"
-              sx={{
-                height: 180,
-                objectFit: "cover",
-                borderTopLeftRadius: 8,
-                borderTopRightRadius: 8,
-              }}
-            />
-            <Chip
-              label="High Priority"
-              color="error"
-              size="small"
-              sx={{
-                position: "absolute",
-                top: 12,
-                left: 12,
-                fontWeight: 600,
-              }}
-            />
-          </Box>
+// -- utils --
+import fetchApi from "@/utils/fetchApi";
 
-          <CardContent sx={{ flexGrow: 1 }}>
-            <Typography variant="h6" gutterBottom noWrap sx={{fontWeight: 600}}>
-              Lizard Conservation Platform
-            </Typography>
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{
-                display: "-webkit-box",
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: "vertical",
-                overflow: "hidden",
-              }}
-            >
-              Comprehensive platform for monitoring and protecting lizard species 
-              through AI-powered habitat analysis and community engagement.
-            </Typography>
-          </CardContent>
+// -- Configs --
+import { CONFIG_API } from "@/configs/api";
 
-          <CardActions sx={{ 
-            display: "flex",
-            justifyContent: "space-between",
-            px: 2,
-            pb: 2,
-          }}>
-            <AvatarGroup
-              max={4}
-              sx={{
-                "& .MuiAvatar-root": {
-                  width: 32,
-                  height: 32,
-                  borderColor: "background.paper",
-                },
-              }}
-            >
-              {[1, 2, 3, 4, 5].map((i) => (
-                <Avatar
-                  key={i}
-                  src={`/static/images/avatar/${i}.jpg`}
-                  alt={`Member ${i}`}
-                />
-              ))}
-            </AvatarGroup>
-            
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <LinearProgress
-                variant="determinate"
-                value={65}
-                sx={{
-                  width: 80,
-                  height: 6,
-                  borderRadius: 3,
-                  "& .MuiLinearProgress-bar": {
-                    borderRadius: 3,
-                  },
-                }}
-              />
-              <Typography variant="caption">65%</Typography>
-            </Box>
-          </CardActions>
-        </Card>
-      </Grow>
-    </Box>
-  </Link>
-);
+// -- Types --
+import { TProject } from "@/types/project";
+
+// const StatusBadge = styled(Badge)(({ theme }) => ({
+//   "& .MuiBadge-badge": {
+//     right: 16,
+//     top: 16,
+//     padding: theme.spacing(0.5),
+//     borderRadius: theme.shape.borderRadius,
+//     backgroundColor: theme.palette.success.main,
+//     color: theme.palette.common.white,
+//     fontSize: theme.typography.caption.fontSize,
+//   },
+// }));
 
 export default function ProjectList() {
+  const [projectList, setProjectList] = React.useState<TProject[]>([]);
+  React.useEffect(() => {
+    const data = async () => {
+      const response = await fetchApi(`${CONFIG_API.PROJECT}`, "GET");
+      if (response && response.statusCode === 200) {
+        setProjectList(response.data.projects);
+      }
+    };
+    data();
+  }, []);
+
+  console.log(projectList);
+
   return (
     <Box sx={{ p: 3 }}>
-      <Box sx={{ 
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        mb: 4,
-      }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 4,
+        }}
+      >
         <Typography variant="h4" fontWeight={700}>
           Project Dashboard
         </Typography>
-        
+
         <Box sx={{ display: "flex", gap: 1 }}>
           <IconButton
             color="primary"
@@ -189,11 +86,7 @@ export default function ProjectList() {
           >
             <LuRows3 size={20} />
           </IconButton>
-          <Button
-            variant="contained"
-            startIcon={<MdAddBox />}
-            sx={{ borderRadius: 2, px: 3 }}
-          >
+          <Button variant="contained" startIcon={<MdAddBox />} sx={{ borderRadius: 2, px: 3 }}>
             New Project
           </Button>
         </Box>
@@ -211,8 +104,8 @@ export default function ProjectList() {
           gap: 3,
         }}
       >
-        {[1, 2, 3, 4, 5].map((item) => (
-          <ProjectCard key={item} id={item.toString()} />
+        {projectList.map((project, index) => (
+          <ProjectCard key={project._id} projectItem={project} index={index} />
         ))}
       </Box>
     </Box>
