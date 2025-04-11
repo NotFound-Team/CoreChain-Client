@@ -10,4 +10,6 @@ export const CONFIG_API = {
   USER: {
     ACCOUNT: "/auth/account",
   },
+  TASK: "/tasks",
+  PROJECT: "/projects",
 };
