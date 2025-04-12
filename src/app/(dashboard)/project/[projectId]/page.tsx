@@ -1,9 +1,9 @@
 "use client";
 
+// -- MUI --
 import {
   Box,
   Typography,
-  Button,
   Avatar,
   AvatarGroup,
   Chip,
@@ -13,96 +13,67 @@ import {
   Grow,
   Fade,
   LinearProgress,
-  TextField,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
   IconButton,
-  MenuItem,
-  Select,
   Tooltip,
   Divider,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { LocalizationProvider } from "@mui/x-date-pickers";
-import { IoMdAdd } from "react-icons/io";
-import { MdDeleteForever, MdInfoOutline } from "react-icons/md";
-import { FaRegEdit } from "react-icons/fa";
-import { useState } from "react";
-import { format } from "date-fns";
+
+// -- React --
+import { useEffect, useState } from "react";
+
+// -- components
+import TaskManager from "./TaskManager";
+
+// -- utils --
+import fetchApi from "@/utils/fetchApi";
+
+// -- Configs --
+import { CONFIG_API } from "@/configs/api";
+
+// -- Next --
+import { useParams } from "next/navigation";
+
+// -- Types --
+import { TProject } from "@/types/project";
+
+// -- dayjs --
+import dayjs from "dayjs";
 
 const ProjectDetail = () => {
   const theme = useTheme();
-  const [tasks, setTasks] = useState([
-    {
-      id: 1,
-      title: "Thiết kế UI/UX",
-      description: "Thiết kế giao diện người dùng và trải nghiệm",
-      startDate: new Date("2024-03-01"),
-      endDate: new Date("2024-03-10"),
-      assignees: ["/static/images/avatar/1.jpg", "/static/images/avatar/2.jpg"],
-      status: "In Progress",
-      progress: 75,
-    },
-  ]);
-
-  const [newTask, setNewTask] = useState({
-    title: "",
-    description: "",
-    startDate: null,
-    endDate: null,
-    assignees: [],
-    status: "Not Started",
-  });
+  const params = useParams<{ projectId: string }>();
+  const [projects, setProjects] = useState<TProject>();
+  // const [tasks, setTasks] = useState([
+  //   {
+  //     id: 1,
+  //     title: "Thiết kế UI/UX",
+  //     description: "Thiết kế giao diện người dùng và trải nghiệm",
+  //     startDate: new Date("2024-03-01"),
+  //     endDate: new Date("2024-03-10"),
+  //     assignees: ["/static/images/avatar/1.jpg", "/static/images/avatar/2.jpg"],
+  //     status: "In Progress",
+  //     progress: 75,
+  //   },
+  // ]);
 
   // Project timeline calculations
-  const projectStart = new Date("2024-01-01");
-  const projectEnd = new Date("2024-12-31");
-  const progress = Math.round(
-    ((Date.now() - projectStart.getTime()) / (projectEnd.getTime() - projectStart.getTime())) * 100
-  );
+  const projectStart = projects?.startDate;
+  const projectEnd = projects?.endDate;
 
-  // Task functions
-  const handleAddTask = () => {
-    if (newTask.title && newTask.startDate && newTask.endDate) {
-      const taskProgress = calculateTaskProgress(newTask.startDate, newTask.endDate);
+  useEffect(() => {
+    const dataProjectDetail = async () => {
+      const response = await fetchApi(`${CONFIG_API.PROJECT}/${params.projectId}`);
+      if (response && response.statusCode === 200) {
+        setProjects(response.data);
+      }
+    };
+    dataProjectDetail();
+  }, [params.projectId]);
 
-      setTasks([
-        ...tasks,
-        {
-          id: Date.now(),
-          ...newTask,
-          assignees: [],
-          progress: taskProgress,
-        },
-      ]);
-      setNewTask({
-        title: "",
-        description: "",
-        startDate: null,
-        endDate: null,
-        assignees: [],
-        status: "Not Started",
-      });
-    }
-  };
-
-  const calculateTaskProgress = (startDate, endDate) => {
-    const total = endDate - startDate;
-    const elapsed = Date.now() - startDate;
-    return Math.min(Math.max(Math.round((elapsed / total) * 100), 0), 100);
-  };
-
-  const handleStatusChange = (taskId, newStatus) => {
-    setTasks(tasks.map((task) => (task.id === taskId ? { ...task, status: newStatus } : task)));
-  };
-
-  const handleDeleteTask = (taskId) => {
-    setTasks(tasks.filter((task) => task.id !== taskId));
-  };
+  console.log(projects);
 
   return (
     <Grow in={true} timeout={500}>
@@ -114,8 +85,6 @@ const ProjectDetail = () => {
               borderRadius: 4,
               overflow: "hidden",
               boxShadow: theme.shadows[4],
-              // transition: "transform 0.3s ease-in-out",
-              // "&:hover": { transform: "translateY(-2px)" },
             }}
           >
             {/* Hero Section */}
@@ -181,17 +150,17 @@ const ProjectDetail = () => {
                         fontWeight: 700,
                       }}
                     >
-                      Lizard Project
+                      {projects?.name}
                     </Typography>
                   </Fade>
 
                   <Box sx={{ color: "white", textAlign: "right" }}>
                     <Typography variant="body2">
-                      {projectStart.toLocaleDateString()} - {projectEnd.toLocaleDateString()}
+                      {dayjs(projectStart).format("DD/MM/YYYY")} - {dayjs(projectEnd).format("DD/MM/YYYY")}
                     </Typography>
                     <LinearProgress
                       variant="determinate"
-                      value={progress}
+                      value={projects?.progress}
                       sx={{
                         height: 10,
                         borderRadius: 5,
@@ -200,7 +169,7 @@ const ProjectDetail = () => {
                       }}
                     />
                     <Typography variant="body2" sx={{ mt: 0.5 }}>
-                      {progress}% Completed
+                      {projects?.progress}% Completed
                     </Typography>
                   </Box>
                 </Box>
@@ -225,9 +194,7 @@ const ProjectDetail = () => {
                         fontSize: "1.1rem",
                       }}
                     >
-                      This comprehensive initiative focuses on the preservation and study of over 6,000 lizard species
-                      across global ecosystems. Combining cutting-edge technology with ecological research, we aim to
-                      create sustainable habitats and advanced monitoring systems.
+                      {projects?.description}
                     </Typography>
                   </Box>
 
@@ -317,16 +284,10 @@ const ProjectDetail = () => {
                         👥 Development Team
                       </Typography>
                       <AvatarGroup max={6} sx={{ justifyContent: "center", mb: 3 }}>
-                        {[
-                          "/static/images/avatar/1.jpg",
-                          "/static/images/avatar/2.jpg",
-                          "/static/images/avatar/3.jpg",
-                          "/static/images/avatar/4.jpg",
-                          "/static/images/avatar/5.jpg",
-                        ].map((src, index) => (
+                        {projects?.teamMembers.map((member, index) => (
                           <Tooltip key={index} title={`Member ${index + 1}`}>
                             <Avatar
-                              src={src}
+                              src={"/static/images/avatar/1.jpg"}
                               sx={{
                                 width: 56,
                                 height: 56,
@@ -367,7 +328,12 @@ const ProjectDetail = () => {
                           { label: "MongoDB", color: "info" },
                           { label: "AWS", color: "error" },
                         ].map((tech, index) => (
-                          <Chip key={index} label={tech.label} color={tech.color} variant="outlined" />
+                          <Chip
+                            key={index}
+                            label={tech.label}
+                            color={tech.color as "primary" | "secondary" | "warning" | "success" | "info" | "error"}
+                            variant="outlined"
+                          />
                         ))}
                       </Box>
                     </Paper>
@@ -376,227 +342,10 @@ const ProjectDetail = () => {
               </Grid>
 
               <Divider sx={{ my: 4 }} />
+
               {/* Task Management Section */}
-              <Box sx={{ mt: 6 }}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    mb: 4,
-                  }}
-                >
-                  <Typography variant="h4" sx={{ fontWeight: 700, display: "flex", alignItems: "center" }}>
-                    <IoMdAdd style={{ marginRight: 12 }} />
-                    Task Management
-                  </Typography>
-                  <Button
-                    variant="contained"
-                    startIcon={<IoMdAdd />}
-                    onClick={handleAddTask}
-                    sx={{
-                      px: 4,
-                      py: 1.5,
-                      borderRadius: 2,
-                      textTransform: "none",
-                      fontWeight: 600,
-                    }}
-                  >
-                    New Task
-                  </Button>
-                </Box>
-
-                {/* Add Task Form */}
-                <Grid container spacing={3} sx={{ mb: 4 }}>
-                  <Grid item xs={12} md={6}>
-                    <TextField
-                      fullWidth
-                      label="Task Title"
-                      variant="outlined"
-                      value={newTask.title}
-                      onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
-                      InputProps={{
-                        sx: { borderRadius: 2, background: theme.palette.background.paper },
-                      }}
-                    />
-                  </Grid>
-
-                  <Grid item xs={12} md={3}>
-                    <DatePicker
-                      label="Start Date"
-                      value={newTask.startDate}
-                      onChange={(date) => setNewTask({ ...newTask, startDate: date })}
-                      sx={{
-                        width: "100%",
-                        "& .MuiOutlinedInput-root": { borderRadius: 2 },
-                      }}
-                    />
-                  </Grid>
-
-                  <Grid item xs={12} md={3}>
-                    <DatePicker
-                      label="End Date"
-                      value={newTask.endDate}
-                      onChange={(date) => setNewTask({ ...newTask, endDate: date })}
-                      sx={{
-                        width: "100%",
-                        "& .MuiOutlinedInput-root": { borderRadius: 2 },
-                      }}
-                    />
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <TextField
-                      fullWidth
-                      label="Task Description"
-                      variant="outlined"
-                      multiline
-                      rows={3}
-                      value={newTask.description}
-                      onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
-                      InputProps={{
-                        sx: { borderRadius: 2, background: theme.palette.background.paper },
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-
-                {/* Task List */}
-                <List sx={{ "& .MuiListItem-root": { px: 0 } }}>
-                  {tasks.map((task) => (
-                    <Paper
-                      key={task.id}
-                      elevation={2}
-                      sx={{
-                        px: 2,
-                        mb: 2,
-                        background: theme.palette.background.paper,
-                        borderRadius: 3,  
-                        overflow: "hidden",
-                        transition: "transform 0.2s",
-                        "&:hover": { transform: "translateX(5px)" },
-                      }}
-                    >
-                      <ListItem sx={{ py: 2, background: theme.palette.background.paper }}>
-                        <ListItemAvatar>
-                          <AvatarGroup max={3}>
-                            {task.assignees.map((avatar, index) => (
-                              <Tooltip key={index} title={`Assignee ${index + 1}`}>
-                                <Avatar
-                                  src={avatar}
-                                  sx={{
-                                    width: 40,
-                                    height: 40,
-                                    border: "2px solid #fff",
-                                    "&:hover": { transform: "scale(1.1)" },
-                                    transition: "transform 0.2s",
-                                  }}
-                                />
-                              </Tooltip>
-                            ))}
-                          </AvatarGroup>
-                        </ListItemAvatar>
-
-                        <ListItemText
-                          primary={
-                            <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                              {task.title}
-                            </Typography>
-                          }
-                          secondary={
-                            <Typography variant="body2" sx={{ color: "text.secondary", mt: 0.5 }}>
-                              {task.description}
-                            </Typography>
-                          }
-                          sx={{ mx: 2, flex: "1 1 auto" }}
-                        />
-
-                        <Box sx={{ minWidth: 140, textAlign: "center" }}>
-                          <Typography
-                            variant="caption"
-                            sx={{
-                              display: "block",
-                              color: "text.secondary",
-                              mb: 0.5,
-                            }}
-                          >
-                            {format(task.startDate, "MMM dd")} - {format(task.endDate, "MMM dd")}
-                          </Typography>
-                          <LinearProgress
-                            variant="determinate"
-                            value={task.progress}
-                            sx={{
-                              height: 8,
-                              borderRadius: 3,
-                              "& .MuiLinearProgress-bar": {
-                                background:
-                                  task.progress === 100 ? theme.palette.success.main : theme.palette.primary.main,
-                              },
-                            }}
-                          />
-                          <Typography
-                            variant="caption"
-                            sx={{
-                              display: "block",
-                              mt: 0.5,
-                              color: task.progress === 100 ? theme.palette.success.main : "text.primary",
-                              fontWeight: 500,
-                            }}
-                          >
-                            {task.progress}% Complete
-                          </Typography>
-                        </Box>
-
-                        <Select
-                          value={task.status}
-                          onChange={(e) => handleStatusChange(task.id, e.target.value)}
-                          sx={{
-                            ml: 2,
-                            minWidth: 140,
-                            "& .MuiSelect-select": { py: 1 },
-                          }}
-                          MenuProps={{ sx: { borderRadius: 3 } }}
-                        >
-                          <MenuItem value="Not Started">
-                            <Chip label="Not Started" color="default" size="small" sx={{ borderRadius: 1 }} />
-                          </MenuItem>
-                          <MenuItem value="In Progress">
-                            <Chip label="In Progress" color="primary" size="small" sx={{ borderRadius: 1 }} />
-                          </MenuItem>
-                          <MenuItem value="Completed">
-                            <Chip label="Completed" color="success" size="small" sx={{ borderRadius: 1 }} />
-                          </MenuItem>
-                        </Select>
-
-                        <Box sx={{ ml: 2, display: "flex", gap: 1 }}>
-                          <Tooltip title="Edit Task">
-                            <IconButton
-                              sx={{
-                                background: theme.palette.action.hover,
-                                "&:hover": { background: theme.palette.action.selected },
-                              }}
-                            >
-                              <FaRegEdit />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title="Delete Task">
-                            <IconButton
-                              color="error"
-                              sx={{
-                                background: theme.palette.error.light + "20",
-                                "&:hover": { background: theme.palette.error.light + "40" },
-                              }}
-                              onClick={() => handleDeleteTask(task.id)}
-                            >
-                              <MdDeleteForever />
-                            </IconButton>
-                          </Tooltip>
-                        </Box>
-                      </ListItem>
-                    </Paper>
-                  ))}
-                </List>
-              </Box>
+              {/* <TaskManager /> */}
+              
             </Box>
           </Paper>
         </LocalizationProvider>
