@@ -8,6 +8,7 @@ export const CONFIG_API = {
     INDEX: `${process.env.NEXT_PUBLIC_BASE_URL_SOCKET}/chat`,
   },
   USER: {
+    INDEX: "/users",
     ACCOUNT: "/auth/account",
   },
   TASK: "/tasks",
