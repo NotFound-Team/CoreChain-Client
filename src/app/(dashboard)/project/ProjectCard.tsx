@@ -1,3 +1,5 @@
+"use client";
+
 // -- MUI --
 import Avatar from "@mui/material/Avatar";
 import AvatarGroup from "@mui/material/AvatarGroup";
@@ -15,6 +17,7 @@ import CardActions from "@mui/material/CardActions";
 import Link from "next/link";
 // -- Types
 import { TProject } from "@/types/project";
+import React from "react";
 
 export enum Priority {
   Low = 1,
@@ -22,7 +25,7 @@ export enum Priority {
   High = 3,
 }
 
-const ProjectCard = ({ projectItem, index }: { projectItem: TProject; index: number }) => {
+const ProjectCard = React.memo(({ projectItem, index }: { projectItem: TProject; index: number }) => {
   const priorityLabel = Priority[projectItem.priority];
   return (
     <Link href={`/project/${projectItem._id}`} passHref legacyBehavior>
@@ -140,6 +143,8 @@ const ProjectCard = ({ projectItem, index }: { projectItem: TProject; index: num
       </Box>
     </Link>
   );
-};
+});
+
+ProjectCard.displayName = "ProjectCard";
 
 export default ProjectCard;
