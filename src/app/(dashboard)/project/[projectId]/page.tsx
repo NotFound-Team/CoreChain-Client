@@ -73,8 +73,6 @@ const ProjectDetail = () => {
     dataProjectDetail();
   }, [params.projectId]);
 
-  console.log(projects);
-
   return (
     <Grow in={true} timeout={500}>
       <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -344,7 +342,7 @@ const ProjectDetail = () => {
               <Divider sx={{ my: 4 }} />
 
               {/* Task Management Section */}
-              {/* <TaskManager /> */}
+              <TaskManager />
               
             </Box>
           </Paper>

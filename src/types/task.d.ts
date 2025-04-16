@@ -6,6 +6,18 @@ const TObjectCreateBy = {
   email: string,
 };
 
+export type TCreateTask = {
+  name: string;
+  title: string;
+  description: string;
+  assignedTo: string;
+  projectId: string;
+  priority: Priority;
+  status: Status;
+  startDate: Date | null;
+  dueDate: Date | null;
+};
+
 export type TTask = {
   _id: string;
   name: string;

@@ -15,10 +15,11 @@ import {
   Typography,
 } from "@mui/material";
 import dayjs from "dayjs";
+import React from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
 
-const TaskItem = ({ data }: { data: { tasks: TTask; theme: Theme } }) => {
+const TaskItem = React.memo(({ data }: { data: { tasks: TTask; theme: Theme } }) => {
   const { tasks, theme } = data;
   const taskStart = tasks?.startDate;
   const taskEnd = tasks?.endDate;
@@ -139,6 +140,8 @@ const TaskItem = ({ data }: { data: { tasks: TTask; theme: Theme } }) => {
       </Paper>
     </Box>
   );
-};
+});
+
+TaskItem.displayName = "TaskItem";
 
 export default TaskItem;

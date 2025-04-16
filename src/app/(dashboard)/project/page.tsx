@@ -1,113 +1,331 @@
 "use client";
 
-// -- React --
 import * as React from "react";
-
-// -- MUI
-import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-
-// -- React-icon --
-import { MdAddBox, MdOutlineGridView } from "react-icons/md";
+import {
+  Box,
+  IconButton,
+  Typography,
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Grid,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Autocomplete,
+  SelectChangeEvent,
+} from "@mui/material";
+import { MdAddBox, MdCheckCircleOutline, MdOutlineGridView } from "react-icons/md";
 import { LuRows3 } from "react-icons/lu";
-
-// -- Components
-import ProjectCard from "./ProjectCard";
-
-// -- utils --
-import fetchApi from "@/utils/fetchApi";
-
-// -- Configs --
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { TCreateProject, TProject, Employee } from "@/types/project";
 import { CONFIG_API } from "@/configs/api";
-
-// -- Types --
-import { TProject } from "@/types/project";
-
-// const StatusBadge = styled(Badge)(({ theme }) => ({
-//   "& .MuiBadge-badge": {
-//     right: 16,
-//     top: 16,
-//     padding: theme.spacing(0.5),
-//     borderRadius: theme.shape.borderRadius,
-//     backgroundColor: theme.palette.success.main,
-//     color: theme.palette.common.white,
-//     fontSize: theme.typography.caption.fontSize,
-//   },
-// }));
+import fetchApi from "@/utils/fetchApi";
+import { useSnackbar } from "@/hooks/useSnackbar";
+import Loading from "@/components/Loading";
+// import ProjectCard from "./ProjectCard"
+const ProjectCard = React.lazy(() => import("./ProjectCard"));
 
 export default function ProjectList() {
-  const [projectList, setProjectList] = React.useState<TProject[]>([]);
-  React.useEffect(() => {
-    const data = async () => {
-      const response = await fetchApi(`${CONFIG_API.PROJECT}`, "GET");
-      if (response && response.statusCode === 200) {
-        setProjectList(response.data.projects);
+  const { Toast, showToast } = useSnackbar();
+  const [loading, setLoading] = React.useState<boolean>(false);
+  const [projectList, setProjectList] = React.useState<(TProject | TCreateProject)[]>([]);
+  const [open, setOpen] = React.useState(false);
+  const [employees, setEmployees] = React.useState<Employee[]>([]);
+  const [formData, setFormData] = React.useState<TCreateProject>({
+    name: "",
+    description: "",
+    teamMembers: [],
+    priority: 1,
+    status: 1,
+    tasks: [],
+    revenue: 0,
+    startDate: null,
+    endDate: null,
+  });
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleSelectChange = (e: SelectChangeEvent<number>, field: string) => {
+    setFormData({
+      ...formData,
+      [field]: e.target.value,
+    });
+  };
+
+  const handleDateChange = (date: Date | null, field: string) => {
+    setFormData({
+      ...formData,
+      [field]: date,
+    });
+  };
+
+  // Send submit
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    console.log(formData);
+
+    try {
+      setLoading(true);
+      const response = await fetchApi(`${CONFIG_API.PROJECT}`, "POST", formData);
+      if (response && response.statusCode === 201) {
+        setProjectList((prev) => [...prev, formData]);
+        showToast("Create project success!", "success");
       }
-    };
-    data();
+    } catch (error) {
+      showToast("Error message!", "error");
+      console.log("error", error);
+    } finally {
+      setTimeout(() => {
+        setLoading(false);
+      }, 7000);
+    }
+
+    handleClose();
+  };
+
+  React.useEffect(() => {
+    const cachedProjects = localStorage.getItem("projects");
+
+    if (cachedProjects) {
+      setProjectList(JSON.parse(cachedProjects));
+    } else {
+      const fetchProjects = async () => {
+        const response = await fetchApi(`${CONFIG_API.PROJECT}`, "GET");
+        if (response && response.statusCode === 200) {
+          setProjectList(response.data.projects);
+          localStorage.setItem("projects", JSON.stringify(response.data.projects));
+        }
+      };
+      fetchProjects();
+    }
   }, []);
 
-  console.log(projectList);
+  React.useEffect(() => {
+    if (projectList.length > 0) {
+      localStorage.setItem("projects", JSON.stringify(projectList));
+    }
+  }, [projectList]);
+
+  React.useEffect(() => {
+    const fetchEmployees = async () => {
+      const response = await fetchApi(`${CONFIG_API.USER.INDEX}`, "GET");
+      if (response && response.statusCode === 200) {
+        setEmployees(response.data.result.map((item: { _id: string }) => item._id));
+      }
+    };
+    fetchEmployees();
+  }, []);
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          mb: 4,
-        }}
-      >
-        <Typography variant="h4" fontWeight={700}>
-          Project Dashboard
-        </Typography>
+    <>
+      <Toast />
+      <Loading open={loading} message="Creating project..." />
+      <Box sx={{ p: 3 }}>
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 4 }}>
+          <Typography variant="h4" fontWeight={700}>
+            Project Dashboard
+          </Typography>
+          <Box sx={{ display: "flex", gap: 1 }}>
+            <IconButton
+              color="primary"
+              sx={{ bgcolor: "action.selected", borderRadius: 2, "&:hover": { bgcolor: "action.hover" } }}
+            >
+              <MdOutlineGridView size={20} />
+            </IconButton>
+            <IconButton
+              color="primary"
+              sx={{ bgcolor: "action.selected", borderRadius: 2, "&:hover": { bgcolor: "action.hover" } }}
+            >
+              <LuRows3 size={20} />
+            </IconButton>
+            <Button
+              variant="contained"
+              startIcon={<MdAddBox />}
+              sx={{ borderRadius: 2, px: 3 }}
+              onClick={handleClickOpen}
+            >
+              New Project
+            </Button>
+          </Box>
+        </Box>
 
-        <Box sx={{ display: "flex", gap: 1 }}>
-          <IconButton
-            color="primary"
-            sx={{
-              bgcolor: "action.selected",
-              borderRadius: 2,
-              "&:hover": { bgcolor: "action.hover" },
-            }}
-          >
-            <MdOutlineGridView size={20} />
-          </IconButton>
-          <IconButton
-            color="primary"
-            sx={{
-              bgcolor: "action.selected",
-              borderRadius: 2,
-              "&:hover": { bgcolor: "action.hover" },
-            }}
-          >
-            <LuRows3 size={20} />
-          </IconButton>
-          <Button variant="contained" startIcon={<MdAddBox />} sx={{ borderRadius: 2, px: 3 }}>
-            New Project
-          </Button>
+        {/* Form popup */}
+        <Dialog open={open} onClose={handleClose}>
+          <form onSubmit={handleSubmit}>
+            <DialogTitle sx={{ fontWeight: 600 }}>NEW PROJECT</DialogTitle>
+            <DialogContent>
+              <Grid container spacing={2} sx={{ mb: 4 }}>
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    margin="dense"
+                    id="name"
+                    name="name"
+                    label="Name"
+                    fullWidth
+                    variant="outlined"
+                    value={formData.name}
+                    onChange={handleFormChange}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    margin="dense"
+                    id="description"
+                    name="description"
+                    label="Description"
+                    fullWidth
+                    variant="outlined"
+                    value={formData.description}
+                    onChange={handleFormChange}
+                  />
+                </Grid>
+
+                {/* <MultiAutocomplete /> */}
+                <Grid item xs={12}>
+                  <Autocomplete<Employee, true, false, false>
+                    // value={formData.teamMembers}
+                    value={formData.teamMembers}
+                    onChange={(e, arrayValues) => {
+                      setFormData({ ...formData, teamMembers: arrayValues });
+                    }}
+                    fullWidth
+                    multiple
+                    id="tags-standard"
+                    options={employees}
+                    getOptionLabel={(option) => option.id ?? "N/A"}
+                    disableCloseOnSelect
+                    renderOption={(props, option, { selected }) => (
+                      <MenuItem value={option.id} sx={{ justifyContent: "space-between" }} {...props}>
+                        {option.id ?? "N/A"}
+                        {selected ? <MdCheckCircleOutline color="info" /> : null}
+                      </MenuItem>
+                    )}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="outlined"
+                        label="Team Members"
+                        name="teamMembers"
+                        placeholder="Favorites"
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    margin="dense"
+                    id="revenue"
+                    name="revenue"
+                    label="Revenue"
+                    type="number"
+                    fullWidth
+                    variant="outlined"
+                    value={formData.revenue}
+                    onChange={handleFormChange}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <FormControl fullWidth variant="outlined">
+                    <InputLabel id="priority-label">Priority</InputLabel>
+                    <Select
+                      labelId="priority-label"
+                      id="priority"
+                      name="priority"
+                      label="Priority"
+                      value={formData.priority}
+                      onChange={(e) => handleSelectChange(e, "priority")}
+                    >
+                      <MenuItem value={1}>Low</MenuItem>
+                      <MenuItem value={2}>Medium</MenuItem>
+                      <MenuItem value={3}>High</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <FormControl fullWidth>
+                    <InputLabel id="status-label">Status</InputLabel>
+                    <Select
+                      labelId="status-label"
+                      id="status"
+                      name="status"
+                      label="Status"
+                      value={formData.status}
+                      onChange={(e) => handleSelectChange(e, "status")}
+                    >
+                      <MenuItem value={1}>Not Started</MenuItem>
+                      <MenuItem value={2}>In Progress</MenuItem>
+                      <MenuItem value={3}>Completed</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      label="Start Date"
+                      value={formData.startDate}
+                      onChange={(date) => handleDateChange(date, "startDate")}
+                      sx={{
+                        width: "100%",
+                        "& .MuiOutlinedInput-root": { borderRadius: 2 },
+                      }}
+                    />
+                  </LocalizationProvider>
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      label="End Date"
+                      value={formData.endDate}
+                      onChange={(date) => handleDateChange(date, "endDate")}
+                      sx={{
+                        width: "100%",
+                        "& .MuiOutlinedInput-root": { borderRadius: 2 },
+                      }}
+                    />
+                  </LocalizationProvider>
+                </Grid>
+              </Grid>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose}>Cancel</Button>
+              <Button type="submit">Create</Button>
+            </DialogActions>
+          </form>
+        </Dialog>
+        {/* Form popup */}
+
+        <Box sx={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))", gap: 3 }}>
+          {/* <React.Suspense fallback={<Loading open={loading} message="Loading..." />}> */}
+          {projectList.map((project, index) => (
+            <ProjectCard key={`${project._id}-${index}`} projectItem={project} index={index} />
+          ))}
+          {/* </React.Suspense> */}
         </Box>
       </Box>
-
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: {
-            xs: "repeat(1, 1fr)",
-            sm: "repeat(2, 1fr)",
-            lg: "repeat(3, 1fr)",
-            xl: "repeat(4, 1fr)",
-          },
-          gap: 3,
-        }}
-      >
-        {projectList.map((project, index) => (
-          <ProjectCard key={project._id} projectItem={project} index={index} />
-        ))}
-      </Box>
-    </Box>
+    </>
   );
 }
