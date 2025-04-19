@@ -28,6 +28,7 @@ import { CONFIG_API } from "@/configs/api";
 import { TCreateTask, TTask } from "@/types/task";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useSnackbar } from "@/hooks/useSnackbar";
+import dayjs from "dayjs";
 
 const TaskManager = () => {
   const { Toast, showToast } = useSnackbar();
@@ -46,6 +47,18 @@ const TaskManager = () => {
     startDate: null,
     dueDate: null,
   });
+
+  const handleDeleteTask = async (taskId: string) => {
+    try {
+      const response = await fetchApi(`${CONFIG_API.TASK}/${taskId}`, "DELETE");
+      console.log(response);
+      setListTask((prev) => prev.filter((task) => task._id !== taskId));
+      showToast("Deleted task successfully!", "success");
+    } catch (error) {
+      showToast("Error!", "error");
+      console.log("error", error);
+    }
+  };
 
   console.log(params);
   const handleClickOpen = () => {
@@ -74,7 +87,7 @@ const TaskManager = () => {
   const handleDateChange = (date: Date | null, field: string) => {
     setFormData({
       ...formData,
-      [field]: date,
+      [field]: dayjs(date).toISOString(),
     });
   };
 
@@ -252,7 +265,7 @@ const TaskManager = () => {
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     label="Start Date"
-                    value={formData.startDate}
+                    value={dayjs(formData.startDate)}
                     onChange={(date) => handleDateChange(date, "startDate")}
                     sx={{
                       width: "100%",
@@ -266,7 +279,7 @@ const TaskManager = () => {
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     label="End Date"
-                    value={formData.dueDate}
+                    value={dayjs(formData.dueDate)}
                     onChange={(date) => handleDateChange(date, "dueDate")}
                     sx={{
                       width: "100%",
@@ -287,7 +300,7 @@ const TaskManager = () => {
       {/* Task List */}
       <List sx={{ "& .MuiListItem-root": { px: 0 } }}>
         {listTask.map((tasks) => (
-          <TaskItem key={tasks._id} data={{ tasks, theme }} />
+          <TaskItem key={tasks._id} data={{ tasks, theme }} handleDeleteTask={handleDeleteTask} />
         ))}
       </List>
     </Box>

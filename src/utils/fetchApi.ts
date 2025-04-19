@@ -20,7 +20,7 @@ axiosInstance.interceptors.request.use((config) => {
 
 const fetchApi = async <T>(
   url: string,
-  method: "GET" | "POST" | "PUT" | "DELETE" = "GET",
+  method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE" = "GET",
   data?: T,
   extraOptions: Omit<AxiosRequestConfig, "url" | "method" | "data"> = {}
 ) => {
@@ -32,6 +32,8 @@ const fetchApi = async <T>(
       data,
       ...extraOptions,
     };
+
+    console.log("Request Config:", config);
 
     const response = await axiosInstance(config);
     return response.data;

@@ -24,7 +24,7 @@ export type TTask = {
   title: string;
   description: string;
   startDate: Date;
-  endDate: Date;
+  dueDate: Date;
   assignedTo: {
     _id: string;
     email: string;

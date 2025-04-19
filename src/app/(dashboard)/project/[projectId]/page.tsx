@@ -1,22 +1,20 @@
 "use client";
 
 // -- MUI --
-import {
-  Box,
-  Typography,
-  Avatar,
-  AvatarGroup,
-  Chip,
-  Container,
-  Grid,
-  Paper,
-  Grow,
-  Fade,
-  LinearProgress,
-  IconButton,
-  Tooltip,
-  Divider,
-} from "@mui/material";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Avatar from "@mui/material/Avatar";
+import AvatarGroup from "@mui/material/AvatarGroup";
+import Chip from "@mui/material/Chip";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import Divider from "@mui/material/Divider";
+import Paper from "@mui/material/Paper";
+import Grow from "@mui/material/Grow";
+import Tooltip from "@mui/material/Tooltip";
+import IconButton from "@mui/material/IconButton";
+import LinearProgress from "@mui/material/LinearProgress";
+import Fade from "@mui/material/Fade";
 import { useTheme } from "@mui/material/styles";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { LocalizationProvider } from "@mui/x-date-pickers";
@@ -42,22 +40,13 @@ import { TProject } from "@/types/project";
 // -- dayjs --
 import dayjs from "dayjs";
 
+// -- React-icon --
+import { MdFolderDelete } from "react-icons/md";
+
 const ProjectDetail = () => {
   const theme = useTheme();
   const params = useParams<{ projectId: string }>();
   const [projects, setProjects] = useState<TProject>();
-  // const [tasks, setTasks] = useState([
-  //   {
-  //     id: 1,
-  //     title: "Thiết kế UI/UX",
-  //     description: "Thiết kế giao diện người dùng và trải nghiệm",
-  //     startDate: new Date("2024-03-01"),
-  //     endDate: new Date("2024-03-10"),
-  //     assignees: ["/static/images/avatar/1.jpg", "/static/images/avatar/2.jpg"],
-  //     status: "In Progress",
-  //     progress: 75,
-  //   },
-  // ]);
 
   // Project timeline calculations
   const projectStart = projects?.startDate;
@@ -121,6 +110,23 @@ const ProjectDetail = () => {
                   <path d="M15 18l-6-6 6-6" />
                 </svg>
               </IconButton>
+
+              <Tooltip title="Delete project">
+                <IconButton
+                  color="error"
+                  sx={{
+                    position: "absolute",
+                    top: 16,
+                    right: 16,
+                    zIndex: 1,
+                    background: theme.palette.error.light + "20",
+                    "&:hover": { background: theme.palette.error.light + "40" },
+                  }}
+                  // onClick={() => handleDeleteTask(tasks._id)}
+                >
+                  <MdFolderDelete />
+                </IconButton>
+              </Tooltip>
               {/* Timeline Section */}
               <Box
                 sx={{
@@ -343,7 +349,6 @@ const ProjectDetail = () => {
 
               {/* Task Management Section */}
               <TaskManager />
-              
             </Box>
           </Paper>
         </LocalizationProvider>
