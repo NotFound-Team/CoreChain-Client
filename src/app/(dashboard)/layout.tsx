@@ -34,15 +34,34 @@ import { GoProject } from "react-icons/go";
 
 // -- React-icon --
 import { MdMenu, MdDashboard, MdSettings, MdExitToApp } from "react-icons/md";
+import fetchApi from "@/utils/fetchApi";
+import { CONFIG_API } from "@/configs/api";
+import { useSnackbar } from "@/hooks/useSnackbar";
+import { useRouter } from "next/navigation";
 
 const drawerWidth = 240;
 const appBarHeight = 64;
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { Toast, showToast } = useSnackbar();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await fetchApi(`${CONFIG_API.AUTH.LOGOUT}`, "POST");
+      localStorage.removeItem("token");
+      localStorage.removeItem("projects");
+      showToast("Logut successfully!", "success");
+      router.push("/login");
+    } catch (error) {
+      console.log("error", error);
+      showToast("Error during logout. Please try again!", "error");
+    }
   };
 
   // Item section drawer
@@ -67,15 +86,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       icon: <MdSettings size={24} />,
       href: "/setting",
     },
-    {
-      title: "Logout",
-      icon: <MdExitToApp size={24} />,
-      href: "/logout",
-    },
   ];
 
   const drawer = (
     <div>
+      <Toast />
       <Toolbar />
       <List>
         {listItem.map((item) => (
@@ -93,6 +108,22 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </ListItem>
           </Link>
         ))}
+
+        <ListItem
+          sx={{
+            "&:hover": {
+              backgroundColor: "#ddd",
+              transition: "background-color 0.5s",
+            },
+          }}
+          onClick={handleLogout}
+        >
+          <ListItemIcon>
+            <MdExitToApp size={24} />
+          </ListItemIcon>
+          <ListItemText primary="Logout" />
+        </ListItem>
+        
       </List>
     </div>
   );
