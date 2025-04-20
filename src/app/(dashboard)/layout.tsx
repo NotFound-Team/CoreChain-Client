@@ -31,6 +31,7 @@ import React, { useState } from "react";
 import { AiOutlineMenuFold, AiOutlineMenuUnfold } from "react-icons/ai";
 import { IoIosChatbubbles } from "react-icons/io";
 import { GoProject } from "react-icons/go";
+import { RiUserSettingsLine } from "react-icons/ri";
 
 // -- React-icon --
 import { MdMenu, MdDashboard, MdSettings, MdExitToApp } from "react-icons/md";
@@ -38,6 +39,7 @@ import fetchApi from "@/utils/fetchApi";
 import { CONFIG_API } from "@/configs/api";
 import { useSnackbar } from "@/hooks/useSnackbar";
 import { useRouter } from "next/navigation";
+import { FaUserShield } from "react-icons/fa";
 
 const drawerWidth = 240;
 const appBarHeight = 64;
@@ -82,6 +84,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       href: "/chat",
     },
     {
+      title: "Role",
+      icon: <FaUserShield size={24} />,
+      href: "/role",
+    },
+    {
+      title: "Permission",
+      icon: <RiUserSettingsLine size={24} />,
+      href: "/permission",
+    },
+    {
       title: "Settings",
       icon: <MdSettings size={24} />,
       href: "/setting",
@@ -123,7 +135,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </ListItemIcon>
           <ListItemText primary="Logout" />
         </ListItem>
-        
       </List>
     </div>
   );

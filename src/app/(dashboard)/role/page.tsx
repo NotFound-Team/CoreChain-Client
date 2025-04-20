@@ -25,7 +25,7 @@ import { FaRegAddressCard, FaRegEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { IoEye } from "react-icons/io5";
 import Link from "next/link";
-import { Role } from "@/types/permission";
+import { Role } from "@/types/role";
 
 export default function RolePage() {
   const [rolePermissions, setRolePermissions] = useState<Role[]>([]);

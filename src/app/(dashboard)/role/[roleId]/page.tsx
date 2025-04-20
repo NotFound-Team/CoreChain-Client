@@ -25,7 +25,7 @@ import { useEffect, useState } from "react";
 // -- React-icon --
 import { FaInfoCircle, FaListAlt, FaHistory } from "react-icons/fa";
 import { IconType } from "react-icons/lib";
-import { Role } from "@/types/permission";
+import { Role } from "@/types/role";
 
 export default function RoleIdPage({ params }: { params: { roleId: string } }) {
   const [roleInfo, setRoleInfo] = useState<Role | null>(null);

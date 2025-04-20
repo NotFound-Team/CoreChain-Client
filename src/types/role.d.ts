@@ -23,3 +23,16 @@ export type Role = {
   deletedAt: string | null;
   updatedBy?: UpdatedBy;
 };
+
+export type TRoleLayoutPermission = {
+  _id: string;
+  name: string;
+  description: string;
+  permissions: string[];
+  isActive: boolean;
+  isDeleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+  updatedBy?: UpdatedBy;
+};
