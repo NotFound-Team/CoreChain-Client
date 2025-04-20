@@ -1,16 +1,17 @@
 type Permission = {
   piPath: string;
-  method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
-  module: string;
-  name: string;
+  method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
+  module?: string;
+  name?: string;
   _id: string;
 };
 
 type UpdatedBy = {
+  _id: string;
   email: string;
 };
 
-type Role = {
+export type Role = {
   _id: string;
   name: string;
   description: string;
@@ -20,5 +21,5 @@ type Role = {
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
-  updatedBy: UpdatedBy;
+  updatedBy?: UpdatedBy;
 };
