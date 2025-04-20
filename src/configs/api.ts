@@ -14,4 +14,6 @@ export const CONFIG_API = {
   },
   TASK: "/tasks",
   PROJECT: "/projects",
+  PERMISSION: "/permissions",
+  ROLE: "/roles",
 };

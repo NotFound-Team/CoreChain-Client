@@ -33,7 +33,7 @@ const fetchApi = async <T>(
       ...extraOptions,
     };
 
-    console.log("Request Config:", config);
+    // console.log("Request Config:", config);
 
     const response = await axiosInstance(config);
     return response.data;
