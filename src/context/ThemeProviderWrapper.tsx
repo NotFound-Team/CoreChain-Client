@@ -31,11 +31,20 @@ export function ThemeProviderWrapper({ children }: { children: ReactNode }) {
   const muiTheme = ThemeOptions(DefaultPalette(mode)); // Call createThemme options
 
   useEffect(() => {
-    const storedMode = localStorage.getItem("mui-mode") as "light" | "dark"; // Check mode when first render 
+    const storedMode = localStorage.getItem("mui-mode") as "light" | "dark"; // Check mode when first render
     if (storedMode) {
       setMode(storedMode);
     }
   }, []);
+
+  useEffect(() => {
+    if (mode === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [mode]);
+
   return (
     <ThemeContext.Provider value={{ mode, toggleTheme }}>
       <ThemeProvider theme={muiTheme}>
