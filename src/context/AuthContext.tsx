@@ -15,6 +15,8 @@ import fetchApi from "@/utils/fetchApi";
 // -- configs --
 import { CONFIG_API } from "@/configs/api";
 
+import Cookies from "js-cookie";
+
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -64,6 +66,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const { user, access_token } = response.data;
         const newUser = { ...user, access_token };
         localStorage.setItem("token", access_token);
+        Cookies.set("token", access_token, { expires: 1 }); // Cookie sẽ hết hạn sau 1 ngày
         setUser(newUser);
       }
     } catch (error: unknown) {
@@ -79,6 +82,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = () => {
     localStorage.removeItem("token");
+    Cookies.remove("token");
     setUser(null);
   };
 
