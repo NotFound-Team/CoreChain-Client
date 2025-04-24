@@ -1,45 +1,44 @@
 "use client";
 
-// -- Components --
-import ButtonMode from "@/components/ButtonMode";
-
 // -- Context --
 import { AuthProvider } from "@/context/AuthContext";
 
 // -- MUI --
-import {
-  AppBar,
-  Box,
-  CssBaseline,
-  Drawer,
-  IconButton,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { useTheme } from "@mui/material";
+import Box from "@mui/material/Box";
+import CssBaseline from "@mui/material/CssBaseline";
+import List from "@mui/material/List";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import Toolbar from "@mui/material/Toolbar";
 
 // -- Next --
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 // -- React --
 import React, { useState } from "react";
 
 // -- React-icon
-import { AiOutlineMenuFold, AiOutlineMenuUnfold } from "react-icons/ai";
 import { IoIosChatbubbles } from "react-icons/io";
 import { GoProject } from "react-icons/go";
-import { RiUserSettingsLine } from "react-icons/ri";
+import { MdDashboard, MdSettings, MdExitToApp } from "react-icons/md";
+import { FaUsersCog, FaUserShield } from "react-icons/fa";
+import { BsBuildingFillLock } from "react-icons/bs";
 
-// -- React-icon --
-import { MdMenu, MdDashboard, MdSettings, MdExitToApp } from "react-icons/md";
+// -- Utils --
 import fetchApi from "@/utils/fetchApi";
+
+// -- Configs --
 import { CONFIG_API } from "@/configs/api";
+
+// -- Hooks --
 import { useSnackbar } from "@/hooks/useSnackbar";
-import { useRouter } from "next/navigation";
-import { FaUserShield } from "react-icons/fa";
+
+// -- Component --
+import VerticalDashboard from "@/components/VerticalDashboard";
+import HorizontalDashboard from "@/components/HorizontalDashboard";
 
 const drawerWidth = 240;
 const appBarHeight = 64;
@@ -48,6 +47,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { Toast, showToast } = useSnackbar();
+  const theme = useTheme();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -90,8 +90,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     },
     {
       title: "Permission",
-      icon: <RiUserSettingsLine size={24} />,
+      icon: <BsBuildingFillLock size={24} />,
       href: "/permission",
+    },
+    {
+      title: "User Manager",
+      icon: <FaUsersCog size={24} />,
+      href: "/user-management",
     },
     {
       title: "Settings",
@@ -143,75 +148,35 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <html>
       <body>
         <AuthProvider>
-          <Box sx={{ display: "flex" }}>
+          <Box sx={{ display: "flex", minHeight: "100vh" }}>
             <CssBaseline />
 
             {/* vertical */}
-            <Box sx={{ height: appBarHeight }}>
-              <AppBar
-                position="fixed"
-                sx={{ width: { sm: `calc(100% - ${drawerWidth}px)` }, ml: { sm: `${drawerWidth}px` } }}
-              >
-                <Toolbar>
-                  {mobileOpen ? (
-                    <IconButton
-                      color="inherit"
-                      edge="start"
-                      onClick={handleDrawerToggle}
-                      sx={{ display: { sm: "block", xs: "none" } }}
-                    >
-                      <AiOutlineMenuFold size={24} />
-                    </IconButton>
-                  ) : (
-                    <IconButton
-                      color="inherit"
-                      edge="start"
-                      onClick={handleDrawerToggle}
-                      sx={{ display: { sm: "block", xs: "none" } }}
-                    >
-                      <AiOutlineMenuUnfold size={24} />
-                    </IconButton>
-                  )}
-                  <IconButton
-                    color="inherit"
-                    edge="start"
-                    onClick={handleDrawerToggle}
-                    sx={{ display: { sm: "none" } }}
-                  >
-                    <MdMenu size={24} />
-                  </IconButton>
-                  <Typography variant="h6" noWrap>
-                    Dashboard
-                  </Typography>
-                  <ButtonMode />
-                </Toolbar>
-              </AppBar>
-            </Box>
+            <VerticalDashboard
+              drawerWidth={drawerWidth}
+              appBarHeight={appBarHeight}
+              mobileOpen={mobileOpen}
+              handleDrawerToggle={handleDrawerToggle}
+            />
 
-            {/* Horizontal mobile */}
-            <Drawer
-              variant="temporary"
-              open={mobileOpen}
-              onClose={handleDrawerToggle}
-              sx={{ display: { xs: "block", sm: "none" }, "& .MuiDrawer-paper": { width: drawerWidth } }}
+            <HorizontalDashboard
+              drawer={drawer}
+              drawerWidth={drawerWidth}
+              mobileOpen={mobileOpen}
+              handleDrawerToggle={handleDrawerToggle}
+            />
+
+            <Box
+              sx={{
+                flex: 1,
+                paddingLeft: 3,
+                paddingRight: 3,
+                paddingTop: 10,
+                bgcolor: theme.palette.background.default,
+                minHeight: "100vh",
+              }}
             >
-              {drawer}
-            </Drawer>
-
-            {/* Horizontal default web */}
-            <Box sx={{ width: { xs: 0, sm: drawerWidth } }}>
-              <Drawer
-                variant="permanent"
-                sx={{ display: { xs: "none", sm: "block" }, "& .MuiDrawer-paper": { width: drawerWidth } }}
-                open={mobileOpen}
-                onClose={handleDrawerToggle}
-              >
-                {drawer}
-              </Drawer>
-            </Box>
-
-            <Box sx={{ flex: 1, paddingLeft: 3, paddingRight: 3, marginTop: 10 }}>
-              <main className="w-full h-full flex flex-col">{children}</main>
+              <main className="w-full h-full">{children}</main>
             </Box>
           </Box>
         </AuthProvider>
