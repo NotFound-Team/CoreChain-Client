@@ -115,7 +115,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <ListItem
               sx={{
                 "&:hover": {
-                  backgroundColor: "#ddd",
+                  backgroundColor: theme.palette.action.hover,
                   transition: "background-color 0.5s",
                 },
               }}
@@ -129,7 +129,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <ListItem
           sx={{
             "&:hover": {
-              backgroundColor: "#ddd",
+              backgroundColor: theme.palette.action.hover,
               transition: "background-color 0.5s",
             },
           }}
