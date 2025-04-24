@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function PageUser({ params }: { params: { userId: string } }) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
 
   const { userId } = await params;

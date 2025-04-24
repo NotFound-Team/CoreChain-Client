@@ -4,7 +4,7 @@ import { BASE_URL, CONFIG_API } from "@/configs/api";
 import DashboardClient from "./DashboardClient";
 
 export default async function DashboardPage() {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
 
   const [projects, tasks, users] = await Promise.all([
