@@ -34,7 +34,7 @@ export default function Conversation({ chatId }: { chatId: string }) {
   const { user } = useAuth();
   const params = useParams();
   const conversationId = params.chatId?.toString();
-
+  console.log(chatId);
   console.log("RE-render golbal");
 
   // List message

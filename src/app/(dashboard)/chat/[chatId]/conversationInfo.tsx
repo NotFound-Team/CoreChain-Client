@@ -5,6 +5,7 @@ import { GrContactInfo } from "react-icons/gr";
 import { Button } from "@mui/material";
 
 export default function ConversationInfo({ chatId }: { chatId: string }) {
+  console.log(chatId);
   return (
     <aside className="w-full sm:w-[24%] pl-4 bg-white shadow-md">
       <div className="flex flex-col items-center justify-center pb-2 gap-y-4">

@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   images: {
-    domains: ["picsum.photos", "another-domain.com"], // Thêm các tên miền khác nếu cần
+    domains: ["picsum.photos", "another-domain.com", "cdn.pixabay.com"], // Thêm các tên miền khác nếu cần
   },
   experimental: {
     turbo: {
