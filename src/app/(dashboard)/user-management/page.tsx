@@ -10,11 +10,13 @@ export const metadata: Metadata = {
 export default function UserManagement() {
   return (
     <>
-      <div className="flex items-center justify-between">
-        <div className="text-2xl font-bold">User Management</div>
-        <ButtonCreateUser />
+      <div>
+        <div className="flex items-center justify-between">
+          <div className="text-2xl font-bold">User Management</div>
+          <ButtonCreateUser />
+        </div>
+        <ListUser />
       </div>
-      <ListUser />
     </>
   );
 }

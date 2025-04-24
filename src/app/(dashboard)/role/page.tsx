@@ -13,22 +13,21 @@ import {
   FormControl,
   FormControlLabel,
   Grid,
-  IconButton,
   InputLabel,
   Switch,
   TextField,
-  Tooltip,
 } from "@mui/material";
 import fetchApi from "@/utils/fetchApi";
 import { CONFIG_API } from "@/configs/api";
-import { FaRegAddressCard, FaRegEdit } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
-import { IoEye } from "react-icons/io5";
-import Link from "next/link";
+import { FaRegAddressCard } from "react-icons/fa";
 import { Role } from "@/types/role";
+import ListRole from "./ListRole";
+import { useAuth } from "@/hooks/useAuth";
+import { hasPermission } from "@/utils/permissions";
 
 export default function RolePage() {
-  const [rolePermissions, setRolePermissions] = useState<Role[]>([]);
+  const { user } = useAuth();
+  const [rolePermissions, setRolePermissions] = useState<Role[] | null>(null);
   const [open, setOpen] = React.useState(false);
   const [selectedRoleId, setSelectedRoleId] = useState<string | null>(null);
   const [openConfirmDelete, setOpenConfirmDelete] = React.useState(false);
@@ -39,8 +38,6 @@ export default function RolePage() {
     isActive: true,
     permissions: [],
   });
-
-  console.log(rolePermissions);
 
   const handleStatusChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsActives(event.target.checked);
@@ -72,7 +69,7 @@ export default function RolePage() {
       const response = await fetchApi(`${CONFIG_API.ROLE}`, "POST", formData);
       if (response && response.statusCode === 201) {
         console.log(response);
-        setRolePermissions((prev) => [...prev, formData]);
+        setRolePermissions((prev) => [...(prev ?? []), formData]);
         handleClose();
       }
     } catch (error) {
@@ -84,7 +81,12 @@ export default function RolePage() {
     try {
       const response = await fetchApi(`${CONFIG_API.ROLE}/${selectedRoleId}`, "DELETE");
       if (response.statusCode === 200) {
-        setRolePermissions((prev) => prev.filter((role) => role._id !== selectedRoleId));
+        setRolePermissions((prev) => {
+          if (prev !== null) {
+            return prev.filter((role) => role._id !== selectedRoleId);
+          }
+          return null;
+        });
         setOpenConfirmDelete(false);
         setSelectedRoleId(null);
       }
@@ -103,135 +105,104 @@ export default function RolePage() {
     };
     fecthRole();
   }, []);
+  console.log();
   return (
     <>
-      <div className="p-6">
-        <div className="flex justify-end">
-          <Button
-            variant="contained"
-            startIcon={<FaRegAddressCard />}
-            sx={{ borderRadius: 2, px: 3 }}
-            onClick={handleClickOpen}
-          >
-            New role
-          </Button>
-        </div>
-        <div>
-          <table className="w-full mt-4">
-            <thead>
-              <tr className="bg-gray-100 font-bold">
-                <th className="text-left p-2">No.</th>
-                <th className="text-left p-2">Role name</th>
-                <th className="text-left p-2">Description</th>
-                <th className="text-center p-2">Status</th>
-                <th className="text-center p-2">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rolePermissions?.map((role, index) => (
-                <tr key={role._id} className="border-t-[1px] border-t-gray-300">
-                  <td className="p-2 text-left">{index + 1}</td>
-                  <td className="p-2 text-left text-[14px] font-semibold">{role.name}</td>
-                  <td className="p-2 text-left max-w-48">
-                    <p className="text-ellipsis line-clamp-2">{role.description}</p>
-                  </td>
-                  <td className="p-2 text-center">
-                    {role.isActive ? (
-                      <Chip label="Active" color="success" variant="filled" />
-                    ) : (
-                      <Chip label="Inactive" color="error" variant="filled" />
-                    )}
-                  </td>
-                  <td className="p-2 text-center flex items-center justify-center">
-                    <Tooltip title="View" arrow>
-                      <Link href={`/role/${role._id}`}>
-                        <IconButton color="primary">
-                          <IoEye />
-                        </IconButton>
-                      </Link>
-                    </Tooltip>
-                    <Tooltip title="Edit" arrow>
-                      <IconButton color="warning">
-                        <FaRegEdit />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Delete" arrow>
-                      <IconButton
-                        color="error"
-                        onClick={() => {
-                          setSelectedRoleId(role._id);
-                          setOpenConfirmDelete(true);
-                        }}
-                      >
-                        <MdDelete />
-                      </IconButton>
-                    </Tooltip>
-                  </td>
+      {hasPermission(user, "get roles") && (
+        <div className="p-6">
+          <div className="flex justify-end">
+            {hasPermission(user, "get create roles") && (
+              <Button
+                variant="contained"
+                startIcon={<FaRegAddressCard />}
+                sx={{ borderRadius: 2, px: 3 }}
+                onClick={handleClickOpen}
+              >
+                New role
+              </Button>
+            )}
+          </div>
+          <div>
+            <table className="w-full mt-4">
+              <thead>
+                <tr className="bg-gray-100 font-bold">
+                  <th className="text-left p-2">No.</th>
+                  <th className="text-left p-2">Role name</th>
+                  <th className="text-left p-2">Description</th>
+                  <th className="text-center p-2">Status</th>
+                  <th className="text-center p-2">Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <Dialog open={open} onClose={handleClose}>
-          <form onSubmit={handleSubmit}>
-            <DialogTitle sx={{ fontWeight: 600 }}>NEW ROLE</DialogTitle>
-            <DialogContent>
-              <Grid container spacing={2} sx={{ mb: 4 }}>
-                <Grid item xs={12}>
-                  <TextField
-                    required
-                    margin="dense"
-                    id="name"
-                    name="name"
-                    label="Name"
-                    fullWidth
-                    variant="outlined"
-                    // value={formData.name}
-                    onChange={handleFormChange}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    required
-                    margin="dense"
-                    id="description"
-                    name="description"
-                    label="Description"
-                    fullWidth
-                    variant="outlined"
-                    // value={formData.description}
-                    onChange={handleFormChange}
-                  />
-                </Grid>
-
-                <Grid item xs={12} md={6}>
-                  <FormControl fullWidth>
-                    <InputLabel shrink sx={{ fontSize: 20 }}>
-                      Status
-                    </InputLabel>
-                    <FormControlLabel
-                      sx={{ margin: 1 }}
-                      control={
-                        <Switch
-                          name="isActive"
-                          defaultChecked
-                          checked={isActives}
-                          onChange={handleStatusChange}
-                          inputProps={{ "aria-label": "Status switch" }}
-                        />
-                      }
-                      label={
-                        isActives ? (
-                          <Chip label="Active" color="success" variant="filled" />
-                        ) : (
-                          <Chip label="Inactive" color="error" variant="filled" />
-                        )
-                      }
+              </thead>
+              <tbody>
+                <ListRole
+                  rolePermissions={rolePermissions}
+                  setSelectedRoleId={setSelectedRoleId}
+                  setOpenConfirmDelete={setOpenConfirmDelete}
+                  user={user}
+                />
+              </tbody>
+            </table>
+          </div>
+          <Dialog open={open} onClose={handleClose}>
+            <form onSubmit={handleSubmit}>
+              <DialogTitle sx={{ fontWeight: 600 }}>NEW ROLE</DialogTitle>
+              <DialogContent>
+                <Grid container spacing={2} sx={{ mb: 4 }}>
+                  <Grid item xs={12}>
+                    <TextField
+                      required
+                      margin="dense"
+                      id="name"
+                      name="name"
+                      label="Name"
+                      fullWidth
+                      variant="outlined"
+                      // value={formData.name}
+                      onChange={handleFormChange}
                     />
-                  </FormControl>
-                </Grid>
-                {/* <MultiAutocomplete /> */}
-                {/* <Grid item xs={12}>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      required
+                      margin="dense"
+                      id="description"
+                      name="description"
+                      label="Description"
+                      fullWidth
+                      variant="outlined"
+                      // value={formData.description}
+                      onChange={handleFormChange}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} md={6}>
+                    <FormControl fullWidth>
+                      <InputLabel shrink sx={{ fontSize: 20 }}>
+                        Status
+                      </InputLabel>
+                      <FormControlLabel
+                        sx={{ margin: 1 }}
+                        control={
+                          <Switch
+                            name="isActive"
+                            defaultChecked
+                            checked={isActives}
+                            onChange={handleStatusChange}
+                            inputProps={{ "aria-label": "Status switch" }}
+                          />
+                        }
+                        label={
+                          isActives ? (
+                            <Chip label="Active" color="success" variant="filled" />
+                          ) : (
+                            <Chip label="Inactive" color="error" variant="filled" />
+                          )
+                        }
+                      />
+                    </FormControl>
+                  </Grid>
+                  {/* <MultiAutocomplete /> */}
+                  {/* <Grid item xs={12}>
                       <Autocomplete<Employee, true, false, false>
                         // value={formData.teamMembers}
                         value={formData.teamMembers}
@@ -261,39 +232,40 @@ export default function RolePage() {
                         )}
                       />
                     </Grid> */}
-              </Grid>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleClose}>Cancel</Button>
-              <Button type="submit">Create</Button>
-            </DialogActions>
-          </form>
-        </Dialog>
+                </Grid>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleClose}>Cancel</Button>
+                <Button type="submit">Create</Button>
+              </DialogActions>
+            </form>
+          </Dialog>
 
-        <Dialog
-          open={openConfirmDelete}
-          onClose={handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <Alert severity="warning" sx={{ borderRadius: 0 }}>
-            <DialogTitle id="alert-dialog-title">Confirm Delete</DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                Are you sure you want to delete this role? This action cannot be undone.
-              </DialogContentText>
-            </DialogContent>
-          </Alert>
-          <DialogActions sx={{ backgroundColor: "#fff" }}>
-            <Button onClick={() => setOpenConfirmDelete(false)} color="inherit">
-              Cancel
-            </Button>
-            <Button onClick={handleDeleteRole} color="error" variant="contained" autoFocus>
-              Delete
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </div>
+          <Dialog
+            open={openConfirmDelete}
+            onClose={handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <Alert severity="warning" sx={{ borderRadius: 0 }}>
+              <DialogTitle id="alert-dialog-title">Confirm Delete</DialogTitle>
+              <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                  Are you sure you want to delete this role? This action cannot be undone.
+                </DialogContentText>
+              </DialogContent>
+            </Alert>
+            <DialogActions sx={{ backgroundColor: "#fff" }}>
+              <Button onClick={() => setOpenConfirmDelete(false)} color="inherit">
+                Cancel
+              </Button>
+              <Button onClick={handleDeleteRole} color="error" variant="contained" autoFocus>
+                Delete
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </div>
+      )}
     </>
   );
 }
