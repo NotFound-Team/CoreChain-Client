@@ -22,6 +22,11 @@ import React, { useEffect, useRef } from "react";
 // -- React-icon --
 import { FaRegEdit } from "react-icons/fa";
 import { WiDayCloudy, WiDaySunny, WiNightClear } from "react-icons/wi";
+import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import Timeline from "@/components/TimeLine";
+import CustomLineChart from "@/components/LineChart";
 
 export default function DashboardClient({ data }) {
   const theme = useTheme();
@@ -32,7 +37,7 @@ export default function DashboardClient({ data }) {
     const ctx = gsap.context(() => {
       if (iconRef.current) {
         gsap.to(iconRef.current, {
-          rotation: 8,
+          rotation: 20,
           yoyo: true,
           repeat: -1,
           ease: "sine.inOut",
@@ -115,16 +120,16 @@ export default function DashboardClient({ data }) {
     if (hour >= 5 && hour < 12)
       return {
         label: "morning",
-        icon: <WiDaySunny size={40} color="#fbc02d" />,
+        icon: <WiDaySunny size={50} color="#fbc02d" />,
       };
     if (hour >= 12 && hour < 18)
       return {
         label: "afternoon",
-        icon: <WiDayCloudy size={40} color="#ffca28" />,
+        icon: <WiDayCloudy size={50} color="#ffca28" />,
       };
     return {
       label: "evening",
-      icon: <WiNightClear size={40} color="#90caf9" />,
+      icon: <WiNightClear size={50} color="#90caf9" />,
     };
   })();
 
@@ -212,6 +217,62 @@ export default function DashboardClient({ data }) {
             <Typography variant="h3" fontWeight="bold">
               {users?.data?.result.length || 0}
             </Typography>
+          </Box>
+        </Grid>
+        <Grid item xs={12} sm={6} md={5}>
+          <Box
+            sx={{
+              ...statsBoxStyle,
+              background: `linear-gradient(135deg, ${theme.palette.info.light} 0%, ${alpha(
+                theme.palette.info.main,
+                0.2
+              )} 100%)`,
+            }}
+          >
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DateCalendar />
+            </LocalizationProvider>
+          </Box>
+        </Grid>
+
+        <Grid item xs={12} sm={6} md={7}>
+          <Box
+            sx={{
+              ...statsBoxStyle,
+              // background: `linear-gradient(135deg, ${theme.palette.info.light} 0%, ${alpha(
+              //   theme.palette.info.main,
+              //   0.2
+              // )} 100%)`,
+            }}
+          >
+            <CustomLineChart />
+          </Box>
+        </Grid>
+
+        <Grid item xs={12} sm={6} md={8}>
+          <Box
+            sx={{
+              ...statsBoxStyle,
+              // background: `linear-gradient(135deg, ${theme.palette.info.light} 0%, ${alpha(
+              //   theme.palette.info.main,
+              //   0.2
+              // )} 100%)`,
+            }}
+          >
+            <Timeline />
+          </Box>
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <Box
+            sx={{
+              ...statsBoxStyle,
+              background: `linear-gradient(135deg, ${theme.palette.info.light} 0%, ${alpha(
+                theme.palette.info.main,
+                0.2
+              )} 100%)`,
+            }}
+          >
+            Box
           </Box>
         </Grid>
 

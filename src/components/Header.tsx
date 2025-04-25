@@ -16,6 +16,7 @@ import { gsap } from "gsap";
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showHeader, setShowHeader] = useState(false);
+  const token = localStorage.getItem("token");
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -88,12 +89,15 @@ export default function Header() {
                 <ul className="flex items-center gap-x-8 max-xl:text-[14px]">
                   <li className="text-[#5C5F6E]">App</li>
                   <li className="text-[#5C5F6E]">English</li>
-                  <li className="font-bold outline-black outline-3 px-2 py-1 rounded-md">
-                    <Link href={"/login"}>Sign In</Link>
-                  </li>
-                  <li className="bg-[#651FFF] text-white font-bold px-6 py-2 rounded-md">
-                    <Link href={"/register"}>Create an account</Link>
-                  </li>
+                  {token ? (
+                    <li className="bg-[#651FFF] text-white font-bold px-6 py-2 rounded-md">
+                      <Link href={"/dashboard"}>Go to Dashboard</Link>
+                    </li>
+                  ) : (
+                    <li className="font-bold outline-black outline-3 px-2 py-1 rounded-md">
+                      <Link href={"/login"}>Sign In</Link>
+                    </li>
+                  )}
                 </ul>
               </div>
 

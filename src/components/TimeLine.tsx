@@ -19,9 +19,9 @@ interface TimelineItemProps {
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
-  transition: 'all 0.3s ease',
-  '&:hover': {
-    transform: 'translateY(-2px)',
+  transition: "all 0.3s ease",
+  "&:hover": {
+    transform: "translateY(-2px)",
     boxShadow: theme.shadows[4],
   },
 }));
@@ -41,15 +41,25 @@ const TimelineItem: React.FC<TimelineItemProps> = ({ date, time, title, author, 
       <Box className="flex-1 pb-4">
         <Box className="flex items-center text-gray-500 mb-1">
           <FaCalendarAlt className="mr-1 text-xs" />
-          <Typography variant="caption" className="text-xs font-medium ml-1">{date}</Typography>
+          <Typography variant="caption" className="text-xs font-medium ml-1">
+            {date}
+          </Typography>
           <FaClock className="ml-2 mr-1 text-xs" />
-          <Typography variant="caption" className="text-xs font-medium ml-1">{time}</Typography>
+          <Typography variant="caption" className="text-xs font-medium ml-1">
+            {time}
+          </Typography>
         </Box>
 
         <StyledPaper elevation={2} className="bg-white">
-          <Typography variant="subtitle2" className="text-gray-800 mb-1 font-semibold">{title}</Typography>
-          <Typography variant="caption" className="text-gray-500 italic mb-1 block">by {author}</Typography>
-          <Typography variant="body2" className="text-gray-600 text-sm">{content}</Typography>
+          <Typography variant="subtitle2" className="text-gray-800 mb-1 font-semibold">
+            {title}
+          </Typography>
+          <Typography variant="caption" className="text-gray-500 italic mb-1 block">
+            by {author}
+          </Typography>
+          <Typography variant="body2" className="text-gray-600 text-sm">
+            {content}
+          </Typography>
         </StyledPaper>
       </Box>
     </Box>
