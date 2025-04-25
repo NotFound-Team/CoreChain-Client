@@ -24,7 +24,7 @@ import React, { useState } from "react";
 import { IoIosChatbubbles } from "react-icons/io";
 import { GoProject } from "react-icons/go";
 import { MdDashboard, MdSettings, MdExitToApp } from "react-icons/md";
-import { FaUsersCog, FaUserShield } from "react-icons/fa";
+import { FaRegUserCircle, FaUsersCog, FaUserShield } from "react-icons/fa";
 import { BsBuildingFillLock } from "react-icons/bs";
 
 // -- Utils --
@@ -97,6 +97,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       title: "User Manager",
       icon: <FaUsersCog size={24} />,
       href: "/user-management",
+    },
+    {
+      title: "Profile",
+      icon: <FaRegUserCircle size={24} />,
+      href: "/profile",
     },
     {
       title: "Settings",
