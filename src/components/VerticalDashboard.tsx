@@ -17,6 +17,8 @@ import Toolbar from "@mui/material/Toolbar";
 import { AiOutlineMenuFold, AiOutlineMenuUnfold } from "react-icons/ai";
 import { MdMenu } from "react-icons/md";
 
+const MiniDrawerWidth = 72;
+
 export default function VerticalDashboard({
   drawerWidth,
   appBarHeight,
@@ -32,7 +34,24 @@ export default function VerticalDashboard({
   console.log(user);
   return (
     <Box sx={{ height: appBarHeight }}>
-      <AppBar position="fixed" sx={{ width: { sm: `calc(100% - ${drawerWidth}px)` }, ml: { sm: `${drawerWidth}px` } }}>
+      <AppBar
+        position="fixed"
+        sx={{
+          width: {
+            xs: "100%",
+            sm: `calc(100% - ${mobileOpen ? drawerWidth : MiniDrawerWidth}px)`,
+          },
+          ml: {
+            xs: 0,
+            // sm: `${mobileOpen ? MiniDrawerWidth : drawerWidth}px`,
+          },
+          transition: (theme) =>
+            theme.transitions.create(["width", "margin"], {
+              easing: theme.transitions.easing.sharp,
+              duration: theme.transitions.duration.standard,
+            }),
+        }}
+      >
         <Toolbar sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <Box>
             {mobileOpen ? (

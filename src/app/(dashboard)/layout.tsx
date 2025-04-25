@@ -4,7 +4,7 @@
 import { AuthProvider } from "@/context/AuthContext";
 
 // -- MUI --
-import { useTheme } from "@mui/material";
+import { Tooltip, useTheme } from "@mui/material";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import List from "@mui/material/List";
@@ -50,6 +50,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const theme = useTheme();
 
   const handleDrawerToggle = () => {
+    // console.log(mobileOpen);
     setMobileOpen(!mobileOpen);
   };
 
@@ -117,34 +118,38 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <List>
         {listItem.map((item) => (
           <Link href={item.href} key={item.title}>
-            <ListItem
-              sx={{
-                "&:hover": {
-                  backgroundColor: theme.palette.action.hover,
-                  transition: "background-color 0.5s",
-                },
-              }}
-            >
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.title} />
-            </ListItem>
+            <Tooltip disableHoverListener={mobileOpen ? true : false} arrow placement="right" title={item.title}>
+              <ListItem
+                sx={{
+                  "&:hover": {
+                    backgroundColor: theme.palette.action.hover,
+                    transition: "background-color 0.5s",
+                  },
+                }}
+              >
+                <ListItemIcon>{item.icon}</ListItemIcon>
+                <ListItemText primary={item.title} />
+              </ListItem>
+            </Tooltip>
           </Link>
         ))}
 
-        <ListItem
-          sx={{
-            "&:hover": {
-              backgroundColor: theme.palette.action.hover,
-              transition: "background-color 0.5s",
-            },
-          }}
-          onClick={handleLogout}
-        >
-          <ListItemIcon>
-            <MdExitToApp size={24} />
-          </ListItemIcon>
-          <ListItemText primary="Logout" />
-        </ListItem>
+        <Tooltip disableHoverListener={mobileOpen ? true : false} arrow placement="right" title="Logout">
+          <ListItem
+            sx={{
+              "&:hover": {
+                backgroundColor: theme.palette.action.hover,
+                transition: "background-color 0.5s",
+              },
+            }}
+            onClick={handleLogout}
+          >
+            <ListItemIcon>
+              <MdExitToApp size={24} />
+            </ListItemIcon>
+            <ListItemText primary="Logout" />
+          </ListItem>
+        </Tooltip>
       </List>
     </div>
   );
