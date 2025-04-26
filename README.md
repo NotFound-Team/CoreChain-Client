@@ -47,11 +47,6 @@ CoreChainClient is a project management platform integrated with the following f
 - Socket.IO Client
 - React Hook Form + Yup
 
-**Backend (Assumed):**
-- Node.js/Express
-- MongoDB/PostgreSQL
-- Socket.IO Server
-
 ## 🚀 Getting Started
 
 ### System Requirements
