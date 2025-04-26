@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CoreChain Client 🚀
 
-## Getting Started
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+![Next.js](https://img.shields.io/badge/Next.js-15.2.2-blue)
+![React](https://img.shields.io/badge/React-19.0.0-blue)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0.2-blue)
 
-First, run the development server:
+A project management and real-time communication client, built with Next.js and Material-UI.
 
+![CoreChain Interface Screenshot](./public/screenshot.png)
+
+## 📌 Overview
+
+CoreChainClient is a project management platform integrated with the following features:
+- Project & user management
+- Real-time chat
+- Detailed permission control
+- Data analytics dashboard
+- Dark/Light interface
+
+## ✨ Key Features
+
+### System Management
+- 🛠️ Project & task management
+- 👥 User management & permissions
+- 🔐 JWT authentication and session management
+- 📊 Analytics dashboard with Recharts
+
+### Communication
+- 💬 Real-time chat with Socket.IO
+- 📁 File and document upload
+- 🔔 System notifications
+
+### UI/UX
+- 🎨 Material-UI v6 + Custom theme
+- 🌓 Dark/Light mode support
+- 📱 Responsive design
+- 🚀 Performance optimization with Turbopack
+
+## 🛠 Technologies Used
+
+**Frontend:**
+- Next.js 15 (App Router)
+- React 19 + TypeScript
+- Material-UI v6
+- React Query v5
+- Socket.IO Client
+- React Hook Form + Yup
+
+**Backend (Assumed):**
+- Node.js/Express
+- MongoDB/PostgreSQL
+- Socket.IO Server
+
+## 🚀 Getting Started
+
+### System Requirements
+- Node.js v18+
+- Yarn/NPM
+- Docker (optional)
+
+### Installation
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+git clone https://github.com/trandinh0506/CoreChainClient.git
+cd CoreChainClient
+npm install | yarn install
