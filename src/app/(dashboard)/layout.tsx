@@ -155,42 +155,38 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   );
 
   return (
-    <html>
-      <body>
-        <AuthProvider>
-          <Box sx={{ display: "flex", minHeight: "100vh" }}>
-            <CssBaseline />
+    <AuthProvider>
+      <Box sx={{ display: "flex", minHeight: "100vh" }}>
+        <CssBaseline />
 
-            {/* vertical */}
-            <VerticalDashboard
-              drawerWidth={drawerWidth}
-              appBarHeight={appBarHeight}
-              mobileOpen={mobileOpen}
-              handleDrawerToggle={handleDrawerToggle}
-            />
+        {/* vertical */}
+        <VerticalDashboard
+          drawerWidth={drawerWidth}
+          appBarHeight={appBarHeight}
+          mobileOpen={mobileOpen}
+          handleDrawerToggle={handleDrawerToggle}
+        />
 
-            <HorizontalDashboard
-              drawer={drawer}
-              drawerWidth={drawerWidth}
-              mobileOpen={mobileOpen}
-              handleDrawerToggle={handleDrawerToggle}
-            />
+        <HorizontalDashboard
+          drawer={drawer}
+          drawerWidth={drawerWidth}
+          mobileOpen={mobileOpen}
+          handleDrawerToggle={handleDrawerToggle}
+        />
 
-            <Box
-              sx={{
-                flex: 1,
-                paddingLeft: 3,
-                paddingRight: 3,
-                paddingTop: 10,
-                bgcolor: theme.palette.background.default,
-                minHeight: "100vh",
-              }}
-            >
-              <main className="w-full h-full">{children}</main>
-            </Box>
-          </Box>
-        </AuthProvider>
-      </body>
-    </html>
+        <Box
+          sx={{
+            flex: 1,
+            paddingLeft: 3,
+            paddingRight: 3,
+            paddingTop: 10,
+            bgcolor: theme.palette.background.default,
+            minHeight: "100vh",
+          }}
+        >
+          <main className="w-full h-full">{children}</main>
+        </Box>
+      </Box>
+    </AuthProvider>
   );
 }
