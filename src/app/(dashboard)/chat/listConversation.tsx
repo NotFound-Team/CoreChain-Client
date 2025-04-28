@@ -17,6 +17,27 @@ import { useEffect, useState } from "react";
 // -- Types --
 import { ConversationItem } from "@/types/chat";
 
+// -- dayjs --
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import isYesterday from "dayjs/plugin/isYesterday";
+
+dayjs.extend(relativeTime);
+dayjs.extend(isYesterday);
+
+function formatCustomDate(dateString: string) {
+  const now = dayjs();
+  const date = dayjs(dateString);
+
+  if (date.isSame(now, "day")) {
+    return date.format("HH:mm");
+  } else if (date.isYesterday()) {
+    return "Yesterday";
+  } else {
+    return date.format("DD-MM-YYYY");
+  }
+}
+
 export default function ListConversation() {
   const socket = useSocket();
   const { user } = useAuth();
@@ -36,6 +57,7 @@ export default function ListConversation() {
   if (loading) {
     return <>Loading...</>;
   }
+
   console.log(listConversation);
   return (
     <>
@@ -72,11 +94,11 @@ export default function ListConversation() {
                 />
               </div>
               <div>
-                <h3 className="text-[16px] font-bold text-[#1A1D1F]">{item.name}</h3>
+                <h3 className="text-[16px] font-bold">{item.name}</h3>
                 <p className="text-[14px] text-[#258C60]">{item.isTyping ? "Typing..." : ""}</p>
               </div>
               <div className="flex flex-col items-end mr-2">
-                <div className="text-[13px] text-[#A9ABAD]">{item.timestamp}</div>
+                <div className="text-[13px] text-[#A9ABAD]">{formatCustomDate(item.timestamp)}</div>
                 {item.unreadCount > 0 && (
                   <div className="text-[14px] text-white flex-center w-[16px] h-[16px] rounded-full bg-red-500">
                     {item.unreadCount}
