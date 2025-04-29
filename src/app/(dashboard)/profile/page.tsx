@@ -1,141 +1,240 @@
-import React, { useEffect, useRef } from "react";
+"use client";
+
+import { useState, useEffect, useRef } from "react";
+import { FiMessageSquare, FiUser, FiFlag, FiMapPin, FiGlobe, FiPhone, FiMail } from "react-icons/fi";
+import { HiOutlineBuildingOffice2 } from "react-icons/hi2";
+import { IoStar } from "react-icons/io5";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { FaPhoenixFramework, FaCalendarAlt, FaClock } from "react-icons/fa";
-import { Box, Typography, Paper, Divider } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { Card, CardContent, Button, Typography, Tab, Tabs, Box, Avatar, Chip, IconButton } from "@mui/material";
 
-// Register GSAP plugins
-gsap.registerPlugin(ScrollTrigger);
-
-interface TimelineItemProps {
-  date: string;
-  time: string;
-  title: string;
-  author: string;
-  content: string;
-  isLast: boolean;
-}
-
-const StyledPaper = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(2),
-  transition: 'all 0.3s ease',
-  '&:hover': {
-    transform: 'translateY(-2px)',
-    boxShadow: theme.shadows[4],
-  },
-}));
-
-const TimelineItem: React.FC<TimelineItemProps> = ({ date, time, title, author, content, isLast }) => {
-  return (
-    <Box className={`flex ${!isLast ? "mb-6" : ""}`}>
-      {/* Timeline line and dot */}
-      <Box className="flex flex-col items-center mr-3">
-        <Box className="w-4 h-4 rounded-full bg-blue-500 flex items-center justify-center">
-          <FaPhoenixFramework className="text-white text-[10px]" />
-        </Box>
-        {!isLast && <Divider orientation="vertical" className="h-full w-0.5 bg-gray-300 mt-1" />}
-      </Box>
-
-      {/* Content */}
-      <Box className="flex-1 pb-4">
-        <Box className="flex items-center text-gray-500 mb-1">
-          <FaCalendarAlt className="mr-1 text-xs" />
-          <Typography variant="caption" className="text-xs font-medium ml-1">{date}</Typography>
-          <FaClock className="ml-2 mr-1 text-xs" />
-          <Typography variant="caption" className="text-xs font-medium ml-1">{time}</Typography>
-        </Box>
-
-        <StyledPaper elevation={2} className="bg-white">
-          <Typography variant="subtitle2" className="text-gray-800 mb-1 font-semibold">{title}</Typography>
-          <Typography variant="caption" className="text-gray-500 italic mb-1 block">by {author}</Typography>
-          <Typography variant="body2" className="text-gray-600 text-sm">{content}</Typography>
-        </StyledPaper>
-      </Box>
-    </Box>
-  );
-};
-
-const Timeline: React.FC = () => {
-  const timelineRef = useRef<HTMLDivElement>(null);
+export default function ProfilePage() {
+  const [activeTab, setActiveTab] = useState("about");
+  const profileRef = useRef(null);
+  const contentRef = useRef(null);
 
   useEffect(() => {
-    const items = gsap.utils.toArray<HTMLElement>(".timeline-item");
-
-    items.forEach((item) => {
-      gsap.from(item, {
-        opacity: 0,
-        y: 30,
-        duration: 0.6,
-        scrollTrigger: {
-          trigger: item,
-          start: "top 80%",
-          toggleActions: "play none none none",
-        },
-      });
-    });
-
-    // Animate the timeline line
-    gsap.from(".timeline-line", {
-      scaleY: 0,
-      duration: 1.2,
-      scrollTrigger: {
-        trigger: timelineRef.current,
-        start: "top center",
-        toggleActions: "play none none none",
-      },
-    });
+    // Initial animations
+    // gsap.from(profileRef.current, {
+    //   y: -50,
+    //   opacity: 0,
+    //   duration: 1,
+    //   ease: "power3.out"
+    // });
+    // gsap.from(contentRef.current, {
+    //   y: 50,
+    //   opacity: 0,
+    //   duration: 1,
+    //   delay: 0.3,
+    //   ease: "power3.out"
+    // });
   }, []);
 
-  const timelineData = [
-    {
-      date: "01 DEC, 2023",
-      time: "10:30 AM",
-      title: "Phoenix Template: Unleashing Creative Possibilities",
-      author: "Shantinon Mekalan",
-      content:
-        "Discover limitless creativity with the Phoenix template! Our latest update offers an array of innovative features and design options.",
-    },
-    {
-      date: "05 DEC, 2023",
-      time: "12:30 AM",
-      title: "Empower Your Digital Presence: The Phoenix Template Unveiled",
-      author: "Bookworm22",
-      content:
-        "Unveiling the Phoenix template, a game-changer for your digital presence. With its powerful features and sleek design.",
-    },
-    {
-      date: "15 DEC, 2023",
-      time: "2:30 AM",
-      title: "Phoenix Template: Simplified Design, Maximum Impact",
-      author: "Sharuka Nijibum",
-      content:
-        "Introducing the Phoenix template, where simplified design meets maximum impact. Elevate your digital presence with its sleek and intuitive features.",
-    },
-  ];
+  const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
+    setActiveTab(newValue);
+    // Animate content change
+    gsap.to(contentRef.current, {
+      opacity: 0,
+      y: 20,
+      duration: 0.3,
+      onComplete: () => {
+        setActiveTab(newValue);
+        gsap.to(contentRef.current, {
+          opacity: 1,
+          y: 0,
+          duration: 0.3,
+        });
+      },
+    });
+  };
 
   return (
-    <Box className="max-w-2xl mx-auto px-4 py-8" ref={timelineRef}>
-      <Typography variant="h5" className="text-center mb-8 text-gray-800 font-semibold">
-        Phoenix Template Timeline
-      </Typography>
+    <div className="max-w-8xl mx-auto p-6 min-h-screen">
+      {/* Profile Header */}
+      <Card sx={{ borderRadius: 4 }} ref={profileRef} elevation={2} className="mb-6">
+        <CardContent className="p-6">
+          <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+            <div className="relative">
+              <Avatar
+                sx={{
+                  width: 96,
+                  height: 96,
+                  background: "linear-gradient(to right, #60A5FA, #A78BFA)",
+                  fontSize: "2rem",
+                }}
+              >
+                JR
+              </Avatar>
+              <div className="absolute -bottom-2 -right-2 bg-yellow-400 rounded-full p-1">
+                <IoStar className="text-white text-sm" />
+              </div>
+            </div>
 
-      <Box className="relative">
-        {timelineData.map((item, index) => (
-          <Box key={index} className="timeline-item">
-            <TimelineItem
-              date={item.date}
-              time={item.time}
-              title={item.title}
-              author={item.author}
-              content={item.content}
-              isLast={index === timelineData.length - 1}
-            />
-          </Box>
-        ))}
-      </Box>
-    </Box>
+            <div className="flex-1">
+              <Typography variant="h4" className="font-bold text-gray-900">
+                Jeremy Rose
+              </Typography>
+              <Typography variant="subtitle1" className="text-gray-600 mb-3">
+                Producer Designer
+              </Typography>
+
+              {/* Rating */}
+              <Box className="flex items-center mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <IoStar key={i} className={`text-lg ${i < 4 ? "text-yellow-400" : "text-gray-300"}`} />
+                ))}
+                <Typography variant="body1" className="ml-2 font-medium">
+                  8.6
+                </Typography>
+              </Box>
+
+              {/* Action Buttons */}
+              <div className="flex flex-wrap gap-3">
+                <Button variant="contained" startIcon={<FiMessageSquare />} color="primary" size="small">
+                  Send message
+                </Button>
+                <Button variant="outlined" startIcon={<FiUser />} size="small">
+                  Contacts
+                </Button>
+                <Button variant="outlined" startIcon={<FiFlag />} color="error" size="small">
+                  Report user
+                </Button>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Main Content */}
+      <div ref={contentRef} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left Column */}
+        <div className="lg:col-span-2 space-y-6">
+          <Card sx={{ borderRadius: 4 }} elevation={2}>
+            <CardContent>
+              <Typography variant="h6" className="mb-4">
+                Work Places
+              </Typography>
+
+              <div className="space-y-4">
+                {/* Spotify */}
+                <div className="flex items-start gap-4 pb-4 border-b border-gray-100">
+                  <Avatar className="bg-blue-50 text-blue-600">
+                    <HiOutlineBuildingOffice2 />
+                  </Avatar>
+                  <div>
+                    <Typography variant="subtitle1">Spotify New York</Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      170 William Street
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      New York, NY 10038
+                    </Typography>
+                  </div>
+                </div>
+
+                {/* Museum */}
+                <div className="flex items-start gap-4">
+                  <Avatar className="bg-purple-50 text-purple-600">
+                    <HiOutlineBuildingOffice2 />
+                  </Avatar>
+                  <div>
+                    <Typography variant="subtitle1">Metropolitan Museum</Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      525 E 8th Street
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      New York, NY 10051
+                    </Typography>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card sx={{ borderRadius: 4 }} elevation={2}>
+            <CardContent>
+              <Typography variant="h6" className="mb-4">
+                Reading
+              </Typography>
+              <div className="flex flex-wrap gap-2">
+                <Chip label="UI/UX" />
+                <Chip label="Web Design" />
+                <Chip label="Packaging" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Right Column */}
+        <div className="space-y-6">
+          <Card elevation={2}>
+            <Tabs value={activeTab} onChange={handleTabChange} variant="fullWidth">
+              <Tab value="about" label="About" />
+              <Tab value="timeline" label="Timeline" />
+            </Tabs>
+          </Card>
+
+          <Card sx={{ borderRadius: 3 }} elevation={2}>
+            <CardContent>
+              <Typography variant="h6" className="mb-4">
+                Contact Information
+              </Typography>
+
+              <div className="space-y-4">
+                <Box className="flex items-center gap-3">
+                  <IconButton size="small" color="primary">
+                    <FiPhone />
+                  </IconButton>
+                  <Typography>+1 123 456 7890</Typography>
+                </Box>
+
+                <Box className="flex items-start gap-3">
+                  <IconButton size="small" color="primary">
+                    <FiMapPin />
+                  </IconButton>
+                  <div>
+                    <Typography>525 E 8th Street</Typography>
+                    <Typography>New York, NY 10051</Typography>
+                  </div>
+                </Box>
+
+                <Box className="flex items-center gap-3">
+                  <IconButton size="small" color="primary">
+                    <FiMail />
+                  </IconButton>
+                  <Typography>hello@jeremyrose.com</Typography>
+                </Box>
+
+                <Box className="flex items-center gap-3">
+                  <IconButton size="small" color="primary">
+                    <FiGlobe />
+                  </IconButton>
+                  <Typography className="text-blue-600">www.jeremyrose.com</Typography>
+                </Box>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card elevation={2}>
+            <CardContent>
+              <Typography variant="h6" className="mb-4">
+                Personal Information
+              </Typography>
+
+              <div className="space-y-3">
+                <Box className="flex justify-between">
+                  <Typography color="textSecondary">Birthday:</Typography>
+                  <Typography>June 5, 1992</Typography>
+                </Box>
+
+                <Box className="flex justify-between">
+                  <Typography color="textSecondary">Gender:</Typography>
+                  <Typography>Male</Typography>
+                </Box>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
   );
-};
-
-export default Timeline;
+}
