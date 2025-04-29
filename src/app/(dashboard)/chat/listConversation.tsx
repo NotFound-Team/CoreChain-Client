@@ -83,7 +83,7 @@ export default function ListConversation() {
       </header>
       <ul className="flex flex-col gap-y-8 overflow-y-auto flex-1">
         {listConversation?.map((item) => (
-          <Link href={`chat/${item.id}`} key={item.id}>
+          <Link href={`/chat/${item.id}`} key={item.id}>
             <li className="flex items-center justify-between hover:bg-gray-100 hover:rounded-2xl">
               <div>
                 <Image
