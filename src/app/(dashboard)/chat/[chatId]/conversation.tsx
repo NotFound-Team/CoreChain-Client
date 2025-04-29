@@ -34,9 +34,15 @@ export default function Conversation({ chatId }: { chatId: string }) {
   const { user } = useAuth();
   const params = useParams();
   const conversationId = params.chatId?.toString();
-  console.log(chatId);
-  console.log("RE-render golbal");
-
+  const [otherInfo, setOtherInfo] = useState(null);
+  useEffect(() => {
+    const listConversationStr = localStorage.getItem("list-conversation");
+    if (listConversationStr && !otherInfo) {
+      const listConversation = JSON.parse(listConversationStr);
+      const result = listConversation.filter((item) => item.id === chatId);
+      setOtherInfo(result[0]);
+    }
+  }, []);
   // List message
   const renderedMessages = useMemo(() => {
     console.log("RE-render");
@@ -45,7 +51,7 @@ export default function Conversation({ chatId }: { chatId: string }) {
         <div className="flex items-center gap-x-4">
           {item.senderId !== user?._id && (
             <Image
-              src="/images/img_avatar.png"
+              src={otherInfo?.avatar}
               alt="avatar"
               width={51}
               height={50}
@@ -124,7 +130,7 @@ export default function Conversation({ chatId }: { chatId: string }) {
       <div className="flex items-center justify-between shadow-md">
         <div className="flex items-center p-2 gap-x-4">
           <Image
-            src="/images/img_avatar.png"
+            src={otherInfo?.avatar}
             alt="avatar"
             width={51}
             height={50}
@@ -132,7 +138,7 @@ export default function Conversation({ chatId }: { chatId: string }) {
             className="overflow-hidden rounded-full"
           />
           <div>
-            <h3 className="text-[16px] font-bold text-[#1A1D1F]">Killan James</h3>
+            <h3 className="text-[16px] font-bold text-[#1A1D1F]">{otherInfo?.name}</h3>
             <p className="text-[14px] text-[#0c663f]">Online</p>
           </div>
         </div>

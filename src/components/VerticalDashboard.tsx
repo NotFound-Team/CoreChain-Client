@@ -1,11 +1,10 @@
+"use client"
+
 // -- Next --
 import Image from "next/image";
 
 // -- Components --
 import ButtonMode from "@/components/ButtonMode";
-
-// -- Hooks --
-import { useAuth } from "@/hooks/useAuth";
 
 // -- MUI --
 import AppBar from "@mui/material/AppBar";
@@ -30,8 +29,6 @@ export default function VerticalDashboard({
   mobileOpen: boolean;
   handleDrawerToggle: () => void;
 }) {
-  const { user } = useAuth();
-  console.log(user);
   return (
     <Box sx={{ height: appBarHeight }}>
       <AppBar

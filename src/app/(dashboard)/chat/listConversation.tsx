@@ -47,6 +47,7 @@ export default function ListConversation() {
     try {
       socket?.emit("getRecentConversations", { userId: user?._id }, (val: ConversationItem[]) => {
         console.log("getRecentConversations", val);
+        localStorage.setItem("list-conversation", JSON.stringify(val));
         setListConversation(val);
       });
     } catch (error) {

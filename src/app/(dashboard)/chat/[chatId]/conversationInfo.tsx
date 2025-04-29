@@ -1,26 +1,31 @@
+"use client";
+
 import Image from "next/image";
 import { IoMdNotificationsOff } from "react-icons/io";
 import { TbUsersGroup } from "react-icons/tb";
 import { GrContactInfo } from "react-icons/gr";
 import { Button } from "@mui/material";
+import { useEffect, useState } from "react";
 
 export default function ConversationInfo({ chatId }: { chatId: string }) {
-  console.log(chatId);
+  const [otherInfo, setOtherInfo] = useState(null);
+  useEffect(() => {
+    const listConversationStr = localStorage.getItem("list-conversation");
+    if (listConversationStr && !otherInfo) {
+      const listConversation = JSON.parse(listConversationStr);
+      const result = listConversation.filter((item) => item.id === chatId);
+      setOtherInfo(result[0]);
+    }
+  }, []);
   return (
     <aside className="w-full sm:w-[24%] pl-4 bg-white shadow-md">
       <div className="flex flex-col items-center justify-center pb-2 gap-y-4">
         {/* Avatar */}
-        <Image
-          src="/images/img_avatar.png"
-          alt="avatar"
-          width={100}
-          height={100}
-          className="overflow-hidden rounded-full"
-        />
+        <Image src={otherInfo?.avatar} alt="avatar" width={100} height={100} className="overflow-hidden rounded-full" />
 
         {/* User Info */}
         <div className="flex flex-col items-center text-center">
-          <h3 className="text-[16px] font-bold text-[#1A1D1F]">Killan James</h3>
+          <h3 className="text-[16px] font-bold text-[#1A1D1F]">{otherInfo?.name}</h3>
           <p className="text-[14px] text-[#0c663f]">Online</p>
         </div>
 

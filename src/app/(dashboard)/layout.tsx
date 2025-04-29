@@ -180,7 +180,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             paddingLeft: 3,
             paddingRight: 3,
             paddingTop: 10,
-            bgcolor: theme.palette.background.default,
+            bgcolor: theme.palette.background.paper,
             minHeight: "100vh",
           }}
         >
