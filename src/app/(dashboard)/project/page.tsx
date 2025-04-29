@@ -83,7 +83,7 @@ export default function ProjectList() {
   // Send submit
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(formData);
+    console.log("formData", formData);
 
     try {
       setLoading(true);
@@ -131,7 +131,12 @@ export default function ProjectList() {
     const fetchEmployees = async () => {
       const response = await fetchApi(`${CONFIG_API.USER.INDEX}`, "GET");
       if (response && response.statusCode === 200) {
-        setEmployees(response.data.result.map((item: { _id: string }) => item._id));
+        setEmployees(
+          response.data.result.map((item: { name: string; _id: string }) => ({
+            name: item.name,
+            _id: item._id,
+          }))
+        );
       }
     };
     fetchEmployees();
@@ -224,17 +229,18 @@ export default function ProjectList() {
                       // value={formData.teamMembers}
                       value={formData.teamMembers}
                       onChange={(e, arrayValues) => {
+                        console.log("ArrayValue", arrayValues);
                         setFormData({ ...formData, teamMembers: arrayValues });
                       }}
                       fullWidth
                       multiple
                       id="tags-standard"
                       options={employees}
-                      getOptionLabel={(option) => option.id ?? "N/A"}
+                      getOptionLabel={(option) => option.name ?? "N/A"}
                       disableCloseOnSelect
                       renderOption={(props, option, { selected }) => (
                         <MenuItem value={option.id} sx={{ justifyContent: "space-between" }} {...props}>
-                          {option.id ?? "N/A"}
+                          {option.name ?? "N/A"}
                           {selected ? <MdCheckCircleOutline color="info" /> : null}
                         </MenuItem>
                       )}

@@ -13,7 +13,7 @@ export enum Status {
 
 export type Employee = {
   id: string;
-  // name?: string;
+  name: string;
 };
 
 export type TCreateProject = {
