@@ -89,7 +89,12 @@ export default function ProjectList() {
       setLoading(true);
       const response = await fetchApi(`${CONFIG_API.PROJECT}`, "POST", formData);
       if (response && response.statusCode === 201) {
-        setProjectList((prev) => [...prev, formData]);
+        // console.log("NEW PROJECT", response);
+        const newProject = {
+          ...formData,
+          _id: response.data,
+        };
+        setProjectList((prev) => [...prev, newProject]);
         showToast("Create project success!", "success");
       }
     } catch (error) {

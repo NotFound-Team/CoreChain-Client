@@ -50,8 +50,7 @@ const TaskManager = () => {
 
   const handleDeleteTask = async (taskId: string) => {
     try {
-      const response = await fetchApi(`${CONFIG_API.TASK}/${taskId}`, "DELETE");
-      console.log(response);
+      await fetchApi(`${CONFIG_API.TASK}/${taskId}`, "DELETE");
       setListTask((prev) => prev.filter((task) => task._id !== taskId));
       showToast("Deleted task successfully!", "success");
     } catch (error) {
@@ -91,16 +90,20 @@ const TaskManager = () => {
     });
   };
 
-  console.log(listTask);
+  // console.log(listTask);
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(formData);
+    // console.log(formData);
     try {
       const response = await fetchApi(`${CONFIG_API.TASK}`, "POST", formData);
 
       if (response && response.statusCode === 201) {
-        console.log(response);
-        setListTask((prev) => [...prev, response.data]);
+        // console.log("add task", response);
+        const newData = {
+          ...formData,
+          _id: response.data,
+        };
+        setListTask((prev) => [...prev, newData]);
         showToast("Create task success!", "success");
       }
     } catch (error) {

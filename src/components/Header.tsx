@@ -16,13 +16,21 @@ import { gsap } from "gsap";
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showHeader, setShowHeader] = useState(false);
-  const token = localStorage.getItem("token");
+  const [token, setToken] = useState<string | null>(null);
+  // const token = typeof window !== 'undefined' ? localStorage.getItem("token") : null;
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
   const menuRef = React.useRef(null);
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedToken = localStorage.getItem("token");
+      setToken(storedToken);
+    }
+  }, []);
 
   React.useEffect(() => {
     if (isMenuOpen) {

@@ -1,3 +1,5 @@
+"use client";
+
 import { Drawer } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { ReactNode } from "react";

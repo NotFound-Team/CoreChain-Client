@@ -46,6 +46,7 @@ export default function ListConversation() {
   useEffect(() => {
     try {
       socket?.emit("getRecentConversations", { userId: user?._id }, (val: ConversationItem[]) => {
+        console.log("getRecentConversations", val);
         setListConversation(val);
       });
     } catch (error) {

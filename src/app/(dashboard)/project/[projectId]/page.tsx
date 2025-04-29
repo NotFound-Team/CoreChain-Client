@@ -52,6 +52,8 @@ const ProjectDetail = () => {
   const projectStart = projects?.startDate;
   const projectEnd = projects?.endDate;
 
+  console.log("PROJECT",  projects);
+
   useEffect(() => {
     const dataProjectDetail = async () => {
       const response = await fetchApi(`${CONFIG_API.PROJECT}/${params.projectId}`);
@@ -285,7 +287,7 @@ const ProjectDetail = () => {
                         gutterBottom
                         sx={{ fontWeight: 700, display: "flex", alignItems: "center" }}
                       >
-                        👥 Development Team
+                        👥 Team Members
                       </Typography>
                       <AvatarGroup max={6} sx={{ justifyContent: "center", mb: 3 }}>
                         {projects?.teamMembers.map((member, index) => (

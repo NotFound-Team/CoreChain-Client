@@ -93,6 +93,16 @@ export default function Conversation({ chatId }: { chatId: string }) {
       setListMessages(reversedData);
     });
 
+    // socket?.emit("getConversationById", { conversationId: chatId }, (response) => {
+    //   socket.emit(
+    //     "getConversationByUserIdAndOtherId",
+    //     { userId: response.participants[0], otherId: response.participants[1] },
+    //     (responses) => {
+    //       console.log("getConversationByUserIdAndOtherId", responses);
+    //     }
+    //   );
+    // });
+
     socket?.on("newMessage", handleNewMessage);
 
     return () => {
