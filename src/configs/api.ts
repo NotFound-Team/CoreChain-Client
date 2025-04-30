@@ -16,4 +16,5 @@ export const CONFIG_API = {
   PROJECT: "/projects",
   PERMISSION: "/permissions",
   ROLE: "/roles",
+  FILE: "/files/upload",
 };

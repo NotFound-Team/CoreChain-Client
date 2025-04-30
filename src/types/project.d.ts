@@ -21,6 +21,7 @@ export type TCreateProject = {
   name: string;
   description: string;
   teamMembers: Employee[];
+  attachments: Array<string>;
   department: string;
   tasks: string[];
   revenue: number;

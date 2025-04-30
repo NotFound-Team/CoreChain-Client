@@ -29,6 +29,7 @@ import fetchApi from "@/utils/fetchApi";
 import { useSnackbar } from "@/hooks/useSnackbar";
 import Loading from "@/components/Loading";
 import ProjectCardSkeleton from "@/components/ProjectCardSkeleton";
+import { FaFileUpload } from "react-icons/fa";
 const ProjectCard = React.lazy(() => import("./ProjectCard"));
 
 export default function ProjectList() {
@@ -37,12 +38,14 @@ export default function ProjectList() {
   const [projectList, setProjectList] = React.useState<(TProject | TCreateProject)[]>([]);
   const [open, setOpen] = React.useState(false);
   const [employees, setEmployees] = React.useState<Employee[]>([]);
+  const [upFiles, setUpFiles] = React.useState<File[]>([]);
   const [formData, setFormData] = React.useState<TCreateProject>({
     name: "",
     description: "",
     teamMembers: [],
     department: "dshjdkjdhkdsbkdfsbskjbdskj",
     priority: 1,
+    attachments: [],
     status: 1,
     tasks: [],
     revenue: 0,
@@ -80,10 +83,39 @@ export default function ProjectList() {
     });
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const filesArray = Array.from(e.target.files);
+      setUpFiles(filesArray);
+    }
+  };
+
   // Send submit
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     console.log("formData", formData);
+    if (upFiles && upFiles.length > 0) {
+      for (const file of upFiles) {
+        const data = new FormData();
+        data.append("fileUpload", file);
+
+        // Kiểm tra nội dung FormData
+        // for (const [key, value] of data.entries()) {
+        //   console.log("KEY:", key, "VALUE:", value);
+        // }
+
+        try {
+          const response = await fetchApi(`${CONFIG_API.FILE}`, "POST", data, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
+          formData.attachments.push(response.data.url);
+        } catch (error) {
+          console.error("❌ Upload faild!", error);
+        }
+      }
+    }
 
     try {
       setLoading(true);
@@ -147,7 +179,7 @@ export default function ProjectList() {
     fetchEmployees();
   }, []);
 
-  console.log("PROJECT", projectList);
+  // console.log("up file", upFiles);
 
   return (
     <>
@@ -227,6 +259,36 @@ export default function ProjectList() {
                       onChange={handleFormChange}
                     />
                   </Grid>
+                  <Grid item xs={6}>
+                    <InputLabel htmlFor="file-upload-input">Attachments</InputLabel>
+                    <input
+                      id="file-upload-input"
+                      multiple
+                      name="attachments"
+                      type="file"
+                      style={{ display: "none" }}
+                      onChange={handleFileChange}
+                    />
+                    <label htmlFor="file-upload-input">
+                      <Button startIcon={<FaFileUpload />} size="small" variant="outlined" component="span">
+                        Upload
+                      </Button>
+                    </label>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      required
+                      margin="dense"
+                      id="revenue"
+                      name="revenue"
+                      label="Revenue"
+                      type="number"
+                      fullWidth
+                      variant="outlined"
+                      value={formData.revenue}
+                      onChange={handleFormChange}
+                    />
+                  </Grid>
 
                   {/* <MultiAutocomplete /> */}
                   <Grid item xs={12}>
@@ -260,20 +322,7 @@ export default function ProjectList() {
                       )}
                     />
                   </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      required
-                      margin="dense"
-                      id="revenue"
-                      name="revenue"
-                      label="Revenue"
-                      type="number"
-                      fullWidth
-                      variant="outlined"
-                      value={formData.revenue}
-                      onChange={handleFormChange}
-                    />
-                  </Grid>
+
                   <Grid item xs={12} md={6}>
                     <FormControl fullWidth variant="outlined">
                       <InputLabel id="priority-label">Priority</InputLabel>
