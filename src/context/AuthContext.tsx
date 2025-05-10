@@ -16,6 +16,7 @@ import fetchApi from "@/utils/fetchApi";
 import { CONFIG_API } from "@/configs/api";
 
 import Cookies from "js-cookie";
+import FallbackSpinner from "@/components/fall-back";
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -87,7 +88,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   if (loading) {
-    return <div>Loading...</div>; // Hoặc có thể render spinner, hoặc gì đó cho trạng thái loading
+    return (
+      <>
+        <FallbackSpinner />
+      </>
+    ); // Hoặc có thể render spinner, hoặc gì đó cho trạng thái loading
   }
 
   return <AuthContext.Provider value={{ user, loading, setUser, login, logout }}>{children}</AuthContext.Provider>;

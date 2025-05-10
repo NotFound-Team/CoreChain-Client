@@ -1,7 +1,4 @@
-"use client"
-
-// -- Next --
-import Image from "next/image";
+"use client";
 
 // -- Components --
 import ButtonMode from "@/components/ButtonMode";
@@ -15,6 +12,7 @@ import Toolbar from "@mui/material/Toolbar";
 // -- React-icon --
 import { AiOutlineMenuFold, AiOutlineMenuUnfold } from "react-icons/ai";
 import { MdMenu } from "react-icons/md";
+import { UserDropdown } from "./layout/user-dropdown";
 
 const MiniDrawerWidth = 72;
 
@@ -77,14 +75,7 @@ export default function VerticalDashboard({
           <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0 20px" }}>
             <ButtonMode />
             <Box>
-              <Image
-                src={"https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png"}
-                alt="avatar"
-                width={40}
-                height={40}
-                style={{ height: "auto" }}
-                className="overflow-hidden rounded-full"
-              />
+              <UserDropdown />
             </Box>
           </Box>
         </Toolbar>
