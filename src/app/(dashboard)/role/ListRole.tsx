@@ -18,7 +18,7 @@ export default function ListRole({
   rolePermissions: Role[] | null;
   setSelectedRoleId: Dispatch<SetStateAction<string | null>>;
   setOpenConfirmDelete: Dispatch<SetStateAction<boolean>>;
-  user: User;
+  user: User | null;
 }) {
   if (!rolePermissions) {
     return (

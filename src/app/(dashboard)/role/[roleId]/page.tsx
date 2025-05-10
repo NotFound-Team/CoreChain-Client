@@ -28,12 +28,15 @@ import { IconType } from "react-icons/lib";
 import { Role } from "@/types/role";
 import { hasPermission } from "@/utils/permissions";
 import { useAuth } from "@/hooks/useAuth";
+import { useParams } from "next/navigation";
 
-export default function RoleIdPage({ params }: { params: { roleId: string } }) {
+export default function RoleIdPage() {
   const [roleInfo, setRoleInfo] = useState<Role | null>(null);
   const [loading, setLoading] = useState(true);
   const theme = useTheme();
   const { user } = useAuth();
+  const params = useParams();
+  console.log(params);
 
   useEffect(() => {
     const fetchRoleInfo = async () => {

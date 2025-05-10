@@ -69,7 +69,11 @@ export default function RolePage() {
       const response = await fetchApi(`${CONFIG_API.ROLE}`, "POST", formData);
       if (response && response.statusCode === 201) {
         console.log(response);
-        setRolePermissions((prev) => [...(prev ?? []), formData]);
+        const NewRole: Role = {
+          ...formData,
+          _id: response.data,
+        };
+        setRolePermissions((prev) => [...(prev ?? []), NewRole]);
         handleClose();
       }
     } catch (error) {

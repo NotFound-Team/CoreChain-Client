@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { FaUserPlus } from "react-icons/fa";
 import fetchApi from "@/utils/fetchApi";
 import { CONFIG_API } from "@/configs/api";
-import { TRole } from "@/types/user";
+import { TFormDataCreateUser, TRole } from "@/types/user";
 import dynamic from "next/dynamic";
 import { DialogActions, DialogContent, DialogTitle, Grid, Skeleton } from "@mui/material";
 import { useRouter } from "next/navigation";
@@ -64,7 +64,7 @@ export default function ButtonCreateUser() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [roles, setRoles] = useState<TRole[]>([]);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<TFormDataCreateUser>({
     name: "",
     email: "",
     password: "",

@@ -6,7 +6,6 @@ import AvatarGroup from "@mui/material/AvatarGroup";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
 import Chip from "@mui/material/Chip";
 import LinearProgress from "@mui/material/LinearProgress";
 import Typography from "@mui/material/Typography";
@@ -137,8 +136,10 @@ const ProjectCard = React.memo(({ projectItem, index }: { projectItem: TProject;
                     },
                   }}
                   size="small"
-                  label="complete"
-                  color="success"
+                  label={
+                    projectItem.status === 1 ? "not started" : projectItem.status === 2 ? "in progress" : "completed"
+                  }
+                  color={projectItem.status === 1 ? "secondary" : projectItem.status === 2 ? "warning" : "success"}
                 />
               </Box>
               {/* <Typography
@@ -224,7 +225,7 @@ const ProjectCard = React.memo(({ projectItem, index }: { projectItem: TProject;
                   },
                 }}
               >
-                {[1, 2, 3, 4, 5].map((i) => (
+                {projectItem.teamMembers.map((i) => (
                   <Avatar key={i} src={`/static/images/avatar/${i}.jpg`} alt={`Member ${i}`} />
                 ))}
               </AvatarGroup>

@@ -95,7 +95,7 @@ const TaskItem = React.memo<TaskItemProps>(({ data, handleDeleteTask }) => {
     });
   };
 
-  const handleDateChange = (date: Date | null, field: string) => {
+  const handleDateChange = (date: dayjs.Dayjs | null, field: string) => {
     console.log(formData);
     setFormData({
       ...formData,

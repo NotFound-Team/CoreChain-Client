@@ -1,4 +1,3 @@
-import { TypeObject } from "@mui/material/styles/createPalette";
 import { Status, Priority } from "./project";
 
 const TObjectCreateBy = {
@@ -23,19 +22,19 @@ export type TTask = {
   name: string;
   title: string;
   description: string;
-  startDate: Date;
-  dueDate: Date;
+  startDate: Date | null;
+  dueDate: Date | null;
   assignedTo: {
     _id: string;
     email: string;
-  };
+  } | string;
   status: Status;
   priority: Priority;
   projectId: string;
-  attachments: string[];
+  attachments?: string[];
   createdAt: Date;
-  createdBy: TypeObject;
-  deletedAt: null;
+  createdBy: object;
+  deletedAt?: Date | null;
   isDeleted: boolean;
   updatedAt: Date;
 };

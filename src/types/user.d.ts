@@ -32,7 +32,17 @@ export type TFormData = {
   roleId: string;
   departmentId: string;
   positionId: string;
-  [key: string]: any; // nếu có thêm dynamic field
+  // [key: string]: any;
+};
+
+export type TFormDataCreateUser = {
+  name: string;
+  email: string;
+  password: string;
+  role: string;
+  employeeId: string;
+  position: string;
+  department: string;
 };
 
 export type CreateUserModalProps = {

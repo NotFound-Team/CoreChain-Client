@@ -17,10 +17,10 @@ export type Role = {
   description: string;
   permissions: Permission[];
   isActive: boolean;
-  isDeleted: boolean;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
+  isDeleted?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  deletedAt?: string | null;
   updatedBy?: UpdatedBy;
 };
 

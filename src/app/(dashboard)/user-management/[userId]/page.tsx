@@ -9,7 +9,12 @@ export const metadata: Metadata = {
   description: "User Management",
 };
 
-export default async function PageUser({ params }: { params: { userId: string } }) {
+type TProps = {
+  params: Promise<{ userId: string }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export default async function PageUser({ params }: TProps) {
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
 

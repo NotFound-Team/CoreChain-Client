@@ -6,22 +6,23 @@ import { TbUsersGroup } from "react-icons/tb";
 import { GrContactInfo } from "react-icons/gr";
 import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
+import { ConversationItem } from "@/types/chat";
 
 export default function ConversationInfo({ chatId }: { chatId: string }) {
-  const [otherInfo, setOtherInfo] = useState(null);
+  const [otherInfo, setOtherInfo] = useState<ConversationItem | null>(null);
   useEffect(() => {
     const listConversationStr = localStorage.getItem("list-conversation");
     if (listConversationStr && !otherInfo) {
       const listConversation = JSON.parse(listConversationStr);
-      const result = listConversation.filter((item) => item.id === chatId);
+      const result = listConversation.filter((item: ConversationItem) => item.id === chatId);
       setOtherInfo(result[0]);
     }
-  }, []);
+  }, [chatId, otherInfo]);
   return (
     <aside className="w-full sm:w-[24%] pl-4 bg-white shadow-md">
       <div className="flex flex-col items-center justify-center pb-2 gap-y-4">
         {/* Avatar */}
-        <Image src={otherInfo?.avatar} alt="avatar" width={100} height={100} className="overflow-hidden rounded-full" />
+        <Image src={otherInfo?.avatar || ""} alt="avatar" width={100} height={100} className="overflow-hidden rounded-full" />
 
         {/* User Info */}
         <div className="flex flex-col items-center text-center">

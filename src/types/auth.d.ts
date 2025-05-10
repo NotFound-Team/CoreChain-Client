@@ -10,6 +10,7 @@ type RoleType = {
 };
 type User = {
   _id: string;
+  avatar?: string;
   name: string;
   email: string;
   role: RoleType;

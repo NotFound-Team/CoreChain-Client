@@ -25,6 +25,8 @@ import { useAuth } from "@/hooks/useAuth";
 
 // -- Types --
 import { Message } from "@/types/message";
+import { ConversationItem } from "@/types/chat";
+
 
 export default function Conversation({ chatId }: { chatId: string }) {
   const [message, setMessage] = useState("");
@@ -34,24 +36,24 @@ export default function Conversation({ chatId }: { chatId: string }) {
   const { user } = useAuth();
   const params = useParams();
   const conversationId = params.chatId?.toString();
-  const [otherInfo, setOtherInfo] = useState(null);
+  const [otherInfo, setOtherInfo] = useState<ConversationItem | null>(null);
   useEffect(() => {
     const listConversationStr = localStorage.getItem("list-conversation");
     if (listConversationStr && !otherInfo) {
       const listConversation = JSON.parse(listConversationStr);
-      const result = listConversation.filter((item) => item.id === chatId);
+      const result = listConversation.filter((item: ConversationItem) => item.id === chatId);
       setOtherInfo(result[0]);
     }
-  }, []);
+  }, [chatId, otherInfo]);
   // List message
   const renderedMessages = useMemo(() => {
-    console.log("RE-render");
+    // console.log("RE-render");
     return listMessages.map((item) => (
       <li key={item._id} className={item.senderId === user?._id ? "ml-auto" : "mr-auto"}>
         <div className="flex items-center gap-x-4">
           {item.senderId !== user?._id && (
             <Image
-              src={otherInfo?.avatar}
+              src={otherInfo?.avatar || ""}
               alt="avatar"
               width={51}
               height={50}
@@ -63,7 +65,7 @@ export default function Conversation({ chatId }: { chatId: string }) {
         </div>
       </li>
     ));
-  }, [listMessages, user]);
+  }, [listMessages, user, otherInfo]);
 
   // Send message
   const sendMessage = useCallback(() => {
@@ -86,14 +88,14 @@ export default function Conversation({ chatId }: { chatId: string }) {
   const handleNewMessage = useCallback(
     (msg: Message) => {
       setListMessages((prev) => [...prev, msg]);
-      console.log("New Message", msg);
+      // console.log("New Message", msg);
     },
     [setListMessages]
   );
 
   // Fetch messages on component mount and subscribe to new messages
   useEffect(() => {
-    console.log("FETCH MESSAGE");
+    // console.log("FETCH MESSAGE");
     socket?.emit("getMessages", { conversationId }, (data: Message[]) => {
       const reversedData = [...data].reverse();
       setListMessages(reversedData);
@@ -125,12 +127,14 @@ export default function Conversation({ chatId }: { chatId: string }) {
     }
   }, [listMessages]);
 
+  console.log("otherInfo", otherInfo);
+
   return (
     <section className="flex-1 bg-[#F2F3F7] flex flex-col h-screen z-20">
       <div className="flex items-center justify-between shadow-md">
         <div className="flex items-center p-2 gap-x-4">
           <Image
-            src={otherInfo?.avatar}
+            src={otherInfo?.avatar || ""}
             alt="avatar"
             width={51}
             height={50}

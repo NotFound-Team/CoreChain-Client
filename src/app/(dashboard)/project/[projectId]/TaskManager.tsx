@@ -83,7 +83,7 @@ const TaskManager = () => {
     });
   };
 
-  const handleDateChange = (date: Date | null, field: string) => {
+  const handleDateChange = (date: dayjs.Dayjs | null, field: string) => {
     setFormData({
       ...formData,
       [field]: dayjs(date).toISOString(),
@@ -99,9 +99,15 @@ const TaskManager = () => {
 
       if (response && response.statusCode === 201) {
         // console.log("add task", response);
-        const newData = {
+        const newData: TTask = {
           ...formData,
           _id: response.data,
+          deletedAt: null, // No deletion initially
+          attachments: [], // Default empty array for attachments
+          createdAt: new Date(), // Set current date for creation time
+          createdBy: {}, // You can replace 'system' with the actual user ID or name
+          isDeleted: false, // Set to false since the task is not deleted initially
+          updatedAt: new Date(),
         };
         setListTask((prev) => [...prev, newData]);
         showToast("Create task success!", "success");

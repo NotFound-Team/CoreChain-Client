@@ -1,4 +1,6 @@
-type Permission = {
+import { User } from "@/types/auth";
+
+type TPermission = {
   _id: string;
   name: string;
   apiPath: string;
@@ -6,12 +8,12 @@ type Permission = {
   module: string;
 };
 
-type User = {
-  permissions: Permission[];
-};
+// type TParams = {
+//   permissions: Permission[];
+// };
 
 export function hasPermission(user: User | null, permissionName: string): boolean {
   if (!user?.permissions) return false;
 
-  return user.permissions.some((perm) => perm.name === permissionName);
+  return user.permissions.some((perm: TPermission) => perm.name === permissionName);
 }

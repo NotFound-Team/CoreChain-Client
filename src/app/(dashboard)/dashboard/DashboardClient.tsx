@@ -27,8 +27,29 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Timeline from "@/components/TimeLine";
 import CustomLineChart from "@/components/LineChart";
+import { TProject } from "@/types/project";
+import { TTask } from "@/types/task";
+import { UserResponse } from "@/types/user";
 
-export default function DashboardClient({ data }) {
+type TProps = {
+  projects: {
+    data: {
+      projects: TProject[];
+    };
+  };
+  tasks: {
+    data: {
+      result: TTask[];
+    };
+  };
+  users: {
+    data: {
+      result: UserResponse[];
+    };
+  };
+};
+
+export default function DashboardClient({ data }: { data: TProps }) {
   const theme = useTheme();
   const iconRef = useRef(null);
 

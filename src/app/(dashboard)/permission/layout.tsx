@@ -6,7 +6,12 @@ export const metadata: Metadata = {
   description: "View and manage user permissions and access control settings.",
 };
 
-export default function LayoutProfile({ children, title }: { children: React.ReactNode; title: React.ReactNode }) {
+type TProps = {
+  children: React.ReactNode
+  title: never;
+};
+
+export default function LayoutProfile({ children, title }: TProps) {
   return (
     <div>
       {title}

@@ -93,7 +93,7 @@ export default function ProjectList() {
   // Send submit
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log("formData", formData);
+    // console.log("formData 1", formData);
     if (upFiles && upFiles.length > 0) {
       for (const file of upFiles) {
         const data = new FormData();
@@ -112,13 +112,14 @@ export default function ProjectList() {
           });
           formData.attachments.push(response.data.url);
         } catch (error) {
-          console.error("❌ Upload faild!", error);
+          console.error("Upload faild!", error);
         }
       }
     }
 
     try {
       setLoading(true);
+      // console.log("formData 2", formData);
       const response = await fetchApi(`${CONFIG_API.PROJECT}`, "POST", formData);
       if (response && response.statusCode === 201) {
         // console.log("NEW PROJECT", response);
@@ -395,11 +396,9 @@ export default function ProjectList() {
           {/* Form popup */}
 
           <Box sx={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 3 }}>
-            {/* <React.Suspense fallback={<Loading open={loading} message="Loading..." />}> */}
             {projectList.map((project, index) => (
-              <ProjectCard key={`${project._id}-${index}`} projectItem={project} index={index} />
+              <ProjectCard key={`${project._id}-${index}`} projectItem={project as TProject} index={index} />
             ))}
-            {/* </React.Suspense> */}
           </Box>
         </Box>
       )}

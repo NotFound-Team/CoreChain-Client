@@ -52,7 +52,7 @@ const ProjectDetail = () => {
   const projectStart = projects?.startDate;
   const projectEnd = projects?.endDate;
 
-  console.log("PROJECT",  projects);
+  console.log("PROJECT", projects);
 
   useEffect(() => {
     const dataProjectDetail = async () => {
@@ -66,7 +66,7 @@ const ProjectDetail = () => {
 
   return (
     <Grow in={true} timeout={500}>
-      <Container maxWidth="lg" sx={{ py: 4 }}>
+      <Container maxWidth="xl" sx={{ py: 4 }}>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <Paper
             elevation={3}
@@ -207,60 +207,21 @@ const ProjectDetail = () => {
                   <Divider sx={{ my: 4 }} />
 
                   {/* Key Features */}
-                  {/* <Box>
-                    <Typography variant="h4" gutterBottom sx={{ fontWeight: 700, color: theme.palette.primary.main }}>
-                      Key Features
+                  <Box>
+                    <Typography variant="h4" gutterBottom sx={{ fontWeight: 600, color: theme.palette.primary.main }}>
+                      Files
                     </Typography>
                     <Grid container spacing={3}>
-                      {[
-                        {
-                          title: "AI Monitoring",
-                          description: "Real-time habitat tracking using machine learning",
-                          icon: "🌐",
-                        },
-                        {
-                          title: "Data Analytics",
-                          description: "Advanced population trend analysis",
-                          icon: "📊",
-                        },
-                        {
-                          title: "Mobile App",
-                          description: "Citizen science participation platform",
-                          icon: "📱",
-                        },
-                        {
-                          title: "3D Mapping",
-                          description: "Interactive habitat visualization",
-                          icon: "🗺️",
-                        },
-                      ].map((feature, index) => (
-                        <Grid item xs={12} sm={6} key={index}>
-                          <Paper
-                            elevation={2}
-                            sx={{
-                              p: 3,
-                              height: "100%",
-                              borderRadius: 3,
-                              transition: "transform 0.2s",
-                              "&:hover": { transform: "translateY(-5px)" },
-                            }}
-                          >
-                            <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                              <Typography variant="h4" sx={{ mr: 2 }}>
-                                {feature.icon}
-                              </Typography>
-                              <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                                {feature.title}
-                              </Typography>
-                            </Box>
-                            <Typography variant="body2" color="text.secondary">
-                              {feature.description}
-                            </Typography>
-                          </Paper>
+                      {projects?.attachments.map((item) => (
+                        <Grid item key={item} md={6} xs={6}>
+                          <a href={item} target="_blank">
+                            Download
+                          </a>
+                          <Divider />
                         </Grid>
                       ))}
                     </Grid>
-                  </Box> */}
+                  </Box>
                 </Grid>
 
                 {/* Team & Tech Section */}
