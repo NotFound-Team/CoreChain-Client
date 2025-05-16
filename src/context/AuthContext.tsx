@@ -18,7 +18,11 @@ import { CONFIG_API } from "@/configs/api";
 import Cookies from "js-cookie";
 import FallbackSpinner from "@/components/fall-back";
 
+import { jwtDecode, JwtPayload } from "jwt-decode";
+
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+type MyJwtPayload = JwtPayload & { exp: number };
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -31,6 +35,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setLoading(false);
       router.push("/login");
       return;
+    } else {
+      const decoded = jwtDecode<MyJwtPayload>(token);
+      if (decoded.exp < Date.now() / 1000) {
+        window.localStorage.removeItem("token");
+        window.localStorage.removeItem("projects");
+        window.localStorage.removeItem("list-conversation");
+
+        router.push("/login");
+      }
     }
     const fetchUser = async () => {
       try {
