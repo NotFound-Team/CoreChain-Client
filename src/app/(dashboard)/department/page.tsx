@@ -39,7 +39,6 @@ import { useSnackbar } from "@/hooks/useSnackbar";
 import FallbackSpinner from "@/components/fall-back";
 import { FaPlus } from "react-icons/fa";
 
-
 interface Employee {
   _id: string;
   name: string;
@@ -66,7 +65,7 @@ type TDepartment = {
 //   budget: yup.number().required("The field is required"),
 // });
 
-export default function In
+export default function Index() {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const [rowsDepartment, setRowsDepartment] = useState(undefined);
