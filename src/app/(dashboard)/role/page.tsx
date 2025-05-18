@@ -115,16 +115,14 @@ export default function RolePage() {
       {hasPermission(user, "get roles") && (
         <div className="p-6">
           <div className="flex justify-end">
-            {hasPermission(user, "get create roles") && (
-              <Button
-                variant="contained"
-                startIcon={<FaRegAddressCard />}
-                sx={{ borderRadius: 2, px: 3 }}
-                onClick={handleClickOpen}
-              >
-                New role
-              </Button>
-            )}
+            <Button
+              variant="contained"
+              startIcon={<FaRegAddressCard />}
+              sx={{ borderRadius: 2, px: 3 }}
+              onClick={handleClickOpen}
+            >
+              New role
+            </Button>
           </div>
           <div>
             <table className="w-full mt-4">

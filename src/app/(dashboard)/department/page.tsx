@@ -4,6 +4,7 @@ import CustomDataGrid from "@/components/custom-data-grid";
 import { CONFIG_API } from "@/configs/api";
 import fetchApi from "@/utils/fetchApi";
 import {
+  Alert,
   Autocomplete,
   Box,
   Button,
@@ -11,6 +12,7 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
+  DialogContentText,
   DialogTitle,
   FormControl,
   Grid,
@@ -19,12 +21,13 @@ import {
   MenuItem,
   Select,
   TextField,
+  Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { MdCheckCircleOutline } from "react-icons/md";
 import { MdVisibility, MdEdit, MdDelete } from "react-icons/md";
 import { Avatar, AvatarGroup, IconButton, Stack } from "@mui/material";
-import { GridColDef } from "@mui/x-data-grid";
+import { GridColDef, GridRowId } from "@mui/x-data-grid";
 import { Controller, ControllerRenderProps, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -37,102 +40,6 @@ interface Employee {
   name: string;
   avatar?: string;
 }
-export const columns: GridColDef[] = [
-  { field: "index", headerName: "#", width: 70 },
-  { field: "name", headerName: "Name", width: 200 },
-  { field: "manager", headerName: "Manager", width: 200 },
-
-  {
-    field: "employees",
-    headerName: "Employees",
-    width: 300,
-    renderCell: (params) => (
-      <Box
-        sx={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        <AvatarGroup
-          sx={{
-            display: "flex",
-            justifyContent: "start",
-            alignItems: "center",
-          }}
-          max={4}
-        >
-          {params?.value.map((employee: Employee) => (
-            <Avatar key={employee._id} alt={employee.name} src={employee.avatar} sx={{ width: 24, height: 24 }} />
-          ))}
-        </AvatarGroup>
-      </Box>
-    ),
-  },
-
-  { field: "budget", headerName: "Budget", width: 100 },
-
-  {
-    field: "status",
-    headerName: "Status",
-    width: 120,
-    renderCell: (params) => {
-      const value = params.value;
-      let color = "gray";
-      if (value === "active") color = "success";
-      else if (value === "pending") color = "warning";
-      else if (value === "inactive") color = "error";
-
-      return (
-        <Box
-          sx={{
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <Chip
-            label={value}
-            variant="outlined"
-            color={color === "success" ? "success" : color === "warning" ? "warning" : "error"}
-          />
-        </Box>
-      );
-    },
-  },
-
-  {
-    field: "action",
-    headerName: "Action",
-    width: 200,
-    sortable: false,
-    filterable: false,
-    renderCell: (params) => (
-      <Box
-        sx={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        <Stack direction="row" spacing={1}>
-          <IconButton onClick={() => console.log("View", params.row)}>
-            <MdVisibility />
-          </IconButton>
-          <IconButton onClick={() => console.log("Edit", params.row)}>
-            <MdEdit />
-          </IconButton>
-          <IconButton onClick={() => console.log("Delete", params.row)}>
-            <MdDelete />
-          </IconButton>
-        </Stack>
-      </Box>
-    ),
-  },
-];
 
 type TDepartment = {
   name: string;
@@ -160,6 +67,113 @@ export default function Index() {
   const [employessArray, setEmployessArray] = useState([]);
   const { Toast, showToast } = useSnackbar();
   const [loading, setLoading] = useState(false);
+  const [openConfirmDelete, setOpenConfirmDelete] = useState<boolean>(false);
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState<GridRowId>("");
+
+  const columns: GridColDef[] = [
+    { field: "index", headerName: "#", flex: 0.5, maxWidth: 80 },
+    { field: "name", headerName: "Name", flex: 2, maxWidth: 320 },
+    { field: "manager", headerName: "Manager", flex: 1.5, maxWidth: 250 },
+
+    {
+      field: "employees",
+      headerName: "Employees",
+      flex: 1,
+      renderCell: (params) => (
+        <Box
+          sx={{
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <AvatarGroup
+            sx={{
+              display: "flex",
+              justifyContent: "start",
+              alignItems: "center",
+            }}
+            max={4}
+          >
+            {params?.value.map((employee: Employee) => (
+              <Avatar key={employee._id} alt={employee.name} src={employee.avatar} sx={{ width: 24, height: 24 }} />
+            ))}
+          </AvatarGroup>
+        </Box>
+      ),
+    },
+
+    { field: "budget", headerName: "Budget", width: 100 },
+
+    {
+      field: "status",
+      headerName: "Status",
+      flex: 1,
+      maxWidth: 120,
+      renderCell: (params) => {
+        const value = params.value;
+        let color = "gray";
+        if (value === "active") color = "success";
+        else if (value === "pending") color = "warning";
+        else if (value === "inactive") color = "error";
+
+        return (
+          <Box
+            sx={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <Chip
+              label={value}
+              variant="outlined"
+              color={color === "success" ? "success" : color === "warning" ? "warning" : "error"}
+            />
+          </Box>
+        );
+      },
+    },
+
+    {
+      field: "action",
+      headerName: "Action",
+      width: 200,
+      sortable: false,
+      filterable: false,
+      renderCell: (params) => {
+        return (
+          <Box
+            sx={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <Stack direction="row" spacing={1}>
+              <IconButton onClick={() => setSelectedDepartmentId(params.id)}>
+                <MdVisibility />
+              </IconButton>
+              <IconButton onClick={() => setSelectedDepartmentId(params.id)}>
+                <MdEdit />
+              </IconButton>
+              <IconButton
+                onClick={() => {
+                  setSelectedDepartmentId(params.id);
+                  setOpenConfirmDelete(true);
+                }}
+              >
+                <MdDelete />
+              </IconButton>
+            </Stack>
+          </Box>
+        );
+      },
+    },
+  ];
 
   const handleClose = () => {
     setOpen(!open);
@@ -190,6 +204,25 @@ export default function Index() {
       showToast("An error occurred please try again", "error");
     } finally {
       handleClose();
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteDepartment = async () => {
+    setLoading(true);
+    try {
+      const response = await fetchApi(`${CONFIG_API.DEPARTMENT}/${selectedDepartmentId}`, "DELETE");
+      console.log("response", response);
+      if (response.statusCode === 200) {
+        fetchDepartment();
+        showToast("Delete department successfully!", "success");
+        fetchDepartment();
+      }
+    } catch (error) {
+      console.log(error);
+      showToast("An error occurred please try again", "error");
+    } finally {
+      setOpenConfirmDelete(false);
       setLoading(false);
     }
   };
@@ -238,197 +271,241 @@ export default function Index() {
   return (
     <>
       <Toast />
-      <Button
-        onClick={() => {
-          setOpen(true);
-        }}
-        variant="contained"
-      >
-        CREATE DEPARTMENT
-      </Button>
-      <h1>departments</h1>
-      <CustomDataGrid rows={rowsDepartment} columns={columns} />
-      {/* Form popup */}
-      <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSubmit(onSubmit)(e);
+      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+        <Box
+          sx={{
+            width: "calc(100% - 64px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            mb: 2,
           }}
         >
-          <DialogTitle sx={{ fontWeight: 600, px: 3, pt: 3, pb: 1 }}>NEW DEPARTMENT</DialogTitle>
-          <DialogContent sx={{ px: 3, pt: 1 }}>
-            <Grid item xs={12} md={6}>
-              <Controller
-                name="code"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    required
-                    margin="normal"
-                    id="Code"
-                    label="code"
-                    type="number"
-                    variant="outlined"
-                    size="small"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <SiCodestream />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid container spacing={2} sx={{ my: 2 }}>
-              {/* Row 1 */}
+          <Typography>Departments</Typography>
+          <Button
+            onClick={() => {
+              setOpen(true);
+            }}
+            variant="contained"
+          >
+            CREATE DEPARTMENT
+          </Button>
+        </Box>
+        <Box
+          sx={{
+            height: "calc(100vh - 150px)",
+            width: "calc(100% - 64px)",
+          }}
+        >
+          <CustomDataGrid rows={rowsDepartment} columns={columns} pageSizeOptions={[10, 25, 50]} autoHeight={false} />
+        </Box>
+        {/* Form popup */}
+        <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit(onSubmit)(e);
+            }}
+          >
+            <DialogTitle sx={{ fontWeight: 600, px: 3, pt: 3, pb: 1 }}>NEW DEPARTMENT</DialogTitle>
+            <DialogContent sx={{ px: 3, pt: 1 }}>
               <Grid item xs={12} md={6}>
                 <Controller
-                  name="name"
+                  name="code"
                   control={control}
                   render={({ field }) => (
                     <TextField
                       {...field}
                       required
-                      fullWidth
                       margin="normal"
-                      id="name"
-                      label="Department Name"
-                      variant="outlined"
-                      size="small"
-                      // error={!!errors.name}
-                      // helperText={errors.name?.message}
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <Controller
-                  name="budget"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      required
-                      fullWidth
-                      margin="normal"
-                      id="budget"
-                      label="Budget"
+                      id="Code"
+                      label="code"
                       type="number"
                       variant="outlined"
                       size="small"
                       InputProps={{
-                        startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <SiCodestream />
+                          </InputAdornment>
+                        ),
                       }}
                     />
                   )}
                 />
               </Grid>
+              <Grid container spacing={2} sx={{ my: 2 }}>
+                {/* Row 1 */}
+                <Grid item xs={12} md={6}>
+                  <Controller
+                    name="name"
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        required
+                        fullWidth
+                        margin="normal"
+                        id="name"
+                        label="Department Name"
+                        variant="outlined"
+                        size="small"
+                        // error={!!errors.name}
+                        // helperText={errors.name?.message}
+                      />
+                    )}
+                  />
+                </Grid>
 
-              {/* Row 2 */}
-              <Grid item xs={12}>
-                <Controller
-                  name="description"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      required
-                      fullWidth
-                      margin="normal"
-                      id="description"
-                      label="Description"
-                      variant="outlined"
-                      size="small"
-                      multiline
-                      rows={3}
-                    />
-                  )}
-                />
-              </Grid>
+                <Grid item xs={12} md={6}>
+                  <Controller
+                    name="budget"
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        required
+                        fullWidth
+                        margin="normal"
+                        id="budget"
+                        label="Budget"
+                        type="number"
+                        variant="outlined"
+                        size="small"
+                        InputProps={{
+                          startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                        }}
+                      />
+                    )}
+                  />
+                </Grid>
 
-              {/* Row 3 */}
-              <Grid item xs={12} md={6}>
-                <Controller
-                  name="manager"
-                  control={control}
-                  render={({ field }: { field: ControllerRenderProps<TDepartment, "manager"> }) => (
-                    <Autocomplete
-                      {...field}
-                      onChange={(_, value) => field.onChange(value._id ?? "")}
-                      value={employessArray.find((emp: { _id: string }) => emp._id === field.value) || null}
-                      fullWidth
-                      options={employessArray}
-                      getOptionLabel={(option: any) => option?.name ?? "N/A"}
-                      renderInput={(params) => <TextField {...params} margin="normal" label="Manager" size="small" />}
-                    />
-                  )}
-                />
-              </Grid>
+                {/* Row 2 */}
+                <Grid item xs={12}>
+                  <Controller
+                    name="description"
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        required
+                        fullWidth
+                        margin="normal"
+                        id="description"
+                        label="Description"
+                        variant="outlined"
+                        size="small"
+                        multiline
+                        rows={3}
+                      />
+                    )}
+                  />
+                </Grid>
 
-              <Grid item xs={12} md={6}>
-                <Controller
-                  name="status"
-                  control={control}
-                  render={({ field }) => (
-                    <FormControl fullWidth margin="normal" size="small">
-                      <InputLabel id="status-label">Status</InputLabel>
-                      <Select {...field} labelId="status-label" label="Status">
-                        <MenuItem value="active">Active</MenuItem>
-                        <MenuItem value="inactive">Inactive</MenuItem>
-                        <MenuItem value="pending">Pending</MenuItem>
-                      </Select>
-                    </FormControl>
-                  )}
-                />
-              </Grid>
+                {/* Row 3 */}
+                <Grid item xs={12} md={6}>
+                  <Controller
+                    name="manager"
+                    control={control}
+                    render={({ field }: { field: ControllerRenderProps<TDepartment, "manager"> }) => (
+                      <Autocomplete
+                        {...field}
+                        onChange={(_, value) => field.onChange(value._id ?? "")}
+                        value={employessArray.find((emp: { _id: string }) => emp._id === field.value) || null}
+                        fullWidth
+                        options={employessArray}
+                        getOptionLabel={(option: any) => option?.name ?? "N/A"}
+                        renderInput={(params) => <TextField {...params} margin="normal" label="Manager" size="small" />}
+                      />
+                    )}
+                  />
+                </Grid>
 
-              {/* Row 4 */}
-              {/* <MultiAutocomplete /> choose employees */}
-              <Grid item xs={12}>
-                <Controller
-                  name="employees"
-                  control={control}
-                  render={({ field }) => (
-                    <Autocomplete<Employee, true, false, false>
-                      {...field}
-                      multiple
-                      fullWidth
-                      options={employessArray}
-                      disableCloseOnSelect
-                      getOptionLabel={(option: any) => option?.name ?? "N/A"}
-                      onChange={(_, value) => field.onChange(value.map((v: any) => v._id))}
-                      value={employessArray.filter((emp: any) => field.value?.includes(emp._id))}
-                      renderOption={(props, option, { selected }) => (
-                        <MenuItem value={option._id} sx={{ justifyContent: "space-between" }} {...props}>
-                          {option.name}
-                          {selected ? <MdCheckCircleOutline color="info" /> : null}
-                        </MenuItem>
-                      )}
-                      renderInput={(params) => (
-                        <TextField {...params} variant="outlined" label="Team Members" placeholder="Favorites" />
-                      )}
-                    />
-                  )}
-                />
+                <Grid item xs={12} md={6}>
+                  <Controller
+                    name="status"
+                    control={control}
+                    render={({ field }) => (
+                      <FormControl fullWidth margin="normal" size="small">
+                        <InputLabel id="status-label">Status</InputLabel>
+                        <Select {...field} labelId="status-label" label="Status">
+                          <MenuItem value="active">Active</MenuItem>
+                          <MenuItem value="inactive">Inactive</MenuItem>
+                          <MenuItem value="pending">Pending</MenuItem>
+                        </Select>
+                      </FormControl>
+                    )}
+                  />
+                </Grid>
+
+                {/* Row 4 */}
+                {/* <MultiAutocomplete /> choose employees */}
+                <Grid item xs={12}>
+                  <Controller
+                    name="employees"
+                    control={control}
+                    render={({ field }) => (
+                      <Autocomplete<Employee, true, false, false>
+                        {...field}
+                        multiple
+                        fullWidth
+                        options={employessArray}
+                        disableCloseOnSelect
+                        getOptionLabel={(option: any) => option?.name ?? "N/A"}
+                        onChange={(_, value) => field.onChange(value.map((v: any) => v._id))}
+                        value={employessArray.filter((emp: any) => field.value?.includes(emp._id))}
+                        renderOption={(props, option, { selected }) => (
+                          <MenuItem value={option._id} sx={{ justifyContent: "space-between" }} {...props}>
+                            {option.name}
+                            {selected ? <MdCheckCircleOutline color="info" /> : null}
+                          </MenuItem>
+                        )}
+                        renderInput={(params) => (
+                          <TextField {...params} variant="outlined" label="Team Members" placeholder="Favorites" />
+                        )}
+                      />
+                    )}
+                  />
+                </Grid>
               </Grid>
-            </Grid>
-          </DialogContent>
-          <DialogActions sx={{ px: 3, pb: 3 }}>
-            <Button onClick={handleClose} variant="outlined" sx={{ mr: 2 }}>
+            </DialogContent>
+            <DialogActions sx={{ px: 3, pb: 3 }}>
+              <Button onClick={handleClose} variant="outlined" sx={{ mr: 2 }}>
+                Cancel
+              </Button>
+              <Button type="submit" variant="contained" color="primary">
+                Create Department
+              </Button>
+            </DialogActions>
+          </form>
+        </Dialog>
+        {/* Form popup */}
+
+        {/* Alert comfirm delete department */}
+        <Dialog
+          open={openConfirmDelete}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <Alert severity="warning" sx={{ borderRadius: 0 }}>
+            <DialogTitle id="alert-dialog-title">Confirm Delete</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Are you sure you want to delete this role? This action cannot be undone.
+              </DialogContentText>
+            </DialogContent>
+          </Alert>
+          <DialogActions sx={{ backgroundColor: "#fff" }}>
+            <Button onClick={() => setOpenConfirmDelete(false)} color="inherit">
               Cancel
             </Button>
-            <Button type="submit" variant="contained" color="primary">
-              Create Department
+            <Button onClick={handleDeleteDepartment} color="error" variant="contained" autoFocus>
+              Delete
             </Button>
           </DialogActions>
-        </form>
-      </Dialog>
-      {/* Form popup */}
+        </Dialog>
+      </Box>
     </>
   );
 }

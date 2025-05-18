@@ -11,7 +11,7 @@ type TProps = {
   title: never;
 };
 
-export default function LayoutProfile({ children, title }: TProps) {
+export default function LayoutPermission({ children, title }: TProps) {
   return (
     <div>
       {title}
