@@ -17,4 +17,9 @@ export const CONFIG_API = {
   PERMISSION: "/permissions",
   ROLE: "/roles",
   FILE: "/files/upload",
+<<<<<<< Updated upstream
+=======
+  DEPARTMENT: "/departments",
+  POSITION: "/positions"
+>>>>>>> Stashed changes
 };
