@@ -5,6 +5,7 @@ import { CONFIG_API } from "@/configs/api";
 import fetchApi from "@/utils/fetchApi";
 import {
   Alert,
+  alpha,
   Autocomplete,
   Box,
   Button,
@@ -19,12 +20,14 @@ import {
   InputAdornment,
   InputLabel,
   MenuItem,
+  Paper,
   Select,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { MdCheckCircleOutline } from "react-icons/md";
+import { MdCheckCircleOutline, MdWork } from "react-icons/md";
 import { MdVisibility, MdEdit, MdDelete } from "react-icons/md";
 import { Avatar, AvatarGroup, IconButton, Stack } from "@mui/material";
 import { GridColDef, GridRowId } from "@mui/x-data-grid";
@@ -34,6 +37,8 @@ import * as yup from "yup";
 import { SiCodestream } from "react-icons/si";
 import { useSnackbar } from "@/hooks/useSnackbar";
 import FallbackSpinner from "@/components/fall-back";
+import { FaPlus } from "react-icons/fa";
+
 
 interface Employee {
   _id: string;
@@ -61,7 +66,8 @@ type TDepartment = {
 //   budget: yup.number().required("The field is required"),
 // });
 
-export default function Index() {
+export default function In
+  const theme = useTheme();
   const [open, setOpen] = useState(false);
   const [rowsDepartment, setRowsDepartment] = useState(undefined);
   const [employessArray, setEmployessArray] = useState([]);
@@ -272,25 +278,63 @@ export default function Index() {
     <>
       <Toast />
       <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-        <Box
+        <Paper
+          elevation={0}
           sx={{
             width: "calc(100% - 64px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            mb: 2,
+            p: 3,
+            mb: 4,
+            borderRadius: 2,
+            background: `linear-gradient(45deg, ${alpha(theme.palette.primary.main, 0.1)}, ${alpha(
+              theme.palette.secondary.main,
+              0.1
+            )})`,
+            border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
           }}
         >
-          <Typography>Departments</Typography>
-          <Button
-            onClick={() => {
-              setOpen(true);
-            }}
-            variant="contained"
-          >
-            CREATE DEPARTMENT
-          </Button>
-        </Box>
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+              <MdWork size={32} color={theme.palette.primary.main} />
+              <Typography
+                variant="h4"
+                component="h1"
+                sx={{
+                  fontWeight: 600,
+                  background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                Department Management
+              </Typography>
+            </Box>
+            <Button
+              variant="contained"
+              startIcon={<FaPlus />}
+              onClick={() => {
+                setOpen(true);
+              }}
+              sx={{
+                borderRadius: 2,
+                px: 3,
+                py: 1,
+                textTransform: "none",
+                fontWeight: 600,
+                boxShadow: "none",
+                "&:hover": {
+                  boxShadow: "none",
+                  backgroundColor: "primary.dark",
+                },
+              }}
+            >
+              Create Department
+            </Button>
+          </Box>
+          <Typography variant="body1" color="text.secondary">
+            Manage and organize positions within your organization
+          </Typography>
+        </Paper>
+
         <Box
           sx={{
             height: "calc(100vh - 150px)",
