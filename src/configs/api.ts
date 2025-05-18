@@ -17,4 +17,5 @@ export const CONFIG_API = {
   PERMISSION: "/permissions",
   ROLE: "/roles",
   FILE: "/files/upload",
+  DEPARTMENT: "/departments",
 };

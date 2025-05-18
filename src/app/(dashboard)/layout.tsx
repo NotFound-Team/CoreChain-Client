@@ -24,8 +24,9 @@ import React, { useState } from "react";
 import { IoIosChatbubbles } from "react-icons/io";
 import { GoProject } from "react-icons/go";
 import { MdDashboard, MdSettings, MdExitToApp } from "react-icons/md";
-import { FaRegUserCircle, FaUsersCog, FaUserShield } from "react-icons/fa";
+import { FaBox, FaRegUserCircle, FaUsersCog, FaUserShield } from "react-icons/fa";
 import { BsBuildingFillLock } from "react-icons/bs";
+import { PiBookOpenUserBold } from "react-icons/pi";
 
 // -- Utils --
 import fetchApi from "@/utils/fetchApi";
@@ -98,6 +99,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       title: "User Manager",
       icon: <FaUsersCog size={24} />,
       href: "/user-management",
+    },
+    {
+      title: "Position",
+      icon: <PiBookOpenUserBold size={24} />,
+      href: "/position",
+    },
+    {
+      title: "Department",
+      icon: <FaBox size={24} />,
+      href: "/department",
     },
     {
       title: "Profile",
