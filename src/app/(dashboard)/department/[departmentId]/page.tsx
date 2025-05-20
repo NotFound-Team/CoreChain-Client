@@ -1,6 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+// ** React
+import React, { useState, useEffect } from "react";
+
+// ** Next
+import { useRouter } from "next/navigation";
+
+// ** Mui
 import {
   Box,
   Paper,
@@ -19,13 +25,22 @@ import {
   Divider,
   Avatar,
 } from "@mui/material";
+
+// ** React-icon
 import { MdEdit, MdArrowBack } from "react-icons/md";
-import { useRouter } from "next/navigation";
-import { useSnackbar } from "@/hooks/useSnackbar";
-import fetchApi from "@/utils/fetchApi";
-import { CONFIG_API } from "@/configs/api";
-import FallbackSpinner from "@/components/fall-back";
 import { FaCalendarAlt, FaCircle, FaSyncAlt, FaUser, FaUsers } from "react-icons/fa";
+
+// ** Hook
+import { useSnackbar } from "@/hooks/useSnackbar";
+
+// ** Utils
+import fetchApi from "@/utils/fetchApi";
+
+// ** Config
+import { CONFIG_API } from "@/configs/api";
+
+// ** Component
+import FallbackSpinner from "@/components/fall-back";
 
 interface Department {
   _id: string;
@@ -42,9 +57,19 @@ interface Department {
   updatedAt: string;
 }
 
-export default function DepartmentDetailPage({ params }: { params: { departmentId: string } }) {
+interface DepartmentDetailPageProps {
+  params: Promise<{ departmentId: string }>;
+}
+
+export default function DepartmentDetailPage({ params }: DepartmentDetailPageProps) {
+  const unwrappedParams = React.use(params);
+  const { departmentId } = unwrappedParams;
+
+  // theme
   const theme = useTheme();
+  // router
   const router = useRouter();
+  // state
   const [department, setDepartment] = useState<Department | null>(null);
   const [loading, setLoading] = useState(true);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -57,7 +82,7 @@ export default function DepartmentDetailPage({ params }: { params: { departmentI
   const fetchDepartment = async () => {
     try {
       setLoading(true);
-      const response = await fetchApi(`${CONFIG_API.DEPARTMENT}/${params.departmentId}`, "GET");
+      const response = await fetchApi(`${CONFIG_API.DEPARTMENT}/${departmentId}`, "GET");
       if (response.statusCode === 200) {
         const manager = await fetchApi(`${CONFIG_API.USER.INDEX}/${response.data?.manager}`);
         response.data.manager = manager.data.name;
@@ -110,7 +135,7 @@ export default function DepartmentDetailPage({ params }: { params: { departmentI
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetchApi(`${CONFIG_API.DEPARTMENT}/${params.departmentId}`, "PATCH", formData);
+      const response = await fetchApi(`${CONFIG_API.DEPARTMENT}/${departmentId}`, "PATCH", formData);
       if (response.statusCode === 200) {
         showToast("Department updated successfully", "success");
         setEditDialogOpen(false);
