@@ -18,6 +18,5 @@ export const CONFIG_API = {
   ROLE: "/roles",
   FILE: "/files/upload",
   DEPARTMENT: "/departments",
-  POSITION: "/positions"
->>
+  POSITION: "/positions",
 };
