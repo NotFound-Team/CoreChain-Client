@@ -30,14 +30,15 @@ import { useEffect, useState } from "react";
 import { MdCheckCircleOutline, MdWork } from "react-icons/md";
 import { MdVisibility, MdEdit, MdDelete } from "react-icons/md";
 import { Avatar, AvatarGroup, IconButton, Stack } from "@mui/material";
-import { GridColDef, GridRowId } from "@mui/x-data-grid";
+import { GridColDef } from "@mui/x-data-grid";
 import { Controller, ControllerRenderProps, useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
+// import { yupResolver } from "@hookform/resolvers/yup";
+// import * as yup from "yup";
 import { SiCodestream } from "react-icons/si";
 import { useSnackbar } from "@/hooks/useSnackbar";
 import FallbackSpinner from "@/components/fall-back";
 import { FaPlus } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 interface Employee {
   _id: string;
@@ -46,6 +47,8 @@ interface Employee {
 }
 
 type TDepartment = {
+  id: string;
+  managerId?: string;
   name: string;
   code: number;
   description: string;
@@ -68,12 +71,15 @@ type TDepartment = {
 export default function Index() {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
-  const [rowsDepartment, setRowsDepartment] = useState(undefined);
+  const [rowsDepartment, setRowsDepartment] = useState<TDepartment[] | []>([]);
   const [employessArray, setEmployessArray] = useState([]);
   const { Toast, showToast } = useSnackbar();
   const [loading, setLoading] = useState(false);
   const [openConfirmDelete, setOpenConfirmDelete] = useState<boolean>(false);
-  const [selectedDepartmentId, setSelectedDepartmentId] = useState<GridRowId>("");
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState<string | null>(null);
+
+  // router
+  const router = useRouter();
 
   const columns: GridColDef[] = [
     { field: "index", headerName: "#", flex: 0.5, maxWidth: 80 },
@@ -159,15 +165,24 @@ export default function Index() {
             }}
           >
             <Stack direction="row" spacing={1}>
-              <IconButton onClick={() => setSelectedDepartmentId(params.id)}>
+              <IconButton
+                onClick={() => {
+                  router.push(`/department/${params.id}`);
+                }}
+              >
                 <MdVisibility />
               </IconButton>
-              <IconButton onClick={() => setSelectedDepartmentId(params.id)}>
+              <IconButton
+                onClick={() => {
+                  handleOpenForm(String(params.id));
+                  setSelectedDepartmentId(String(params.id));
+                }}
+              >
                 <MdEdit />
               </IconButton>
               <IconButton
                 onClick={() => {
-                  setSelectedDepartmentId(params.id);
+                  setSelectedDepartmentId(String(params.id));
                   setOpenConfirmDelete(true);
                 }}
               >
@@ -188,27 +203,51 @@ export default function Index() {
     handleSubmit,
     control,
     formState: { errors },
+    reset,
   } = useForm<TDepartment>({
     defaultValues: { name: "", code: 0, description: "", manager: "", employees: [], status: "active", budget: 0 },
     mode: "onBlur",
     // resolver: yupResolver(schema),
   });
 
+  // const onSubmit = async (data: TDepartment) => {
+  //   setLoading(true);
+  //   data.budget = Number(data.budget);
+  //   try {
+  //     const response = await fetchApi(CONFIG_API.DEPARTMENT, "POST", data);
+  //     if (response.statusCode === 201) {
+  //       // fetch new data when create success
+  //       fetchDepartment();
+  //       showToast("Create department successfully!", "success");
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //     showToast("An error occurred please try again", "error");
+  //   } finally {
+  //     handleClose();
+  //     setLoading(false);
+  //   }
+  // };
+
   const onSubmit = async (data: TDepartment) => {
     setLoading(true);
     data.budget = Number(data.budget);
     try {
-      const response = await fetchApi(CONFIG_API.DEPARTMENT, "POST", data);
-      if (response.statusCode === 201) {
-        // fetch new data when create success
+      const method = selectedDepartmentId ? "PATCH" : "POST";
+      const url = selectedDepartmentId ? `${CONFIG_API.DEPARTMENT}/${selectedDepartmentId}` : CONFIG_API.DEPARTMENT;
+      const response = await fetchApi(url, method, data);
+      if (response.statusCode === (selectedDepartmentId ? 200 : 201)) {
+        showToast(
+          selectedDepartmentId ? "Department updated successfully" : "Department created successfully",
+          "success"
+        );
         fetchDepartment();
-        showToast("Create department successfully!", "success");
       }
     } catch (error) {
-      console.log(error);
-      showToast("An error occurred please try again", "error");
+      console.error(error);
+      showToast("An error occurred, please try again", "error");
     } finally {
-      handleClose();
+      setOpen(false);
       setLoading(false);
     }
   };
@@ -217,7 +256,6 @@ export default function Index() {
     setLoading(true);
     try {
       const response = await fetchApi(`${CONFIG_API.DEPARTMENT}/${selectedDepartmentId}`, "DELETE");
-      console.log("response", response);
       if (response.statusCode === 200) {
         fetchDepartment();
         showToast("Delete department successfully!", "success");
@@ -255,14 +293,42 @@ export default function Index() {
     const formattedData = departmentResponse?.data?.result.map((department: any, index: number) => ({
       index: index + 1,
       id: department._id,
+      code: department.code,
       name: department.name,
+      description: department.description,
       manager: userMap.get(department.manager)?.name || "Unknown",
+      managerId: department.manager,
       employees: department.employees.map((id: string) => userMap.get(id)).filter(Boolean),
       budget: department.budget,
       status: department.status,
     }));
-
     setRowsDepartment(formattedData);
+  };
+
+  const handleOpenForm = (id?: string) => {
+    if (id) {
+      // Edit mode
+      if (rowsDepartment) {
+        const dept = rowsDepartment?.find((r: TDepartment) => r.id === id);
+        if (dept) {
+          reset({
+            name: dept.name,
+            code: dept.code,
+            description: dept.description,
+            manager: dept.managerId,
+            employees: dept.employees.map((e: any) => e.id),
+            status: dept.status,
+            budget: dept.budget,
+          });
+          setSelectedDepartmentId(id);
+        }
+      }
+    } else {
+      // Create mode
+      reset({ name: "", code: 0, description: "", manager: "", employees: [], status: "active", budget: 0 });
+      setSelectedDepartmentId(null);
+    }
+    setOpen(true);
   };
 
   useEffect(() => {
@@ -310,9 +376,7 @@ export default function Index() {
             <Button
               variant="contained"
               startIcon={<FaPlus />}
-              onClick={() => {
-                setOpen(true);
-              }}
+              onClick={() => handleOpenForm()}
               sx={{
                 borderRadius: 2,
                 px: 3,
@@ -350,7 +414,9 @@ export default function Index() {
               handleSubmit(onSubmit)(e);
             }}
           >
-            <DialogTitle sx={{ fontWeight: 600, px: 3, pt: 3, pb: 1 }}>NEW DEPARTMENT</DialogTitle>
+            <DialogTitle sx={{ fontWeight: 600, px: 3, pt: 3, pb: 1 }}>
+              {selectedDepartmentId ? "UPDATE DEPARTMENT" : "NEW DEPARTMENT"}
+            </DialogTitle>
             <DialogContent sx={{ px: 3, pt: 1 }}>
               <Grid item xs={12} md={6}>
                 <Controller
@@ -517,7 +583,7 @@ export default function Index() {
                 Cancel
               </Button>
               <Button type="submit" variant="contained" color="primary">
-                Create Department
+                {selectedDepartmentId ? "Update" : "Create"}
               </Button>
             </DialogActions>
           </form>
@@ -531,19 +597,41 @@ export default function Index() {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <Alert severity="warning" sx={{ borderRadius: 0 }}>
-            <DialogTitle id="alert-dialog-title">Confirm Delete</DialogTitle>
-            <DialogContent>
+          <DialogTitle id="alert-dialog-title">
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              Delete Department
+            </Typography>
+          </DialogTitle>
+          <DialogContent>
+            <Alert severity="warning" sx={{ mt: 2, borderRadius: 2 }}>
               <DialogContentText id="alert-dialog-description">
                 Are you sure you want to delete this role? This action cannot be undone.
               </DialogContentText>
-            </DialogContent>
-          </Alert>
-          <DialogActions sx={{ backgroundColor: "#fff" }}>
-            <Button onClick={() => setOpenConfirmDelete(false)} color="inherit">
+            </Alert>
+          </DialogContent>
+          <DialogActions sx={{ px: 3, pb: 2 }}>
+            <Button
+              onClick={() => setOpenConfirmDelete(false)}
+              color="inherit"
+              sx={{
+                borderRadius: 2,
+                px: 3,
+                textTransform: "none",
+              }}
+            >
               Cancel
             </Button>
-            <Button onClick={handleDeleteDepartment} color="error" variant="contained" autoFocus>
+            <Button
+              onClick={handleDeleteDepartment}
+              color="error"
+              variant="contained"
+              sx={{
+                borderRadius: 2,
+                px: 3,
+                textTransform: "none",
+                fontWeight: 600,
+              }}
+            >
               Delete
             </Button>
           </DialogActions>
