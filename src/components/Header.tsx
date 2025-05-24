@@ -129,9 +129,6 @@ export default function Header() {
                 <li className="hover:bg-[#651FFF] hover:text-white transition-all duration-300 py-2">
                   <Link href={"/login"}>Sign In</Link>
                 </li>
-                <li className="hover:bg-[#651FFF] hover:text-white transition-all duration-300 py-2">
-                  <Link href={"/register"}>Create an account</Link>
-                </li>
               </ul>
             </div>
           </div>

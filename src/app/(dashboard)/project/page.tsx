@@ -19,7 +19,7 @@ import {
   Autocomplete,
   SelectChangeEvent,
 } from "@mui/material";
-import { MdAddBox, MdCheckCircleOutline, MdOutlineGridView } from "react-icons/md";
+import { MdAddBox, MdOutlineGridView } from "react-icons/md";
 import { LuRows3 } from "react-icons/lu";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -38,13 +38,15 @@ export default function ProjectList() {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [projectList, setProjectList] = React.useState<(TProject | TCreateProject)[]>([]);
   const [open, setOpen] = React.useState(false);
-  const [employees, setEmployees] = React.useState<Employee[]>([]);
+  const [, setEmployees] = React.useState<Employee[]>([]);
+  const [department, setDepartment] = React.useState([]);
   const [upFiles, setUpFiles] = React.useState<File[]>([]);
   const [formData, setFormData] = React.useState<TCreateProject>({
     name: "",
     description: "",
     teamMembers: [],
-    department: "dshjdkjdhkdsbkdfsbskjbdskj",
+    manager: "",
+    department: "",
     priority: 1,
     attachments: [],
     status: 1,
@@ -141,24 +143,7 @@ export default function ProjectList() {
     handleClose();
   };
 
-  React.useEffect(() => {
-    const cachedProjects = localStorage.getItem("projects");
-
-    if (cachedProjects) {
-      setProjectList(JSON.parse(cachedProjects));
-    } else {
-      const fetchProjects = async () => {
-        const response = await fetchApi(`${CONFIG_API.PROJECT}`, "GET");
-        if (response && response.statusCode === 200) {
-          setProjectList(response.data.projects);
-        }
-      };
-      fetchProjects();
-    }
-    return () => {
-      setProjectList([]);
-    };
-  }, []);
+  React.useEffect(() => {}, []);
 
   React.useEffect(() => {
     if (projectList.length > 0) {
@@ -167,21 +152,82 @@ export default function ProjectList() {
   }, [projectList]);
 
   React.useEffect(() => {
-    const fetchEmployees = async () => {
-      const response = await fetchApi(`${CONFIG_API.USER.INDEX}`, "GET");
+    const cachedProjects = localStorage.getItem("projects");
+    const fetchProjects = async () => {
+      const response = await fetchApi(`${CONFIG_API.PROJECT}`, "GET");
+      // console.log(response);
       if (response && response.statusCode === 200) {
-        setEmployees(
-          response.data.result.map((item: { name: string; _id: string }) => ({
-            name: item.name,
-            _id: item._id,
-          }))
-        );
+        setProjectList(response.data.projects);
       }
     };
-    fetchEmployees();
+
+    if (cachedProjects) {
+      setProjectList(JSON.parse(cachedProjects));
+    } else {
+      fetchProjects();
+    }
+
+    const fetchData = async () => {
+      try {
+        // Gọi song song 2 API
+        const [deptRes, empRes] = await Promise.all([
+          fetchApi(`${CONFIG_API.DEPARTMENT}`, "GET"),
+          fetchApi(`${CONFIG_API.USER.INDEX}`, "GET"),
+        ]);
+
+        // Xử lý department
+        if (deptRes && deptRes.statusCode === 200) {
+          setDepartment(
+            deptRes.data.result.map((item: any) => ({
+              name: item.name,
+              _id: item._id,
+              manager: item.manager,
+              employees: item.employees,
+              budget: item.budget,
+            }))
+          );
+        }
+
+        // Xử lý employees
+        if (empRes && empRes.statusCode === 200) {
+          setEmployees(
+            empRes.data.result.map((item: any) => ({
+              name: item.name,
+              _id: item._id,
+            }))
+          );
+        }
+      } catch (error) {
+        console.error("Fetch department hoặc employees thất bại:", error);
+        // Bạn có thể showToast báo lỗi ở đây nếu muốn
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      setProjectList([]);
+    };
   }, []);
 
+  // React.useEffect(() => {
+  //   if (projectList.length > 0 && employees.length > 0) {
+  //     setProjectList((prev) =>
+  //       prev.map((proj: any) => {
+  //         const mgr = employees.find((e: Employee) => e.id === proj.manager);
+  //         return {
+  //           ...proj,
+  //           managerName: mgr ? mgr.name : "Unknown Manager",
+  //         };
+  //       })
+  //     );
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [employees]);
+
   // console.log("up file", upFiles);
+
+  // console.log(projectList);
 
   return (
     <>
@@ -296,7 +342,7 @@ export default function ProjectList() {
 
                   {/* <MultiAutocomplete /> */}
                   <Grid item xs={12}>
-                    <Autocomplete<Employee, true, false, false>
+                    {/* <Autocomplete<Employee, true, false, false>
                       // value={formData.teamMembers}
                       value={formData.teamMembers}
                       onChange={(e, arrayValues) => {
@@ -324,6 +370,23 @@ export default function ProjectList() {
                           placeholder="Favorites"
                         />
                       )}
+                    /> */}
+
+                    <Autocomplete
+                      options={department}
+                      getOptionLabel={(option: any) => option.name}
+                      value={department.find((dept: { _id: string }) => dept._id === formData.department) || null}
+                      onChange={(event, newValue) => {
+                        setFormData({
+                          ...formData,
+                          department: newValue?._id || "",
+                          manager: newValue?.manager || "",
+                        });
+                      }}
+                      renderInput={(params) => (
+                        <TextField {...params} margin="normal" label="Department" size="small" required />
+                      )}
+                      fullWidth
                     />
                   </Grid>
 

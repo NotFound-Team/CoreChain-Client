@@ -21,6 +21,7 @@ export type TCreateProject = {
   name: string;
   description: string;
   teamMembers: Employee[];
+  manager: string;
   attachments: Array<string>;
   department: string;
   tasks: string[];
@@ -50,4 +51,10 @@ export type TProject = {
   tasks: string[];
   teamMembers: string[];
   updatedAt?: Date;
+  manager: {
+    email: string;
+    name: string;
+    _id: string;
+  };
+  managerName?: string;
 };
