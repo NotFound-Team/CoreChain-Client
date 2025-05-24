@@ -12,6 +12,7 @@ export const CONFIG_API = {
   USER: {
     INDEX: "/users",
     ACCOUNT: "/auth/account",
+    PRIVATE: "/users/private",
   },
   TASK: "/tasks",
   PROJECT: "/projects",
