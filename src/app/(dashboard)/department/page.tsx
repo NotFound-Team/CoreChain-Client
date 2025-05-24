@@ -76,6 +76,7 @@ export default function Index() {
   const [employessArray, setEmployessArray] = useState([]);
   const { Toast, showToast } = useSnackbar();
   const [loading, setLoading] = useState(false);
+  const [loadingFetchDepartment, setLoadingFetchDepartment] = useState(false);
   const [openConfirmDelete, setOpenConfirmDelete] = useState<boolean>(false);
   const [selectedDepartmentId, setSelectedDepartmentId] = useState<string | null>(null);
 
@@ -279,38 +280,45 @@ export default function Index() {
   };
 
   const fetchDepartment = async () => {
-    const departmentResponse = await fetchApi(CONFIG_API.DEPARTMENT, "GET");
-    const userResponse = await fetchApi(CONFIG_API.USER.INDEX, "GET");
-    const userMap = new Map();
-    userResponse?.data?.result.forEach((user: any) => {
-      userMap.set(user._id, {
-        id: user._id,
-        name: user.name || user.email,
-        avatar: user.avatar || `https://i.pravatar.cc/150?u=${user._id}`,
+    try {
+      setLoadingFetchDepartment(true);
+      const departmentResponse = await fetchApi(CONFIG_API.DEPARTMENT, "GET");
+      const userResponse = await fetchApi(CONFIG_API.USER.INDEX, "GET");
+      const userMap = new Map();
+      userResponse?.data?.result.forEach((user: any) => {
+        userMap.set(user._id, {
+          id: user._id,
+          name: user.name || user.email,
+          avatar: user.avatar || `https://i.pravatar.cc/150?u=${user._id}`,
+        });
       });
-    });
 
-    setEmployessArray(
-      userResponse?.data?.result.map((user: any) => ({
-        _id: user._id,
-        name: user.name,
-        // avatar: user.avatar || `https://i.pravatar.cc/150?u=${user._id}`,
-      }))
-    );
+      setEmployessArray(
+        userResponse?.data?.result.map((user: any) => ({
+          _id: user._id,
+          name: user.name,
+          // avatar: user.avatar || `https://i.pravatar.cc/150?u=${user._id}`,
+        }))
+      );
 
-    const formattedData = departmentResponse?.data?.result.map((department: any, index: number) => ({
-      index: index + 1,
-      id: department._id,
-      code: department.code,
-      name: department.name,
-      description: department.description,
-      manager: userMap.get(department.manager)?.name || "Unknown",
-      managerId: department.manager,
-      employees: department.employees.map((id: string) => userMap.get(id)).filter(Boolean),
-      budget: department.budget,
-      status: department.status,
-    }));
-    setRowsDepartment(formattedData);
+      const formattedData = departmentResponse?.data?.result.map((department: any, index: number) => ({
+        index: index + 1,
+        id: department._id,
+        code: department.code,
+        name: department.name,
+        description: department.description,
+        manager: userMap.get(department.manager)?.name || "Unknown",
+        managerId: department.manager,
+        employees: department.employees.map((id: string) => userMap.get(id)).filter(Boolean),
+        budget: department.budget,
+        status: department.status,
+      }));
+      setRowsDepartment(formattedData);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingFetchDepartment(false);
+    }
   };
 
   const handleOpenForm = (id?: string) => {
@@ -414,7 +422,14 @@ export default function Index() {
             width: "calc(100% - 64px)",
           }}
         >
-          <CustomDataGrid rows={rowsDepartment} columns={columns} pageSizeOptions={[10, 25, 50]} autoHeight={false} />
+          <CustomDataGrid
+            loading={loadingFetchDepartment}
+            rows={loadingFetchDepartment ? [] : rowsDepartment}
+            // rows={rowsDepartment}
+            columns={columns}
+            pageSizeOptions={[10, 25, 50]}
+            autoHeight={false}
+          />
         </Box>
         {/* Form popup */}
         <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>

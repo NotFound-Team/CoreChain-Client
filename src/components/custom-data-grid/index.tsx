@@ -2,6 +2,7 @@ import React, { memo, Ref } from "react";
 import Box from "@mui/material/Box";
 import { DataGrid, DataGridProps } from "@mui/x-data-grid";
 import { styled } from "@mui/material";
+import SkeletonOverlay from "../SkeletonOverlay";
 
 const StyleCustomGrid = styled(DataGrid)<DataGridProps>(({ theme }) => ({
   ".MuiDataGrid-withBorderColor": {
@@ -17,10 +18,17 @@ const StyleCustomGrid = styled(DataGrid)<DataGridProps>(({ theme }) => ({
 }));
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const CustomDataGrid = React.forwardRef((props: DataGridProps, ref: Ref<any>) => {
+const CustomDataGrid = React.forwardRef(({ loading, ...props }: DataGridProps, ref: Ref<any>) => {
   return (
     <Box sx={{ height: "100%", width: "100%", overflow: "auto" }}>
-      <StyleCustomGrid {...props} />
+      <StyleCustomGrid
+        {...props}
+        loading={loading}
+        slots={{
+          noRowsOverlay: loading ? SkeletonOverlay : undefined,
+          ...props.slots, // preserve user-defined slots
+        }}
+      />
     </Box>
   );
 });
