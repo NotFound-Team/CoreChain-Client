@@ -22,7 +22,17 @@ export default function ConversationInfo({ chatId }: { chatId: string }) {
     <aside className="w-full sm:w-[24%] pl-4 bg-white shadow-md">
       <div className="flex flex-col items-center justify-center pb-2 gap-y-4">
         {/* Avatar */}
-        <Image src={otherInfo?.avatar || ""} alt="avatar" width={100} height={100} className="overflow-hidden rounded-full" />
+        <Image
+          src={
+            otherInfo?.avatar && otherInfo.avatar.trim() !== ""
+              ? otherInfo.avatar
+              : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZ67WnVe0-3PrCFinHDd58Jm--CH0NyPOIuP0RS0uygOo4RYHO_lP6tVoIegZWwNXRXpc&usqp=CAU"
+          }
+          alt="avatar"
+          width={100}
+          height={100}
+          className="overflow-hidden rounded-full"
+        />
 
         {/* User Info */}
         <div className="flex flex-col items-center text-center">

@@ -41,7 +41,7 @@ const ProjectCard = React.memo(({ projectItem, index }: { projectItem: TProject;
     } else {
       setPermissionProjectId(false);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -238,8 +238,8 @@ const ProjectCard = React.memo(({ projectItem, index }: { projectItem: TProject;
                   },
                 }}
               >
-                {projectItem.teamMembers.map((i) => (
-                  <Avatar key={i} src={`/static/images/avatar/${i}.jpg`} alt={`Member ${i}`} />
+                {projectItem.teamMembers.map((i, index) => (
+                  <Avatar key={index} src={`https://i.pravatar.cc/150?u=${i}`} alt={`Member ${i}`} />
                 ))}
               </AvatarGroup>
 

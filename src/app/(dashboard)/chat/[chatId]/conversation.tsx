@@ -27,7 +27,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { Message } from "@/types/message";
 import { ConversationItem } from "@/types/chat";
 
-
 export default function Conversation({ chatId }: { chatId: string }) {
   const [message, setMessage] = useState("");
   const [listMessages, setListMessages] = useState<Message[]>([]);
@@ -53,7 +52,11 @@ export default function Conversation({ chatId }: { chatId: string }) {
         <div className="flex items-center gap-x-4">
           {item.senderId !== user?._id && (
             <Image
-              src={otherInfo?.avatar || ""}
+              src={
+                otherInfo?.avatar && otherInfo.avatar.trim() !== ""
+                  ? otherInfo.avatar
+                  : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZ67WnVe0-3PrCFinHDd58Jm--CH0NyPOIuP0RS0uygOo4RYHO_lP6tVoIegZWwNXRXpc&usqp=CAU"
+              }
               alt="avatar"
               width={51}
               height={50}
@@ -134,7 +137,11 @@ export default function Conversation({ chatId }: { chatId: string }) {
       <div className="flex items-center justify-between shadow-md">
         <div className="flex items-center p-2 gap-x-4">
           <Image
-            src={otherInfo?.avatar || ""}
+            src={
+              otherInfo?.avatar && otherInfo.avatar.trim() !== ""
+                ? otherInfo.avatar
+                : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZ67WnVe0-3PrCFinHDd58Jm--CH0NyPOIuP0RS0uygOo4RYHO_lP6tVoIegZWwNXRXpc&usqp=CAU"
+            }
             alt="avatar"
             width={51}
             height={50}

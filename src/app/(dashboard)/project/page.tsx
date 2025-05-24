@@ -400,7 +400,7 @@ export default function ProjectList() {
 
           <Box sx={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 3 }}>
             {projectList.map((project, index) => (
-              <ProjectCard key={`${project._id}-${index}`} projectItem={project as TProject} index={index} />
+              <ProjectCard key={`${project._id}+${index}`} projectItem={project as TProject} index={index} />
             ))}
           </Box>
         </Box>

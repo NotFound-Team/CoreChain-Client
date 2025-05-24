@@ -1,7 +1,7 @@
 "use client";
 
 // -- Components --
-import ButtonMode from "@/components/ButtonMode";
+// import ButtonMode from "@/components/ButtonMode";
 
 // -- MUI --
 import AppBar from "@mui/material/AppBar";
@@ -73,7 +73,7 @@ export default function VerticalDashboard({
             </IconButton>
           </Box>
           <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0 20px" }}>
-            <ButtonMode />
+            {/* <ButtonMode /> */}
             <Box>
               <UserDropdown />
             </Box>
