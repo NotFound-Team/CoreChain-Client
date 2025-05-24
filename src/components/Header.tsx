@@ -52,7 +52,6 @@ export default function Header() {
     const handleScroll = () => {
       setShowHeader(window.scrollY > 70);
     };
-    console.log("check");
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -74,12 +73,8 @@ export default function Header() {
                   src={"/images/logo-color 1.png"}
                   alt="Logo company"
                   width={150}
-                  height={300}
-                  style={{
-                    height: "auto",
-                  }}
+                  height={100}
                   className="max-lg:w-[100px]"
-                  priority
                 />
               </div>
 

@@ -23,7 +23,7 @@ import { FaRegAddressCard } from "react-icons/fa";
 import { Role } from "@/types/role";
 import ListRole from "./ListRole";
 import { useAuth } from "@/hooks/useAuth";
-import { hasPermission } from "@/utils/permissions";
+import { Can } from "@/context/casl/AbilityContext";
 
 export default function RolePage() {
   const { user } = useAuth();
@@ -68,7 +68,7 @@ export default function RolePage() {
     try {
       const response = await fetchApi(`${CONFIG_API.ROLE}`, "POST", formData);
       if (response && response.statusCode === 201) {
-        console.log(response);
+        // console.log(response);
         const NewRole: Role = {
           ...formData,
           _id: response.data,
@@ -77,7 +77,7 @@ export default function RolePage() {
         handleClose();
       }
     } catch (error) {
-      console.log("ERROR", error);
+      console.error("ERROR", error);
     }
   };
 
@@ -95,7 +95,7 @@ export default function RolePage() {
         setSelectedRoleId(null);
       }
     } catch (error) {
-      console.log("error message", error);
+      console.error("error message", error);
     }
   };
 
@@ -103,16 +103,15 @@ export default function RolePage() {
     const fecthRole = async () => {
       const response = await fetchApi(`${CONFIG_API.ROLE}`, "GET");
       if (response && response.statusCode === 200) {
-        console.log("ROLE", response.data.result);
+        // console.log("ROLE", response.data.result);
         setRolePermissions(response.data.result);
       }
     };
     fecthRole();
   }, []);
-  console.log();
   return (
     <>
-      {hasPermission(user, "get roles") && (
+      <Can I="get" a="roles">
         <div className="p-6">
           <div className="flex justify-end">
             <Button
@@ -267,7 +266,7 @@ export default function RolePage() {
             </DialogActions>
           </Dialog>
         </div>
-      )}
+      </Can>
     </>
   );
 }

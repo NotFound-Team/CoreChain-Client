@@ -16,12 +16,13 @@ import CardActions from "@mui/material/CardActions";
 import Link from "next/link";
 // -- Types
 import { TProject } from "@/types/project";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaMoneyCheck, FaTasks, FaUser } from "react-icons/fa";
 import { IconButton } from "@mui/material";
 
 // -- dayjs --
 import dayjs from "dayjs";
+import { useAbility } from "@/hooks/useAbility";
 
 export enum Priority {
   Low = 1,
@@ -31,8 +32,20 @@ export enum Priority {
 
 const ProjectCard = React.memo(({ projectItem, index }: { projectItem: TProject; index: number }) => {
   const priorityLabel = Priority[projectItem.priority];
+  const [permissionProjectId, setPermissionProjectId] = useState(false);
+  const { can } = useAbility();
+
+  useEffect(() => {
+    if (can("get", "projects/:id")) {
+      setPermissionProjectId(true);
+    } else {
+      setPermissionProjectId(false);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
-    <Link href={`/project/${projectItem._id}`} passHref legacyBehavior>
+    <Link href={permissionProjectId ? `/project/${projectItem._id}` : "#"} passHref legacyBehavior>
       <Box
         component="a"
         sx={{

@@ -22,9 +22,9 @@ export default function AbilityProvider({ children, permissions }: Props) {
   useEffect(() => {
     const { can, build } = new AbilityBuilder<AppAbility>(Ability);
 
-    console.log(permissions);
+    // console.log(permissions);
 
-    permissions.forEach((permission) => {
+    permissions?.forEach((permission) => {
       const action = permission.method.toLowerCase(); // 'POST', 'GET', 'DELETE', ...
       const subject = permission.apiPath as Subjects; // Lấy apiPath
       can(action.toLowerCase() as Actions, subject); // Đảm bảo action và subject được định nghĩa chính xác
@@ -33,7 +33,7 @@ export default function AbilityProvider({ children, permissions }: Props) {
       // console.log("sub", subject)
     });
 
-    console.log(build());
+    // console.log(build());
 
     setAbility(build());
   }, [permissions]);

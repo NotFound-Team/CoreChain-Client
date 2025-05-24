@@ -1,4 +1,5 @@
 import { CONFIG_API } from "@/configs/api";
+import { Can } from "@/context/casl/AbilityContext";
 import { useSnackbar } from "@/hooks/useSnackbar";
 import { TCreateTask, TTask } from "@/types/task";
 import fetchApi from "@/utils/fetchApi";
@@ -96,7 +97,7 @@ const TaskItem = React.memo<TaskItemProps>(({ data, handleDeleteTask }) => {
   };
 
   const handleDateChange = (date: dayjs.Dayjs | null, field: string) => {
-    console.log(formData);
+    // console.log(formData);
     setFormData({
       ...formData,
       [field]: dayjs(date).toISOString(),
@@ -105,19 +106,19 @@ const TaskItem = React.memo<TaskItemProps>(({ data, handleDeleteTask }) => {
 
   const handleEditTask = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(formData);
+    // console.log(formData);
     try {
       const response = await fetchApi(`${CONFIG_API.TASK}/${tasks._id}`, "PATCH", formData, {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
       });
-      console.log(response);
+      // console.log(response);
       if (response) {
         showToast("Edit task successfully!", "success");
       } else {
         showToast("Failed to edit task. Please try again.", "error");
       }
     } catch (error) {
-      console.log("error", error);
+      console.error("error", error);
       showToast("An error occurred while editing the task. Please try again.", "error");
     }
   };
@@ -151,7 +152,7 @@ const TaskItem = React.memo<TaskItemProps>(({ data, handleDeleteTask }) => {
             <AvatarGroup max={3}>
               <Tooltip title={`Assignee `}>
                 <Avatar
-                  src={"/static/images/avatar/1.jpg"}
+                  src={"/images/img_avatar.png"}
                   sx={{
                     width: 40,
                     height: 40,
@@ -210,29 +211,33 @@ const TaskItem = React.memo<TaskItemProps>(({ data, handleDeleteTask }) => {
           <Divider sx={{ ml: 2 }} orientation="vertical" flexItem />
 
           <Box sx={{ ml: 2, display: "flex", gap: 1 }}>
-            <Tooltip title="Edit Task">
-              <IconButton
-                sx={{
-                  background: theme.palette.action.hover,
-                  "&:hover": { background: theme.palette.action.selected },
-                }}
-                onClick={handleClickOpen}
-              >
-                <FaRegEdit />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Delete Task">
-              <IconButton
-                color="error"
-                sx={{
-                  background: theme.palette.error.light + "20",
-                  "&:hover": { background: theme.palette.error.light + "40" },
-                }}
-                onClick={() => handleDeleteTask(tasks._id)}
-              >
-                <MdDeleteForever />
-              </IconButton>
-            </Tooltip>
+            <Can I="patch" a="tasks/:id">
+              <Tooltip title="Edit Task">
+                <IconButton
+                  sx={{
+                    background: theme.palette.action.hover,
+                    "&:hover": { background: theme.palette.action.selected },
+                  }}
+                  onClick={handleClickOpen}
+                >
+                  <FaRegEdit />
+                </IconButton>
+              </Tooltip>
+            </Can>
+            <Can I="delete" a="tasks/:id">
+              <Tooltip title="Delete Task">
+                <IconButton
+                  color="error"
+                  sx={{
+                    background: theme.palette.error.light + "20",
+                    "&:hover": { background: theme.palette.error.light + "40" },
+                  }}
+                  onClick={() => handleDeleteTask(tasks._id)}
+                >
+                  <MdDeleteForever />
+                </IconButton>
+              </Tooltip>
+            </Can>
 
             <Dialog open={open} onClose={handleClose}>
               <form onSubmit={handleEditTask}>

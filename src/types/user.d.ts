@@ -56,6 +56,6 @@ export type CreateUserModalProps = {
     handleClose: () => void;
     handleCreateUser: (e: React.FormEvent) => Promise<void>;
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    formData: TFormData;
+    formData: TFormDataCreateUser;
   };
 };

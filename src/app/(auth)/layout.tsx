@@ -8,20 +8,17 @@ import { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
-// -- Context --
-import { AuthProvider } from "@/context/AuthContext";
-
 export const metadata: Metadata = {
-  title: "Login",
+  title: "Login | Blockchain HR Management",
   description: "Login.",
 };
 
 export default function LoginLayout({ children }: { children: React.ReactNode }) {
   return (
-    <AuthProvider>
+    <>
       <Header />
       <main>{children}</main>
       <Footer />
-    </AuthProvider>
+    </>
   );
 }

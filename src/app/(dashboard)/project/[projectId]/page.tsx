@@ -20,7 +20,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 
 // -- React --
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 // -- components
 import TaskManager from "./TaskManager";
@@ -42,6 +42,7 @@ import dayjs from "dayjs";
 
 // -- React-icon --
 import { MdFolderDelete } from "react-icons/md";
+import { Can } from "@/context/casl/AbilityContext";
 
 const ProjectDetail = () => {
   const theme = useTheme();
@@ -52,272 +53,282 @@ const ProjectDetail = () => {
   const projectStart = projects?.startDate;
   const projectEnd = projects?.endDate;
 
-  console.log("PROJECT", projects);
+  // console.log("PROJECT", projects);
 
   useEffect(() => {
     const dataProjectDetail = async () => {
-      const response = await fetchApi(`${CONFIG_API.PROJECT}/${params.projectId}`);
-      if (response && response.statusCode === 200) {
-        setProjects(response.data);
+      try {
+        const response = await fetchApi(`${CONFIG_API.PROJECT}/${params.projectId}`);
+        if (response && response.statusCode === 200) {
+          setProjects(response.data);
+        }
+      } catch (error) {
+        console.error("Error:", error);
       }
     };
     dataProjectDetail();
   }, [params.projectId]);
 
   return (
-    <Grow in={true} timeout={500}>
-      <Container maxWidth="xl" sx={{ py: 4 }}>
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <Paper
-            elevation={3}
-            sx={{
-              borderRadius: 4,
-              overflow: "hidden",
-              boxShadow: theme.shadows[4],
-            }}
-          >
-            {/* Hero Section */}
-            <Box
+    <Can I="get" a="projects/:id">
+      <Grow in={true} timeout={500}>
+        <Container maxWidth="xl" sx={{ py: 4 }}>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <Paper
+              elevation={3}
               sx={{
-                height: 300,
-                background: `url(https://www.shutterstock.com/image-vector/this-cat-pixel-art-colorful-260nw-2346901397.jpg) center/cover`,
-                position: "relative",
+                borderRadius: 4,
+                overflow: "hidden",
+                boxShadow: theme.shadows[4],
               }}
             >
-              <IconButton
-                onClick={() => window.history.back()}
+              {/* Hero Section */}
+              <Box
                 sx={{
-                  position: "absolute",
-                  top: 16,
-                  left: 16,
-                  zIndex: 1,
-                  color: "white",
-                  backgroundColor: "rgba(0, 0, 0, 0.4)",
-                  "&:hover": {
-                    backgroundColor: "rgba(0, 0, 0, 0.6)",
-                  },
+                  height: 300,
+                  background: `url(https://www.shutterstock.com/image-vector/this-cat-pixel-art-colorful-260nw-2346901397.jpg) center/cover`,
+                  position: "relative",
                 }}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M15 18l-6-6 6-6" />
-                </svg>
-              </IconButton>
-
-              <Tooltip title="Delete project">
                 <IconButton
-                  color="error"
+                  onClick={() => window.history.back()}
                   sx={{
                     position: "absolute",
                     top: 16,
-                    right: 16,
+                    left: 16,
                     zIndex: 1,
-                    background: theme.palette.error.light + "20",
-                    "&:hover": { background: theme.palette.error.light + "40" },
+                    color: "white",
+                    backgroundColor: "rgba(0, 0, 0, 0.4)",
+                    "&:hover": {
+                      backgroundColor: "rgba(0, 0, 0, 0.6)",
+                    },
                   }}
-                  // onClick={() => handleDeleteTask(tasks._id)}
                 >
-                  <MdFolderDelete />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M15 18l-6-6 6-6" />
+                  </svg>
                 </IconButton>
-              </Tooltip>
-              {/* Timeline Section */}
-              <Box
-                sx={{
-                  position: "absolute",
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  p: 3,
-                  background: "linear-gradient(to top, rgba(0,0,0,0.7), transparent)",
-                }}
-              >
+
+                <Can I="delete" a="projects/:id">
+                  <Tooltip title="Delete project">
+                    <IconButton
+                      color="error"
+                      sx={{
+                        position: "absolute",
+                        top: 16,
+                        right: 16,
+                        zIndex: 1,
+                        background: theme.palette.error.light + "20",
+                        "&:hover": { background: theme.palette.error.light + "40" },
+                      }}
+                      // onClick={() => handleDeleteTask(tasks._id)}
+                    >
+                      <MdFolderDelete />
+                    </IconButton>
+                  </Tooltip>
+                </Can>
+                {/* Timeline Section */}
                 <Box
                   sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
+                    position: "absolute",
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    p: 3,
+                    background: "linear-gradient(to top, rgba(0,0,0,0.7), transparent)",
                   }}
                 >
-                  <Fade in={true} timeout={3000}>
-                    <Typography
-                      variant="h3"
-                      component="h1"
-                      sx={{
-                        color: "white",
-                        fontWeight: 700,
-                      }}
-                    >
-                      {projects?.name}
-                    </Typography>
-                  </Fade>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Fade in={true} timeout={3000}>
+                      <Typography
+                        variant="h3"
+                        component="h1"
+                        sx={{
+                          color: "white",
+                          fontWeight: 700,
+                        }}
+                      >
+                        {projects?.name}
+                      </Typography>
+                    </Fade>
 
-                  <Box sx={{ color: "white", textAlign: "right" }}>
-                    <Typography variant="body2">
-                      {dayjs(projectStart).format("DD/MM/YYYY")} - {dayjs(projectEnd).format("DD/MM/YYYY")}
-                    </Typography>
-                    <LinearProgress
-                      variant="determinate"
-                      value={projects?.progress}
-                      sx={{
-                        height: 10,
-                        borderRadius: 5,
-                        mt: 1,
-                        width: 200,
-                      }}
-                    />
-                    <Typography variant="body2" sx={{ mt: 0.5 }}>
-                      {projects?.progress}% Completed
-                    </Typography>
+                    <Box sx={{ color: "white", textAlign: "right" }}>
+                      <Typography variant="body2">
+                        {dayjs(projectStart).format("DD/MM/YYYY")} - {dayjs(projectEnd).format("DD/MM/YYYY")}
+                      </Typography>
+                      <LinearProgress
+                        variant="determinate"
+                        value={projects?.progress}
+                        sx={{
+                          height: 10,
+                          borderRadius: 5,
+                          mt: 1,
+                          width: 200,
+                        }}
+                      />
+                      <Typography variant="body2" sx={{ mt: 0.5 }}>
+                        {projects?.progress}% Completed
+                      </Typography>
+                    </Box>
                   </Box>
                 </Box>
               </Box>
-            </Box>
 
-            {/* Main Content */}
-            <Box sx={{ p: 4 }}>
-              <Grid container spacing={4}>
-                {/* Project Info Section */}
-                <Grid item xs={12} md={8}>
-                  <Box sx={{ mb: 4 }}>
-                    <Typography variant="h4" gutterBottom sx={{ fontWeight: 700, color: theme.palette.primary.main }}>
-                      Project Overview
-                    </Typography>
-                    <Typography
-                      variant="body1"
-                      paragraph
-                      sx={{
-                        color: "text.secondary",
-                        lineHeight: 1.7,
-                        fontSize: "1.1rem",
-                      }}
-                    >
-                      {projects?.description}
-                    </Typography>
-                  </Box>
-
-                  <Divider sx={{ my: 4 }} />
-
-                  {/* Key Features */}
-                  <Box>
-                    <Typography variant="h4" gutterBottom sx={{ fontWeight: 600, color: theme.palette.primary.main }}>
-                      Files
-                    </Typography>
-                    <Grid container spacing={3}>
-                      {projects?.attachments.map((item) => (
-                        <Grid item key={item} md={6} xs={6}>
-                          <a href={item} target="_blank">
-                            Download
-                          </a>
-                          <Divider />
-                        </Grid>
-                      ))}
-                    </Grid>
-                  </Box>
-                </Grid>
-
-                {/* Team & Tech Section */}
-                <Grid item xs={12} md={4}>
-                  <Box
-                    sx={{
-                      position: "sticky",
-                      top: 20,
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: 4,
-                    }}
-                  >
-                    <Paper
-                      elevation={2}
-                      sx={{
-                        p: 3,
-                        borderRadius: 3,
-                        background: theme.palette.background.paper,
-                      }}
-                    >
-                      <Typography
-                        variant="h5"
-                        gutterBottom
-                        sx={{ fontWeight: 700, display: "flex", alignItems: "center" }}
-                      >
-                        👥 Team Members
+              {/* Main Content */}
+              <Box sx={{ p: 4 }}>
+                <Grid container spacing={4}>
+                  {/* Project Info Section */}
+                  <Grid item xs={12} md={8}>
+                    <Box sx={{ mb: 4 }}>
+                      <Typography variant="h4" gutterBottom sx={{ fontWeight: 700, color: theme.palette.primary.main }}>
+                        Project Overview
                       </Typography>
-                      <AvatarGroup max={6} sx={{ justifyContent: "center", mb: 3 }}>
-                        {projects?.teamMembers.map((member, index) => (
-                          <Tooltip key={index} title={`Member ${index + 1}`}>
-                            <Avatar
-                              src={"/static/images/avatar/1.jpg"}
-                              sx={{
-                                width: 56,
-                                height: 56,
-                                border: "2px solid #fff",
-                                "&:hover": { transform: "scale(1.1)" },
-                                transition: "transform 0.2s",
-                              }}
-                            />
-                          </Tooltip>
-                        ))}
-                      </AvatarGroup>
-
                       <Typography
-                        variant="h5"
-                        gutterBottom
-                        sx={{ fontWeight: 700, mt: 3, display: "flex", alignItems: "center" }}
-                      >
-                        🛠️ Tech Stack
-                      </Typography>
-                      <Box
+                        variant="body1"
+                        paragraph
                         sx={{
-                          display: "flex",
-                          flexWrap: "wrap",
-                          gap: 1,
-                          "& .MuiChip-root": {
-                            borderRadius: 2,
-                            fontWeight: 500,
-                            px: 1.5,
-                            py: 1,
-                          },
+                          color: "text.secondary",
+                          lineHeight: 1.7,
+                          fontSize: "1.1rem",
                         }}
                       >
-                        {[
-                          { label: "React", color: "primary" },
-                          { label: "Node.js", color: "secondary" },
-                          { label: "Python", color: "warning" },
-                          { label: "TensorFlow", color: "success" },
-                          { label: "MongoDB", color: "info" },
-                          { label: "AWS", color: "error" },
-                        ].map((tech, index) => (
-                          <Chip
-                            key={index}
-                            label={tech.label}
-                            color={tech.color as "primary" | "secondary" | "warning" | "success" | "info" | "error"}
-                            variant="outlined"
-                          />
+                        {projects?.description}
+                      </Typography>
+                    </Box>
+
+                    <Divider sx={{ my: 4 }} />
+
+                    {/* Key Features */}
+                    <Box>
+                      <Typography variant="h4" gutterBottom sx={{ fontWeight: 600, color: theme.palette.primary.main }}>
+                        Files
+                      </Typography>
+                      <Grid container spacing={3}>
+                        {projects?.attachments.map((item) => (
+                          <Grid item key={item} md={6} xs={6}>
+                            <a href={item} target="_blank">
+                              Download
+                            </a>
+                            <Divider />
+                          </Grid>
                         ))}
-                      </Box>
-                    </Paper>
-                  </Box>
+                      </Grid>
+                    </Box>
+                  </Grid>
+
+                  {/* Team & Tech Section */}
+                  <Grid item xs={12} md={4}>
+                    <Box
+                      sx={{
+                        position: "sticky",
+                        top: 20,
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 4,
+                      }}
+                    >
+                      <Paper
+                        elevation={2}
+                        sx={{
+                          p: 3,
+                          borderRadius: 3,
+                          background: theme.palette.background.paper,
+                        }}
+                      >
+                        <Typography
+                          variant="h5"
+                          gutterBottom
+                          sx={{ fontWeight: 700, display: "flex", alignItems: "center" }}
+                        >
+                          👥 Team Members
+                        </Typography>
+                        <AvatarGroup max={6} sx={{ justifyContent: "center", mb: 3 }}>
+                          {projects?.teamMembers.map((member, index) => (
+                            <Tooltip key={index} title={`Member ${index + 1}`}>
+                              <Avatar
+                                src={"/images/img_avatar.png"}
+                                sx={{
+                                  width: 56,
+                                  height: 56,
+                                  border: "2px solid #fff",
+                                  "&:hover": { transform: "scale(1.1)" },
+                                  transition: "transform 0.2s",
+                                }}
+                              />
+                            </Tooltip>
+                          ))}
+                        </AvatarGroup>
+
+                        <Typography
+                          variant="h5"
+                          gutterBottom
+                          sx={{ fontWeight: 700, mt: 3, display: "flex", alignItems: "center" }}
+                        >
+                          🛠️ Tech Stack
+                        </Typography>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: 1,
+                            "& .MuiChip-root": {
+                              borderRadius: 2,
+                              fontWeight: 500,
+                              px: 1.5,
+                              py: 1,
+                            },
+                          }}
+                        >
+                          {[
+                            { label: "React", color: "primary" },
+                            { label: "Node.js", color: "secondary" },
+                            { label: "Python", color: "warning" },
+                            { label: "TensorFlow", color: "success" },
+                            { label: "MongoDB", color: "info" },
+                            { label: "AWS", color: "error" },
+                          ].map((tech, index) => (
+                            <Chip
+                              key={index}
+                              label={tech.label}
+                              color={tech.color as "primary" | "secondary" | "warning" | "success" | "info" | "error"}
+                              variant="outlined"
+                            />
+                          ))}
+                        </Box>
+                      </Paper>
+                    </Box>
+                  </Grid>
                 </Grid>
-              </Grid>
 
-              <Divider sx={{ my: 4 }} />
+                <Divider sx={{ my: 4 }} />
 
-              {/* Task Management Section */}
-              <TaskManager />
-            </Box>
-          </Paper>
-        </LocalizationProvider>
-      </Container>
-    </Grow>
+                {/* Task Management Section */}
+                {/* <Can I="get" a="tasks"> */}
+                <TaskManager />
+                {/* </Can> */}
+              </Box>
+            </Paper>
+          </LocalizationProvider>
+        </Container>
+      </Grow>
+    </Can>
   );
 };
 
-export default ProjectDetail;
+export default React.memo(ProjectDetail);

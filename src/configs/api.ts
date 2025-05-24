@@ -4,6 +4,7 @@ export const CONFIG_API = {
   AUTH: {
     LOGIN: `/auth/login`,
     LOGOUT: `/auth/logout`,
+    REFRESH: `/auth/refresh`,
   },
   CHAT: {
     INDEX: `${process.env.NEXT_PUBLIC_BASE_URL_SOCKET}/chat`,

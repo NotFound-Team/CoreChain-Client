@@ -24,20 +24,22 @@ export default function Footer() {
                   <Image
                     src={"/images/GDPR compliant - GDPR Copy 5.png"}
                     alt="GDPR Compliant"
-                    width={66}
-                    height={100}
+                    width={0}
+                    height={0}
                     style={{
+                      width: "66px",
                       height: "auto",
                     }}
                   />
                 </li>
                 <li>
                   <Image
-                    src={"/images/norton-by-symantec-vector-logo 1.png"}
+                    src="/images/norton-by-symantec-vector-logo 1.png"
                     alt="Norton Security"
-                    width={66}
-                    height={100}
+                    width={0}
+                    height={0}
                     style={{
+                      width: "66px",
                       height: "auto",
                     }}
                   />
@@ -46,9 +48,10 @@ export default function Footer() {
                   <Image
                     src={"/images/stripe-seeklogo.com 1.png"}
                     alt="Stripe"
-                    width={66}
-                    height={100}
+                    width={0}
+                    height={0}
                     style={{
+                      width: "66px",
                       height: "auto",
                     }}
                   />
@@ -57,9 +60,10 @@ export default function Footer() {
                   <Image
                     src={"/images/paypal.png"}
                     alt="PayPal"
-                    width={66}
-                    height={100}
+                    width={0}
+                    height={0}
                     style={{
+                      width: "66px",
                       height: "auto",
                     }}
                   />

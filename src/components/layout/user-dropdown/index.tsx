@@ -71,7 +71,7 @@ export const UserDropdown = () => {
               aria-haspopup="true"
               aria-expanded={open ? "true" : undefined}
             >
-              <Avatar alt="Remy Sharp" sx={{ width: 32, height: 32 }} src="/static/images/avatar/1.jpg" />
+              <Avatar alt="Remy Sharp" sx={{ width: 32, height: 32 }} src={"/images/img_avatar.png"} />
             </IconButton>
           </StyledBadge>
         </Tooltip>

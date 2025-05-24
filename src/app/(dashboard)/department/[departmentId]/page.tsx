@@ -41,6 +41,7 @@ import { CONFIG_API } from "@/configs/api";
 
 // ** Component
 import FallbackSpinner from "@/components/fall-back";
+import { Can } from "@/context/casl/AbilityContext";
 
 interface Department {
   _id: string;
@@ -162,292 +163,294 @@ export default function DepartmentDetailPage({ params }: DepartmentDetailPagePro
   }
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Paper
-        elevation={0}
-        sx={{
-          p: 3,
-          mb: 4,
-          borderRadius: 2,
-          background: `linear-gradient(45deg, ${alpha(theme.palette.primary.main, 0.1)}, ${alpha(
-            theme.palette.secondary.main,
-            0.1
-          )})`,
-          border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
-        }}
-      >
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+    <Can I="get" a="departments/:id">
+      <Box sx={{ p: 3 }}>
+        <Paper
+          elevation={0}
+          sx={{
+            p: 3,
+            mb: 4,
+            borderRadius: 2,
+            background: `linear-gradient(45deg, ${alpha(theme.palette.primary.main, 0.1)}, ${alpha(
+              theme.palette.secondary.main,
+              0.1
+            )})`,
+            border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
+          }}
+        >
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+              <Button
+                startIcon={<MdArrowBack />}
+                onClick={() => router.back()}
+                sx={{
+                  color: theme.palette.primary.main,
+                  "&:hover": {
+                    backgroundColor: alpha(theme.palette.primary.main, 0.1),
+                  },
+                }}
+              >
+                Back
+              </Button>
+              <Typography
+                variant="h4"
+                component="h1"
+                sx={{
+                  fontWeight: 600,
+                  background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                Department Details
+              </Typography>
+            </Box>
             <Button
-              startIcon={<MdArrowBack />}
-              onClick={() => router.back()}
+              variant="contained"
+              startIcon={<MdEdit />}
+              onClick={handleEdit}
               sx={{
-                color: theme.palette.primary.main,
+                borderRadius: 2,
+                px: 3,
+                textTransform: "none",
+                fontWeight: 600,
+                boxShadow: "none",
                 "&:hover": {
-                  backgroundColor: alpha(theme.palette.primary.main, 0.1),
+                  boxShadow: "none",
+                  backgroundColor: "primary.dark",
                 },
               }}
             >
-              Back
+              Edit Department
             </Button>
-            <Typography
-              variant="h4"
-              component="h1"
-              sx={{
-                fontWeight: 600,
-                background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              Department Details
-            </Typography>
           </Box>
-          <Button
-            variant="contained"
-            startIcon={<MdEdit />}
-            onClick={handleEdit}
-            sx={{
-              borderRadius: 2,
-              px: 3,
-              textTransform: "none",
-              fontWeight: 600,
-              boxShadow: "none",
-              "&:hover": {
-                boxShadow: "none",
-                backgroundColor: "primary.dark",
-              },
-            }}
-          >
-            Edit Department
-          </Button>
-        </Box>
-      </Paper>
+        </Paper>
 
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <Paper
-            elevation={0}
-            sx={{
-              p: 4,
-              borderRadius: 3,
-              border: `1px solid ${theme.palette.divider}`,
-              boxShadow: `0px 2px 8px ${alpha(theme.palette.common.black, 0.05)}`,
-              position: "relative",
-            }}
-          >
-            {department.isDeleted && (
-              <Chip
-                label="Deleted"
-                size="small"
-                color="error"
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <Paper
+              elevation={0}
+              sx={{
+                p: 4,
+                borderRadius: 3,
+                border: `1px solid ${theme.palette.divider}`,
+                boxShadow: `0px 2px 8px ${alpha(theme.palette.common.black, 0.05)}`,
+                position: "relative",
+              }}
+            >
+              {department.isDeleted && (
+                <Chip
+                  label="Deleted"
+                  size="small"
+                  color="error"
+                  sx={{
+                    position: "absolute",
+                    right: 16,
+                    top: 16,
+                    backgroundColor: alpha(theme.palette.error.main, 0.1),
+                    fontWeight: 600,
+                  }}
+                />
+              )}
+
+              <Typography variant="h5" sx={{ mb: 2, fontWeight: 700, color: "text.primary" }}>
+                {department.name}
+              </Typography>
+
+              <Typography
+                variant="body1"
+                color="text.secondary"
                 sx={{
-                  position: "absolute",
-                  right: 16,
-                  top: 16,
-                  backgroundColor: alpha(theme.palette.error.main, 0.1),
-                  fontWeight: 600,
+                  mb: 3,
+                  lineHeight: 1.6,
+                  whiteSpace: "pre-wrap",
                 }}
-              />
-            )}
-
-            <Typography variant="h5" sx={{ mb: 2, fontWeight: 700, color: "text.primary" }}>
-              {department.name}
-            </Typography>
-
-            <Typography
-              variant="body1"
-              color="text.secondary"
-              sx={{
-                mb: 3,
-                lineHeight: 1.6,
-                whiteSpace: "pre-wrap",
-              }}
-            >
-              {department.description}
-            </Typography>
-
-            {/* Budget Section */}
-            <Box
-              sx={{
-                backgroundColor: alpha(theme.palette.primary.main, 0.05),
-                p: 2,
-                borderRadius: 1,
-                mb: 4,
-              }}
-            >
-              <Typography variant="subtitle2" color="primary" sx={{ fontWeight: 600 }}>
-                Annual Budget:
+              >
+                {department.description}
               </Typography>
-              <Typography variant="h6" color="text.primary">
-                {new Intl.NumberFormat("en-US", {
-                  style: "currency",
-                  currency: "USD",
-                }).format(department.budget)}
-              </Typography>
-            </Box>
 
-            {/* Manager Section */}
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1, display: "flex", alignItems: "center" }}>
-                <FaUser style={{ fontSize: 18, marginRight: 8, color: theme.palette.text.secondary }} />
-                Department Manager
-              </Typography>
+              {/* Budget Section */}
+              <Box
+                sx={{
+                  backgroundColor: alpha(theme.palette.primary.main, 0.05),
+                  p: 2,
+                  borderRadius: 1,
+                  mb: 4,
+                }}
+              >
+                <Typography variant="subtitle2" color="primary" sx={{ fontWeight: 600 }}>
+                  Annual Budget:
+                </Typography>
+                <Typography variant="h6" color="text.primary">
+                  {new Intl.NumberFormat("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                  }).format(department.budget)}
+                </Typography>
+              </Box>
+
+              {/* Manager Section */}
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1, display: "flex", alignItems: "center" }}>
+                  <FaUser style={{ fontSize: 18, marginRight: 8, color: theme.palette.text.secondary }} />
+                  Department Manager
+                </Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    backgroundColor: alpha(theme.palette.success.main, 0.05),
+                    p: 2,
+                    borderRadius: 1,
+                  }}
+                >
+                  <Avatar sx={{ width: 40, height: 40, mr: 2 }}>{department.manager[0]}</Avatar>
+                  <Typography variant="body1" fontWeight={500}>
+                    {department.manager}
+                  </Typography>
+                </Box>
+              </Box>
+
+              {/* Employees Section */}
+              <Box sx={{ mb: 3 }}>
+                <Typography
+                  variant="subtitle1"
+                  sx={{
+                    fontWeight: 600,
+                    mb: 2,
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <FaUsers style={{ fontSize: 18, marginRight: 8, color: theme.palette.text.secondary }} />
+                  Team Members ({department.employees.length})
+                </Typography>
+                <Grid container spacing={1}>
+                  {department.employees.map((employee) => (
+                    <Grid item xs={12} sm={6} key={employee}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          p: 1.5,
+                          borderRadius: 1,
+                          "&:hover": {
+                            backgroundColor: "action.hover",
+                          },
+                        }}
+                      >
+                        <FaCircle
+                          style={{
+                            fontSize: 8,
+                            color: theme.palette.text.disabled,
+                            marginRight: 16,
+                          }}
+                        />
+                        <Typography variant="body1">{employee || ""}</Typography>
+                      </Box>
+                    </Grid>
+                  ))}
+                </Grid>
+              </Box>
+
+              {/* Metadata */}
+              <Divider sx={{ my: 2 }} />
               <Box
                 sx={{
                   display: "flex",
+                  gap: 1.5,
+                  flexWrap: "wrap",
                   alignItems: "center",
-                  backgroundColor: alpha(theme.palette.success.main, 0.05),
-                  p: 2,
-                  borderRadius: 1,
+                  color: "text.secondary",
                 }}
               >
-                <Avatar sx={{ width: 40, height: 40, mr: 2 }}>{department.manager[0]}</Avatar>
-                <Typography variant="body1" fontWeight={500}>
-                  {department.manager}
-                </Typography>
+                <Chip
+                  icon={<FaCalendarAlt style={{ fontSize: 14 }} />}
+                  label={`Created ${new Date(department.createdAt).toLocaleDateString()}`}
+                  size="small"
+                  variant="outlined"
+                />
+                <Chip
+                  icon={<FaSyncAlt style={{ fontSize: 14 }} />}
+                  label={`Updated ${new Date(department.updatedAt).toLocaleDateString()}`}
+                  size="small"
+                  variant="outlined"
+                />
               </Box>
-            </Box>
-
-            {/* Employees Section */}
-            <Box sx={{ mb: 3 }}>
-              <Typography
-                variant="subtitle1"
+            </Paper>
+          </Grid>
+        </Grid>
+        <Dialog
+          open={editDialogOpen}
+          onClose={handleClose}
+          maxWidth="sm"
+          fullWidth
+          PaperProps={{
+            sx: {
+              borderRadius: 2,
+            },
+          }}
+        >
+          <DialogTitle sx={{ pb: 1 }}>
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              Edit Department
+            </Typography>
+          </DialogTitle>
+          <form onSubmit={handleSubmit}>
+            <DialogContent>
+              <TextField
+                autoFocus
+                margin="dense"
+                name="name"
+                label="Name"
+                type="text"
+                fullWidth
+                value={formData.name}
+                onChange={handleChange}
+                required
+                sx={{ mb: 2 }}
+              />
+              <TextField
+                margin="dense"
+                name="description"
+                label="Description"
+                type="text"
+                fullWidth
+                multiline
+                rows={4}
+                value={formData.description}
+                onChange={handleChange}
+                required
+              />
+            </DialogContent>
+            <DialogActions sx={{ px: 3, pb: 2 }}>
+              <Button
+                onClick={handleClose}
                 sx={{
-                  fontWeight: 600,
-                  mb: 2,
-                  display: "flex",
-                  alignItems: "center",
+                  borderRadius: 2,
+                  px: 3,
+                  textTransform: "none",
                 }}
               >
-                <FaUsers style={{ fontSize: 18, marginRight: 8, color: theme.palette.text.secondary }} />
-                Team Members ({department.employees.length})
-              </Typography>
-              <Grid container spacing={1}>
-                {department.employees.map((employee) => (
-                  <Grid item xs={12} sm={6} key={employee}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        p: 1.5,
-                        borderRadius: 1,
-                        "&:hover": {
-                          backgroundColor: "action.hover",
-                        },
-                      }}
-                    >
-                      <FaCircle
-                        style={{
-                          fontSize: 8,
-                          color: theme.palette.text.disabled,
-                          marginRight: 16,
-                        }}
-                      />
-                      <Typography variant="body1">{employee || ""}</Typography>
-                    </Box>
-                  </Grid>
-                ))}
-              </Grid>
-            </Box>
-
-            {/* Metadata */}
-            <Divider sx={{ my: 2 }} />
-            <Box
-              sx={{
-                display: "flex",
-                gap: 1.5,
-                flexWrap: "wrap",
-                alignItems: "center",
-                color: "text.secondary",
-              }}
-            >
-              <Chip
-                icon={<FaCalendarAlt style={{ fontSize: 14 }} />}
-                label={`Created ${new Date(department.createdAt).toLocaleDateString()}`}
-                size="small"
-                variant="outlined"
-              />
-              <Chip
-                icon={<FaSyncAlt style={{ fontSize: 14 }} />}
-                label={`Updated ${new Date(department.updatedAt).toLocaleDateString()}`}
-                size="small"
-                variant="outlined"
-              />
-            </Box>
-          </Paper>
-        </Grid>
-      </Grid>
-      <Dialog
-        open={editDialogOpen}
-        onClose={handleClose}
-        maxWidth="sm"
-        fullWidth
-        PaperProps={{
-          sx: {
-            borderRadius: 2,
-          },
-        }}
-      >
-        <DialogTitle sx={{ pb: 1 }}>
-          <Typography variant="h6" sx={{ fontWeight: 600 }}>
-            Edit Department
-          </Typography>
-        </DialogTitle>
-        <form onSubmit={handleSubmit}>
-          <DialogContent>
-            <TextField
-              autoFocus
-              margin="dense"
-              name="name"
-              label="Name"
-              type="text"
-              fullWidth
-              value={formData.name}
-              onChange={handleChange}
-              required
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              margin="dense"
-              name="description"
-              label="Description"
-              type="text"
-              fullWidth
-              multiline
-              rows={4}
-              value={formData.description}
-              onChange={handleChange}
-              required
-            />
-          </DialogContent>
-          <DialogActions sx={{ px: 3, pb: 2 }}>
-            <Button
-              onClick={handleClose}
-              sx={{
-                borderRadius: 2,
-                px: 3,
-                textTransform: "none",
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              variant="contained"
-              sx={{
-                borderRadius: 2,
-                px: 3,
-                textTransform: "none",
-                fontWeight: 600,
-              }}
-            >
-              Update
-            </Button>
-          </DialogActions>
-        </form>
-      </Dialog>
-      <Toast />
-    </Box>
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                variant="contained"
+                sx={{
+                  borderRadius: 2,
+                  px: 3,
+                  textTransform: "none",
+                  fontWeight: 600,
+                }}
+              >
+                Update
+              </Button>
+            </DialogActions>
+          </form>
+        </Dialog>
+        <Toast />
+      </Box>
+    </Can>
   );
 }

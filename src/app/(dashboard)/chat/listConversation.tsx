@@ -46,12 +46,12 @@ export default function ListConversation() {
   useEffect(() => {
     try {
       socket?.emit("getRecentConversations", { userId: user?._id }, (val: ConversationItem[]) => {
-        console.log("getRecentConversations", val);
+        // console.log("getRecentConversations", val);
         localStorage.setItem("list-conversation", JSON.stringify(val));
         setListConversation(val);
       });
     } catch (error) {
-      console.log("Error socket", error);
+      console.error("Error socket", error);
     } finally {
       setLoading(false);
     }
@@ -60,7 +60,7 @@ export default function ListConversation() {
     return <>Loading...</>;
   }
 
-  console.log(listConversation);
+  // console.log(listConversation);
   return (
     <>
       <header>

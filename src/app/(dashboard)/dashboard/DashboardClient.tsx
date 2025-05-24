@@ -30,6 +30,7 @@ import CustomLineChart from "@/components/LineChart";
 import { TProject } from "@/types/project";
 import { TTask } from "@/types/task";
 import { UserResponse } from "@/types/user";
+import { Can } from "@/context/casl/AbilityContext";
 
 type TProps = {
   projects: {
@@ -175,71 +176,75 @@ export default function DashboardClient({ data }: { data: TProps }) {
 
       {/* Stats Grid */}
       <Grid container spacing={3}>
-        <Grid item xs={12} sm={6} md={4}>
-          <Box
-            sx={{
-              ...statsBoxStyle,
-              background: `linear-gradient(135deg, ${theme.palette.primary.light} 0%, ${alpha(
-                theme.palette.primary.main,
-                0.2
-              )} 100%)`,
-            }}
-          >
-            <Typography variant="h6" gutterBottom>
-              Total Projects
-            </Typography>
-            <Typography variant="body2" color="text.secondary" gutterBottom>
-              Active projects in the system
-            </Typography>
-            <Typography variant="h3" fontWeight="bold">
-              {projects?.data?.projects.length || 0}
-            </Typography>
-          </Box>
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={4}>
-          <Box
-            sx={{
-              ...statsBoxStyle,
-              background: `linear-gradient(135deg, ${theme.palette.secondary.light} 0%, ${alpha(
-                theme.palette.secondary.main,
-                0.2
-              )} 100%)`,
-            }}
-          >
-            <Typography variant="h6" gutterBottom>
-              Total Tasks
-            </Typography>
-            <Typography variant="body2" color="text.secondary" gutterBottom>
-              Tasks across all projects
-            </Typography>
-            <Typography variant="h3" fontWeight="bold">
-              {tasks?.data?.result.length || 0}
-            </Typography>
-          </Box>
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={4}>
-          <Box
-            sx={{
-              ...statsBoxStyle,
-              background: `linear-gradient(135deg, ${theme.palette.info.light} 0%, ${alpha(
-                theme.palette.info.main,
-                0.2
-              )} 100%)`,
-            }}
-          >
-            <Typography variant="h6" gutterBottom>
-              Total Users
-            </Typography>
-            <Typography variant="body2" color="text.secondary" gutterBottom>
-              Registered system users
-            </Typography>
-            <Typography variant="h3" fontWeight="bold">
-              {users?.data?.result.length || 0}
-            </Typography>
-          </Box>
-        </Grid>
+        <Can I="get" a="projects">
+          <Grid item xs={12} sm={6} md={4}>
+            <Box
+              sx={{
+                ...statsBoxStyle,
+                background: `linear-gradient(135deg, ${theme.palette.primary.light} 0%, ${alpha(
+                  theme.palette.primary.main,
+                  0.2
+                )} 100%)`,
+              }}
+            >
+              <Typography variant="h6" gutterBottom>
+                Total Projects
+              </Typography>
+              <Typography variant="body2" color="text.secondary" gutterBottom>
+                Active projects in the system
+              </Typography>
+              <Typography variant="h3" fontWeight="bold">
+                {projects?.data?.projects.length || 0}
+              </Typography>
+            </Box>
+          </Grid>
+        </Can>
+        <Can I="get" a="tasks">
+          <Grid item xs={12} sm={6} md={4}>
+            <Box
+              sx={{
+                ...statsBoxStyle,
+                background: `linear-gradient(135deg, ${theme.palette.secondary.light} 0%, ${alpha(
+                  theme.palette.secondary.main,
+                  0.2
+                )} 100%)`,
+              }}
+            >
+              <Typography variant="h6" gutterBottom>
+                Total Tasks
+              </Typography>
+              <Typography variant="body2" color="text.secondary" gutterBottom>
+                Tasks across all projects
+              </Typography>
+              <Typography variant="h3" fontWeight="bold">
+                {tasks?.data?.result.length || 0}
+              </Typography>
+            </Box>
+          </Grid>
+        </Can>
+        <Can I="get" a="users">
+          <Grid item xs={12} sm={6} md={4}>
+            <Box
+              sx={{
+                ...statsBoxStyle,
+                background: `linear-gradient(135deg, ${theme.palette.info.light} 0%, ${alpha(
+                  theme.palette.info.main,
+                  0.2
+                )} 100%)`,
+              }}
+            >
+              <Typography variant="h6" gutterBottom>
+                Total Users
+              </Typography>
+              <Typography variant="body2" color="text.secondary" gutterBottom>
+                Registered system users
+              </Typography>
+              <Typography variant="h3" fontWeight="bold">
+                {users?.data?.result.length || 0}
+              </Typography>
+            </Box>
+          </Grid>
+        </Can>
         <Grid item xs={12} sm={6} md={5}>
           <Box
             sx={{
@@ -298,91 +303,93 @@ export default function DashboardClient({ data }: { data: TProps }) {
         </Grid>
 
         {/* Projects Table */}
-        <Grid item xs={12}>
-          <Box
-            sx={{
-              bgcolor: "background.paper",
-              borderRadius: 2,
-              boxShadow: theme.shadows[2],
-              p: 3,
-              overflow: "hidden",
-            }}
-          >
-            <Typography variant="h6" gutterBottom sx={{ mb: 2 }}>
-              Recent Projects
-            </Typography>
-
+        <Can I="get" a="projects">
+          <Grid item xs={12}>
             <Box
               sx={{
-                overflowX: "auto",
-                "&::-webkit-scrollbar": { height: 6 },
-                "&::-webkit-scrollbar-thumb": {
-                  backgroundColor: theme.palette.primary.main,
-                  borderRadius: 3,
-                },
+                bgcolor: "background.paper",
+                borderRadius: 2,
+                boxShadow: theme.shadows[2],
+                p: 3,
+                overflow: "hidden",
               }}
             >
-              <table style={{ width: "100%", minWidth: 600 }}>
-                <thead style={tableHeaderStyle}>
-                  <tr>
-                    <th style={{ ...tableCellStyle, textAlign: "left", width: "35%" }}>Project Name</th>
-                    <th style={{ ...tableCellStyle, textAlign: "left", width: "20%" }}>Start Date</th>
-                    <th style={{ ...tableCellStyle, textAlign: "center", width: "25%" }}>Status</th>
-                    <th style={{ ...tableCellStyle, textAlign: "center", width: "20%" }}>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {projects?.data?.projects.map((project) => (
-                    <tr key={project._id} style={tableRowStyle}>
-                      <td style={tableCellStyle}>
-                        <Typography fontWeight="500">{project.name}</Typography>
-                      </td>
-                      <td style={tableCellStyle}>{dayjs(project.createdAt).format("DD MMM, YYYY")}</td>
-                      <td style={{ ...tableCellStyle, textAlign: "center" }}>
-                        <Chip
-                          label={["Not Started", "In Progress", "Completed"][project.status - 1]}
-                          sx={{
-                            borderRadius: 1,
-                            minWidth: 100,
-                            fontWeight: 600,
-                            letterSpacing: 0.5,
-                            textTransform: "uppercase",
-                            fontSize: "0.75rem",
-                            color: [
-                              theme.palette.text.secondary,
-                              theme.palette.common.white,
-                              theme.palette.common.white,
-                            ][project.status - 1],
-                            bgcolor: [
-                              alpha(theme.palette.text.secondary, 0.1),
-                              theme.palette.primary.main,
-                              theme.palette.success.main,
-                            ][project.status - 1],
-                          }}
-                        />
-                      </td>
-                      <td style={{ ...tableCellStyle, textAlign: "center" }}>
-                        <Tooltip title="Edit project">
-                          <IconButton
-                            color="primary"
-                            aria-label="Edit project"
-                            size="small"
-                            sx={{
-                              transition: "transform 0.2s",
-                              "&:hover": { transform: "scale(1.1)" },
-                            }}
-                          >
-                            <FaRegEdit />
-                          </IconButton>
-                        </Tooltip>
-                      </td>
+              <Typography variant="h6" gutterBottom sx={{ mb: 2 }}>
+                Recent Projects
+              </Typography>
+
+              <Box
+                sx={{
+                  overflowX: "auto",
+                  "&::-webkit-scrollbar": { height: 6 },
+                  "&::-webkit-scrollbar-thumb": {
+                    backgroundColor: theme.palette.primary.main,
+                    borderRadius: 3,
+                  },
+                }}
+              >
+                <table style={{ width: "100%", minWidth: 600 }}>
+                  <thead style={tableHeaderStyle}>
+                    <tr>
+                      <th style={{ ...tableCellStyle, textAlign: "left", width: "35%" }}>Project Name</th>
+                      <th style={{ ...tableCellStyle, textAlign: "left", width: "20%" }}>Start Date</th>
+                      <th style={{ ...tableCellStyle, textAlign: "center", width: "25%" }}>Status</th>
+                      <th style={{ ...tableCellStyle, textAlign: "center", width: "20%" }}>Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {projects?.data?.projects.map((project) => (
+                      <tr key={project._id} style={tableRowStyle}>
+                        <td style={tableCellStyle}>
+                          <Typography fontWeight="500">{project.name}</Typography>
+                        </td>
+                        <td style={tableCellStyle}>{dayjs(project.createdAt).format("DD MMM, YYYY")}</td>
+                        <td style={{ ...tableCellStyle, textAlign: "center" }}>
+                          <Chip
+                            label={["Not Started", "In Progress", "Completed"][project.status - 1]}
+                            sx={{
+                              borderRadius: 1,
+                              minWidth: 100,
+                              fontWeight: 600,
+                              letterSpacing: 0.5,
+                              textTransform: "uppercase",
+                              fontSize: "0.75rem",
+                              color: [
+                                theme.palette.text.secondary,
+                                theme.palette.common.white,
+                                theme.palette.common.white,
+                              ][project.status - 1],
+                              bgcolor: [
+                                alpha(theme.palette.text.secondary, 0.1),
+                                theme.palette.primary.main,
+                                theme.palette.success.main,
+                              ][project.status - 1],
+                            }}
+                          />
+                        </td>
+                        <td style={{ ...tableCellStyle, textAlign: "center" }}>
+                          <Tooltip title="Edit project">
+                            <IconButton
+                              color="primary"
+                              aria-label="Edit project"
+                              size="small"
+                              sx={{
+                                transition: "transform 0.2s",
+                                "&:hover": { transform: "scale(1.1)" },
+                              }}
+                            >
+                              <FaRegEdit />
+                            </IconButton>
+                          </Tooltip>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </Box>
             </Box>
-          </Box>
-        </Grid>
+          </Grid>
+        </Can>
       </Grid>
     </Box>
   );
