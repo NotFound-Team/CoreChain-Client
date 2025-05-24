@@ -29,8 +29,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 // -- Hook
 import { useAuth } from "@/hooks/useAuth";
 // -- React --
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSnackbar } from "@/hooks/useSnackbar";
+import { InputAdornment } from "@mui/material";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 
 const schema = yup.object({
   username: yup
@@ -51,6 +53,7 @@ export default function Login() {
   const router = useRouter();
 
   const { Toast, showToast } = useSnackbar();
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     handleSubmit,
@@ -144,11 +147,20 @@ export default function Login() {
                   <TextField
                     {...field}
                     label="Password"
-                    type="password"
                     fullWidth
                     margin="normal"
                     error={!!errors.password}
                     helperText={errors.password?.message}
+                    type={showPassword ? "text" : "password"}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton edge="end" onClick={() => setShowPassword(!showPassword)}>
+                            {showPassword ? <FaRegEye /> : <FaRegEyeSlash />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
                   />
                 )}
               />
