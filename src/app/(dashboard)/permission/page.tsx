@@ -9,10 +9,14 @@ import { GrDocumentUpdate } from "react-icons/gr";
 import { TPermission } from "@/types/permission";
 import { TRoleLayoutPermission } from "@/types/role";
 import { Can } from "@/context/casl/AbilityContext";
+import FallbackSpinner from "@/components/fall-back";
+import { useSnackbar } from "@/hooks/useSnackbar";
 
 export default function PermissionPage() {
   const [listPermissions, setListPermissions] = useState<TPermission[]>([]);
   const [rolePermissions, setRolePermissions] = useState<TRoleLayoutPermission[]>([]);
+  const [loading, setLoading] = useState(false);
+  const { Toast, showToast } = useSnackbar();
 
   const groupedPermissions = listPermissions.reduce((acc, permission) => {
     const moduleName: string | undefined = permission.module;
@@ -92,17 +96,28 @@ export default function PermissionPage() {
   const handleUpdatePermission = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const newRolePermissions = rolePermissions.map(({ _id, permissions }) => ({ _id, permissions }));
+
     try {
+      setLoading(true);
       for (const item of newRolePermissions) {
         await fetchApi(`${CONFIG_API.ROLE}/${item._id}`, "PATCH", { permissions: item.permissions });
       }
+      showToast("Update permission successfully!", "success");
     } catch (error) {
+      showToast("Update permission faild!", "error");
       console.error("ERROR", error);
+    } finally {
+      setLoading(false);
     }
   };
 
+  if (loading) {
+    return <FallbackSpinner />;
+  }
+
   return (
     <>
+      <Toast />
       <div className="p-6">
         {/* Bảng tiêu đề */}
 

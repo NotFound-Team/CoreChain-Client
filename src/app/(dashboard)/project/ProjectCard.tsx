@@ -178,7 +178,7 @@ const ProjectCard = React.memo(({ projectItem, index }: { projectItem: TProject;
                       <span>Client: </span>
                     </span>
                   </Box>
-                  <span>Gusteau’s Restaurant</span>
+                  <span>{projectItem.manager?.name ?? "No manager"}</span>
                 </Typography>
                 <Typography
                   sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 0.5, fontSize: "15px" }}
@@ -190,7 +190,7 @@ const ProjectCard = React.memo(({ projectItem, index }: { projectItem: TProject;
                       <span>Budget: </span>
                     </span>
                   </Box>
-                  <span>10,500$</span>
+                  <span>{projectItem.revenue}$</span>
                 </Typography>
               </Box>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -238,9 +238,13 @@ const ProjectCard = React.memo(({ projectItem, index }: { projectItem: TProject;
                   },
                 }}
               >
-                {projectItem.teamMembers.map((i, index) => (
-                  <Avatar key={index} src={`https://i.pravatar.cc/150?u=${i}`} alt={`Member ${i}`} />
-                ))}
+                {projectItem.teamMembers ? (
+                  projectItem.teamMembers.map((i, index) => (
+                    <Avatar key={index} src={`https://i.pravatar.cc/150?u=${i}`} alt={`Member ${i}`} />
+                  ))
+                ) : (
+                  <span>No members</span>
+                )}
               </AvatarGroup>
 
               <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>

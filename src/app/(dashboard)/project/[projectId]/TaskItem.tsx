@@ -97,7 +97,6 @@ const TaskItem = React.memo<TaskItemProps>(({ data, handleDeleteTask }) => {
   };
 
   const handleDateChange = (date: dayjs.Dayjs | null, field: string) => {
-    // console.log(formData);
     setFormData({
       ...formData,
       [field]: dayjs(date).toISOString(),
@@ -106,12 +105,10 @@ const TaskItem = React.memo<TaskItemProps>(({ data, handleDeleteTask }) => {
 
   const handleEditTask = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // console.log(formData);
     try {
       const response = await fetchApi(`${CONFIG_API.TASK}/${tasks._id}`, "PATCH", formData, {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
       });
-      // console.log(response);
       if (response) {
         showToast("Edit task successfully!", "success");
       } else {

@@ -160,7 +160,7 @@ const FormCreateUser: React.FC<CreateUserModalProps> = ({ data }) => {
                 >
                   {positions.map((position) => (
                     <MenuItem key={position._id} value={position._id}>
-                      {position.name}
+                      {position.title}
                     </MenuItem>
                   ))}
                 </Select>

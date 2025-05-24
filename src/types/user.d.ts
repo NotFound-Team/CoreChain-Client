@@ -16,7 +16,7 @@ export type TDepartment = {
 
 export type TPosition = {
   _id: string;
-  name: string;
+  title: string;
 };
 
 export type TRole = {

@@ -297,7 +297,7 @@ export default function Index() {
         userResponse?.data?.result.map((user: any) => ({
           _id: user._id,
           name: user.name,
-          // avatar: user.avatar || `https://i.pravatar.cc/150?u=${user._id}`,
+          avatar: user.avatar || `https://i.pravatar.cc/150?u=${user._id}`,
         }))
       );
 
@@ -307,7 +307,7 @@ export default function Index() {
         code: department.code,
         name: department.name,
         description: department.description,
-        manager: userMap.get(department.manager)?.name || "Unknown",
+        manager: userMap.get(department.manager)?.name || "N/A",
         managerId: department.manager,
         employees: department.employees.map((id: string) => userMap.get(id)).filter(Boolean),
         budget: department.budget,

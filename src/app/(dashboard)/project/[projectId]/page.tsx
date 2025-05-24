@@ -32,7 +32,7 @@ import fetchApi from "@/utils/fetchApi";
 import { CONFIG_API } from "@/configs/api";
 
 // -- Next --
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 // -- Types --
 import { TProject } from "@/types/project";
@@ -43,11 +43,18 @@ import dayjs from "dayjs";
 // -- React-icon --
 import { MdFolderDelete } from "react-icons/md";
 import { Can } from "@/context/casl/AbilityContext";
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+import { useSnackbar } from "@/hooks/useSnackbar";
+import FallbackSpinner from "@/components/fall-back";
 
 const ProjectDetail = () => {
   const theme = useTheme();
   const params = useParams<{ projectId: string }>();
+  const [loading, setLoading] = useState(false);
   const [projects, setProjects] = useState<TProject>();
+  const [openConfirmDelete, setOpenConfirmDelete] = useState(false);
+  const router = useRouter();
+  const { Toast, showToast } = useSnackbar();
 
   // Project timeline calculations
   const projectStart = projects?.startDate;
@@ -55,10 +62,29 @@ const ProjectDetail = () => {
 
   // console.log("PROJECT", projects);
 
+  // Delete project
+  const handleDeleteProject = async () => {
+    try {
+      setLoading(true);
+      const response = await fetchApi(`${CONFIG_API.PROJECT}/${params.projectId}`, "DELETE");
+      if (response.statusCode === 200) {
+        router.push("/project");
+        showToast("Delete project successfully!", "success");
+      }
+    } catch (error) {
+      console.error(error);
+      showToast("An error occurred please try again", "error");
+    } finally {
+      setOpenConfirmDelete(false);
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const dataProjectDetail = async () => {
       try {
         const response = await fetchApi(`${CONFIG_API.PROJECT}/${params.projectId}`);
+        // console.log(response);
         if (response && response.statusCode === 200) {
           setProjects(response.data);
         }
@@ -69,8 +95,13 @@ const ProjectDetail = () => {
     dataProjectDetail();
   }, [params.projectId]);
 
+  if (loading) {
+    return <FallbackSpinner />;
+  }
+
   return (
     <Can I="get" a="projects/:id">
+      <Toast />
       <Grow in={true} timeout={500}>
         <Container maxWidth="xl" sx={{ py: 4 }}>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -131,7 +162,7 @@ const ProjectDetail = () => {
                         background: theme.palette.error.light + "20",
                         "&:hover": { background: theme.palette.error.light + "40" },
                       }}
-                      // onClick={() => handleDeleteTask(tasks._id)}
+                      onClick={() => setOpenConfirmDelete(true)}
                     >
                       <MdFolderDelete />
                     </IconButton>
@@ -327,6 +358,53 @@ const ProjectDetail = () => {
           </LocalizationProvider>
         </Container>
       </Grow>
+      <Dialog
+        open={openConfirmDelete}
+        onClose={() => {
+          setOpenConfirmDelete(false);
+        }}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          <Typography variant="h6" sx={{ fontWeight: 600 }}>
+            Delete Project
+          </Typography>
+        </DialogTitle>
+        <DialogContent>
+          <Alert severity="warning" sx={{ mt: 2, borderRadius: 2 }}>
+            <DialogContentText id="alert-dialog-description">
+              Are you sure you want to delete this project? This action cannot be undone.
+            </DialogContentText>
+          </Alert>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button
+            onClick={() => setOpenConfirmDelete(false)}
+            color="inherit"
+            sx={{
+              borderRadius: 2,
+              px: 3,
+              textTransform: "none",
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleDeleteProject}
+            color="error"
+            variant="contained"
+            sx={{
+              borderRadius: 2,
+              px: 3,
+              textTransform: "none",
+              fontWeight: 600,
+            }}
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Can>
   );
 };
