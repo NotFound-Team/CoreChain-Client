@@ -41,8 +41,8 @@ export default function UserDetails({ user }: { user: UserResponse }) {
                 <Typography variant="h3" className="font-bold text-gray-900 dark:text-white text-2xl">
                   {user?.name}
                 </Typography>
-                <Typography variant="body2" className="text-2xl text-gray-500 dark:text-gray-400">
-                  <SectionHeader icon={FaUserCog} title={`Role: ${user.role?.name || "NO role"}`} />
+                <Typography variant="body2" component="div" className="text-2xl text-gray-500 dark:text-gray-400">
+                  <SectionHeader icon={FaUserCog} title={`Role: ${user.role?.name || "No role"}`} />
                   <div></div>
                 </Typography>
               </div>

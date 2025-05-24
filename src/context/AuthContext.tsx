@@ -51,27 +51,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         // Token hết hạn
         if (decoded.exp < Date.now() / 1000 - 1) {
-          try {
-            // const responses = await fetchApi(`${CONFIG_API.AUTH.REFRESH}`, "GET", null, {
-            //   withCredentials: true,
-            // });
-            // console.log(responses);
-            // const response = await axios.get(`${BASE_URL}${CONFIG_API.AUTH.REFRESH}`, {
-            //   withCredentials: true,
-            //   headers: {
-            //     Authorization: `Bearer ${token}`,
-            //   },
-            // });
-            // console.log(response);
-          } catch (error) {
-            console.error("Refresh token failed:", error);
-          }
+          // try {
+          //   const responses = await fetchApi(`${CONFIG_API.AUTH.REFRESH}`, "GET", null, {
+          //     withCredentials: true,
+          //   });
+          //   console.log(responses);
+          //   const response = await axios.get(`${BASE_URL}${CONFIG_API.AUTH.REFRESH}`, {
+          //     withCredentials: true,
+          //     headers: {
+          //       Authorization: `Bearer ${token}`,
+          //     },
+          //   });
+          //   console.log(response);
+          // } catch (error) {
+          //   console.error("Refresh token failed:", error);
+          // }
 
-          // localStorage.removeItem("token");
-          // localStorage.removeItem("projects");
-          // localStorage.removeItem("list-conversation");
-          // router.push("/login");
-          // return;
+          localStorage.removeItem("token");
+          localStorage.removeItem("projects");
+          localStorage.removeItem("list-conversation");
+          router.push("/login");
+          return;
         }
 
         // Nếu token còn hạn thì fetch user

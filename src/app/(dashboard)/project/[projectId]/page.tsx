@@ -174,7 +174,7 @@ const ProjectDetail = () => {
                       </Typography>
                       <LinearProgress
                         variant="determinate"
-                        value={projects?.progress}
+                        value={projects?.progress ?? 0}
                         sx={{
                           height: 10,
                           borderRadius: 5,
