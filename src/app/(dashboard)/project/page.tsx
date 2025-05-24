@@ -30,6 +30,7 @@ import { useSnackbar } from "@/hooks/useSnackbar";
 import Loading from "@/components/Loading";
 import ProjectCardSkeleton from "@/components/ProjectCardSkeleton";
 import { FaFileUpload } from "react-icons/fa";
+import { Can } from "@/context/casl/AbilityContext";
 const ProjectCard = React.lazy(() => import("./ProjectCard"));
 
 export default function ProjectList() {
@@ -132,7 +133,7 @@ export default function ProjectList() {
       }
     } catch (error) {
       showToast("Error message!", "error");
-      console.log("error", error);
+      console.error("error", error);
     } finally {
       setLoading(false);
     }
@@ -211,20 +212,22 @@ export default function ProjectList() {
               >
                 <LuRows3 size={20} />
               </IconButton>
-              <Button
-                variant="contained"
-                startIcon={<MdAddBox size={20} />}
-                sx={{
-                  borderRadius: 2,
-                  px: { xs: 2, sm: 3, md: 4 }, // padding-x responsive theo breakpoint
-                  fontSize: { xs: "10px", sm: "14px", md: "16px" }, // font size responsive
-                  height: { xs: 30, sm: 36, md: 42 }, // thêm luôn height nếu muốn đồng bộ
-                  gap: { xs: 0.5, sm: 1 },
-                }}
-                onClick={handleClickOpen}
-              >
-                New Project
-              </Button>
+              <Can I="post" a="projects">
+                <Button
+                  variant="contained"
+                  startIcon={<MdAddBox size={20} />}
+                  sx={{
+                    borderRadius: 2,
+                    px: { xs: 2, sm: 3, md: 4 }, // padding-x responsive theo breakpoint
+                    fontSize: { xs: "10px", sm: "14px", md: "16px" }, // font size responsive
+                    height: { xs: 30, sm: 36, md: 42 }, // thêm luôn height nếu muốn đồng bộ
+                    gap: { xs: 0.5, sm: 1 },
+                  }}
+                  onClick={handleClickOpen}
+                >
+                  New Project
+                </Button>
+              </Can>
             </Box>
           </Box>
 
@@ -297,7 +300,7 @@ export default function ProjectList() {
                       // value={formData.teamMembers}
                       value={formData.teamMembers}
                       onChange={(e, arrayValues) => {
-                        console.log("ArrayValue", arrayValues);
+                        // console.log("ArrayValue", arrayValues);
                         setFormData({ ...formData, teamMembers: arrayValues });
                       }}
                       fullWidth

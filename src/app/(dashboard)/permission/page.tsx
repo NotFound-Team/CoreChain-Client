@@ -8,13 +8,11 @@ import { CONFIG_API } from "@/configs/api";
 import { GrDocumentUpdate } from "react-icons/gr";
 import { TPermission } from "@/types/permission";
 import { TRoleLayoutPermission } from "@/types/role";
-import { useAuth } from "@/hooks/useAuth";
-import { hasPermission } from "@/utils/permissions";
+import { Can } from "@/context/casl/AbilityContext";
 
 export default function PermissionPage() {
   const [listPermissions, setListPermissions] = useState<TPermission[]>([]);
   const [rolePermissions, setRolePermissions] = useState<TRoleLayoutPermission[]>([]);
-  const { user } = useAuth();
 
   const groupedPermissions = listPermissions.reduce((acc, permission) => {
     const moduleName: string | undefined = permission.module;
@@ -39,7 +37,7 @@ export default function PermissionPage() {
     const fecthPermission = async () => {
       const response = await fetchApi(`${CONFIG_API.PERMISSION}?current=1&pageSize=100`, "GET");
       if (response && response.statusCode === 200) {
-        console.log("PERMISSION", response.data.result);
+        // console.log("PERMISSION", response.data.result);
         setListPermissions(response.data.result);
       }
     };
@@ -98,72 +96,69 @@ export default function PermissionPage() {
       for (const item of newRolePermissions) {
         await fetchApi(`${CONFIG_API.ROLE}/${item._id}`, "PATCH", { permissions: item.permissions });
       }
-      console.log("OK");
     } catch (error) {
-      console.log("ERROR", error);
+      console.error("ERROR", error);
     }
   };
 
   return (
     <>
-      {hasPermission(user, "get permissions") && (
-        <div className="p-6">
-          {/* Bảng tiêu đề */}
+      <div className="p-6">
+        {/* Bảng tiêu đề */}
 
-          <form onSubmit={handleUpdatePermission}>
-            <div className="flex justify-end mb-4">
-              {hasPermission(user, "create permissions") && (
-                <Button type="submit" variant="contained" startIcon={<GrDocumentUpdate />} color="success">
-                  Update permission
-                </Button>
-              )}
-            </div>
-            <div
-              className="bg-gray-100 font-semibold text-gray-700 text-sm border border-gray-300 rounded-t-md grid"
-              style={{ gridTemplateColumns: `repeat(${columnCount}, minmax(0, 1fr))` }}
-            >
-              <div className="p-3 text-left">Actions</div>
-              {rolePermissions.map((role) => (
-                <div key={role._id} className="p-3 text-center capitalize">
-                  {role.name}
-                </div>
-              ))}
-            </div>
+        <form onSubmit={handleUpdatePermission}>
+          <div className="flex justify-end mb-4">
+            <Can I="post" a="permissions">
+              <Button type="submit" variant="contained" startIcon={<GrDocumentUpdate />} color="success">
+                Update permission
+              </Button>
+            </Can>
+          </div>
+          <div
+            className="bg-gray-100 font-semibold text-gray-700 text-sm border border-gray-300 rounded-t-md grid"
+            style={{ gridTemplateColumns: `repeat(${columnCount}, minmax(0, 1fr))` }}
+          >
+            <div className="p-3 text-left">Actions</div>
+            {rolePermissions.map((role) => (
+              <div key={role._id} className="p-3 text-center capitalize">
+                {role.name}
+              </div>
+            ))}
+          </div>
 
-            {/* Accordion cho từng module */}
-            <div className="border-x border-b border-gray-300 rounded-b-md divide-y">
-              {Object.entries(groupedPermissions).map(([moduleName, permissions], index) => (
-                <Accordion key={index} disableGutters className="!shadow-none !border-0 !rounded-none" defaultExpanded>
-                  <AccordionSummary expandIcon={<MdExpandMore />} className="!bg-gray-50 hover:!bg-gray-100 px-3 py-2">
-                    <span className="text-base font-bold text-gray-800">{moduleName}</span>
-                  </AccordionSummary>
-                  <AccordionDetails className="p-0">
-                    {permissions.map((permission) => (
-                      <div
-                        key={permission._id}
-                        className="grid items-center border-t border-gray-200 hover:bg-gray-50 text-sm"
-                        style={{ gridTemplateColumns: `repeat(${columnCount}, minmax(0, 1fr))` }}
-                      >
-                        <div className="p-3">{permission.name}</div>
-                        {rolePermissions.map((role) => (
-                          <div key={role._id} className="flex justify-center items-center p-1">
-                            <Checkbox
-                              checked={role.permissions.includes(permission._id)}
-                              onChange={(e) => handleChange(role._id, permission._id, e.target.checked)}
-                              color="primary"
-                              size="small"
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    ))}
-                  </AccordionDetails>
-                </Accordion>
-              ))}
-            </div>
-          </form>
-        </div>
-      )}
+          {/* Accordion cho từng module */}
+          <div className="border-x border-b border-gray-300 rounded-b-md divide-y">
+            {Object.entries(groupedPermissions).map(([moduleName, permissions], index) => (
+              <Accordion key={index} disableGutters className="!shadow-none !border-0 !rounded-none" defaultExpanded>
+                <AccordionSummary expandIcon={<MdExpandMore />} className="!bg-gray-50 hover:!bg-gray-100 px-3 py-2">
+                  <span className="text-base font-bold text-gray-800">{moduleName}</span>
+                </AccordionSummary>
+                <AccordionDetails className="p-0">
+                  {permissions.map((permission) => (
+                    <div
+                      key={permission._id}
+                      className="grid items-center border-t border-gray-200 hover:bg-gray-50 text-sm"
+                      style={{ gridTemplateColumns: `repeat(${columnCount}, minmax(0, 1fr))` }}
+                    >
+                      <div className="p-3">{permission.name}</div>
+                      {rolePermissions.map((role) => (
+                        <div key={role._id} className="flex justify-center items-center p-1">
+                          <Checkbox
+                            checked={role.permissions.includes(permission._id)}
+                            onChange={(e) => handleChange(role._id, permission._id, e.target.checked)}
+                            color="primary"
+                            size="small"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </AccordionDetails>
+              </Accordion>
+            ))}
+          </div>
+        </form>
+      </div>
     </>
   );
 }

@@ -1,3 +1,5 @@
+// import { Can } from "@casl/react";
+import { Can } from "@/context/casl/AbilityContext";
 import { Metadata } from "next";
 import React from "react";
 
@@ -7,15 +9,17 @@ export const metadata: Metadata = {
 };
 
 type TProps = {
-  children: React.ReactNode
+  children: React.ReactNode;
   title: never;
 };
 
 export default function LayoutPermission({ children, title }: TProps) {
   return (
-    <div>
-      {title}
-      <div>{children}</div>
-    </div>
+    <Can I="get" a="permissions">
+      <div>
+        {title}
+        <div>{children}</div>
+      </div>
+    </Can>
   );
 }

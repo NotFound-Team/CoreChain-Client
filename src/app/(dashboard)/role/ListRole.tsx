@@ -8,6 +8,7 @@ import { Role } from "@/types/role";
 import { Dispatch, SetStateAction } from "react";
 import { User } from "@/types/auth";
 import { hasPermission } from "@/utils/permissions";
+import { Can } from "@/context/casl/AbilityContext";
 
 export default function ListRole({
   rolePermissions,
@@ -78,14 +79,14 @@ export default function ListRole({
                 </Link>
               </Tooltip>
             )}
-            {hasPermission(user, "update roles") && (
+            <Can I="patch" a="roles/:id">
               <Tooltip title="Edit" arrow>
                 <IconButton color="warning">
                   <FaRegEdit />
                 </IconButton>
               </Tooltip>
-            )}
-            {hasPermission(user, "delete roles") && (
+            </Can>
+            <Can I="delete" a="roles/:id">
               <Tooltip title="Delete" arrow>
                 <IconButton
                   color="error"
@@ -97,7 +98,7 @@ export default function ListRole({
                   <MdDelete />
                 </IconButton>
               </Tooltip>
-            )}
+            </Can>
           </td>
         </tr>
       ))}

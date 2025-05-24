@@ -27,6 +27,7 @@ import { MdEdit, MdDelete, MdWork } from "react-icons/md";
 import { useSnackbar } from "@/hooks/useSnackbar";
 import fetchApi from "@/utils/fetchApi";
 import { CONFIG_API } from "@/configs/api";
+import { Can } from "@/context/casl/AbilityContext";
 
 interface Position {
   _id: string;
@@ -58,7 +59,6 @@ export default function PositionPage() {
     try {
       setLoading(true);
       const response = await fetchApi(`${CONFIG_API.POSITION}`, "GET");
-      console.log(response);
       if (response.statusCode === 200) {
         setPositions(response.data.result);
       }
@@ -72,6 +72,7 @@ export default function PositionPage() {
 
   useEffect(() => {
     fetchPositions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleOpen = () => {
@@ -111,7 +112,7 @@ export default function PositionPage() {
 
   const handleConfirmDelete = async () => {
     if (!positionToDelete) return;
-    
+
     try {
       const response = await fetchApi(`${CONFIG_API.POSITION}/${positionToDelete}`, "DELETE");
       if (response.statusCode === 200) {
@@ -164,23 +165,26 @@ export default function PositionPage() {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Paper 
+      <Paper
         elevation={0}
-        sx={{ 
-          p: 3, 
-          mb: 4, 
+        sx={{
+          p: 3,
+          mb: 4,
           borderRadius: 2,
-          background: `linear-gradient(45deg, ${alpha(theme.palette.primary.main, 0.1)}, ${alpha(theme.palette.secondary.main, 0.1)})`,
+          background: `linear-gradient(45deg, ${alpha(theme.palette.primary.main, 0.1)}, ${alpha(
+            theme.palette.secondary.main,
+            0.1
+          )})`,
           border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
         }}
       >
         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
             <MdWork size={32} color={theme.palette.primary.main} />
-            <Typography 
-              variant="h4" 
-              component="h1" 
-              sx={{ 
+            <Typography
+              variant="h4"
+              component="h1"
+              sx={{
                 fontWeight: 600,
                 background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
                 WebkitBackgroundClip: "text",
@@ -190,25 +194,27 @@ export default function PositionPage() {
               Position Management
             </Typography>
           </Box>
-          <Button
-            variant="contained"
-            startIcon={<FaPlus />}
-            onClick={handleOpen}
-            sx={{
-              borderRadius: 2,
-              px: 3,
-              py: 1,
-              textTransform: "none",
-              fontWeight: 600,
-              boxShadow: "none",
-              "&:hover": {
+          <Can I="post" a="positions">
+            <Button
+              variant="contained"
+              startIcon={<FaPlus />}
+              onClick={handleOpen}
+              sx={{
+                borderRadius: 2,
+                px: 3,
+                py: 1,
+                textTransform: "none",
+                fontWeight: 600,
                 boxShadow: "none",
-                backgroundColor: "primary.dark",
-              },
-            }}
-          >
-            Create Position
-          </Button>
+                "&:hover": {
+                  boxShadow: "none",
+                  backgroundColor: "primary.dark",
+                },
+              }}
+            >
+              Create Position
+            </Button>
+          </Can>
         </Box>
         <Typography variant="body1" color="text.secondary">
           Manage and organize positions within your organization
@@ -224,9 +230,9 @@ export default function PositionPage() {
           {positions.map((position) => (
             <Grid item xs={12} sm={6} md={4} key={position._id}>
               <Fade in={true} timeout={500}>
-                <Card 
-                  sx={{ 
-                    height: "100%", 
+                <Card
+                  sx={{
+                    height: "100%",
                     borderRadius: 2,
                     transition: "all 0.3s ease",
                     "&:hover": {
@@ -237,10 +243,9 @@ export default function PositionPage() {
                 >
                   <CardContent>
                     <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-                      <Typography 
-                        variant="h6" 
+                      <Typography
                         component="div"
-                        sx={{ 
+                        sx={{
                           fontWeight: 600,
                           color: theme.palette.primary.main,
                         }}
@@ -248,38 +253,42 @@ export default function PositionPage() {
                         {position.title}
                       </Typography>
                       <Box>
-                        <Tooltip title="Edit">
-                          <IconButton 
-                            onClick={() => handleEdit(position)} 
-                            size="small"
-                            sx={{
-                              color: theme.palette.primary.main,
-                              "&:hover": {
-                                backgroundColor: alpha(theme.palette.primary.main, 0.1),
-                              },
-                            }}
-                          >
-                            <MdEdit />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Delete">
-                          <IconButton 
-                            onClick={() => handleDelete(position._id)} 
-                            size="small" 
-                            color="error"
-                            sx={{
-                              "&:hover": {
-                                backgroundColor: alpha(theme.palette.error.main, 0.1),
-                              },
-                            }}
-                          >
-                            <MdDelete />
-                          </IconButton>
-                        </Tooltip>
+                        <Can I="patch" a="positions/:id">
+                          <Tooltip title="Edit">
+                            <IconButton
+                              onClick={() => handleEdit(position)}
+                              size="small"
+                              sx={{
+                                color: theme.palette.primary.main,
+                                "&:hover": {
+                                  backgroundColor: alpha(theme.palette.primary.main, 0.1),
+                                },
+                              }}
+                            >
+                              <MdEdit />
+                            </IconButton>
+                          </Tooltip>
+                        </Can>
+                        <Can I="delete" a="positions/:id">
+                          <Tooltip title="Delete">
+                            <IconButton
+                              onClick={() => handleDelete(position._id)}
+                              size="small"
+                              color="error"
+                              sx={{
+                                "&:hover": {
+                                  backgroundColor: alpha(theme.palette.error.main, 0.1),
+                                },
+                              }}
+                            >
+                              <MdDelete />
+                            </IconButton>
+                          </Tooltip>
+                        </Can>
                       </Box>
                     </Box>
-                    <Box 
-                      sx={{ 
+                    <Box
+                      sx={{
                         display: "inline-block",
                         px: 1.5,
                         py: 0.5,
@@ -293,8 +302,8 @@ export default function PositionPage() {
                     >
                       Level {position.level}
                     </Box>
-                    <Typography 
-                      variant="body2" 
+                    <Typography
+                      variant="body2"
                       color="text.secondary"
                       sx={{
                         display: "-webkit-box",
@@ -314,10 +323,10 @@ export default function PositionPage() {
         </Grid>
       )}
 
-      <Dialog 
-        open={open} 
-        onClose={handleClose} 
-        maxWidth="sm" 
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        maxWidth="sm"
         fullWidth
         PaperProps={{
           sx: {
@@ -326,9 +335,7 @@ export default function PositionPage() {
         }}
       >
         <DialogTitle sx={{ pb: 1 }}>
-          <Typography variant="h6" sx={{ fontWeight: 600 }}>
-            {editingPosition ? "Edit Position" : "Create Position"}
-          </Typography>
+          <Typography sx={{ fontWeight: 600 }}>{editingPosition ? "Edit Position" : "Create Position"}</Typography>
         </DialogTitle>
         <form onSubmit={handleSubmit}>
           <DialogContent>
@@ -370,9 +377,9 @@ export default function PositionPage() {
             />
           </DialogContent>
           <DialogActions sx={{ px: 3, pb: 2 }}>
-            <Button 
+            <Button
               onClick={handleClose}
-              sx={{ 
+              sx={{
                 borderRadius: 2,
                 px: 3,
                 textTransform: "none",
@@ -380,10 +387,10 @@ export default function PositionPage() {
             >
               Cancel
             </Button>
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               variant="contained"
-              sx={{ 
+              sx={{
                 borderRadius: 2,
                 px: 3,
                 textTransform: "none",
@@ -396,8 +403,8 @@ export default function PositionPage() {
         </form>
       </Dialog>
 
-      <Dialog 
-        open={deleteDialogOpen} 
+      <Dialog
+        open={deleteDialogOpen}
         onClose={handleCancelDelete}
         PaperProps={{
           sx: {
@@ -406,14 +413,12 @@ export default function PositionPage() {
         }}
       >
         <DialogTitle sx={{ pb: 1 }}>
-          <Typography variant="h6" sx={{ fontWeight: 600 }}>
-            Delete Position
-          </Typography>
+          <Typography sx={{ fontWeight: 600 }}>Delete Position</Typography>
         </DialogTitle>
         <DialogContent>
-          <Alert 
-            severity="warning" 
-            sx={{ 
+          <Alert
+            severity="warning"
+            sx={{
               mt: 2,
               borderRadius: 2,
             }}
@@ -422,9 +427,9 @@ export default function PositionPage() {
           </Alert>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button 
+          <Button
             onClick={handleCancelDelete}
-            sx={{ 
+            sx={{
               borderRadius: 2,
               px: 3,
               textTransform: "none",
@@ -432,11 +437,11 @@ export default function PositionPage() {
           >
             Cancel
           </Button>
-          <Button 
-            onClick={handleConfirmDelete} 
-            color="error" 
+          <Button
+            onClick={handleConfirmDelete}
+            color="error"
             variant="contained"
-            sx={{ 
+            sx={{
               borderRadius: 2,
               px: 3,
               textTransform: "none",

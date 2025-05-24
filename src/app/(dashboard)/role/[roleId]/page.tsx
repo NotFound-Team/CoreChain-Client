@@ -26,17 +26,14 @@ import { useEffect, useState } from "react";
 import { FaInfoCircle, FaListAlt, FaHistory } from "react-icons/fa";
 import { IconType } from "react-icons/lib";
 import { Role } from "@/types/role";
-import { hasPermission } from "@/utils/permissions";
-import { useAuth } from "@/hooks/useAuth";
 import { useParams } from "next/navigation";
+import { Can } from "@/context/casl/AbilityContext";
 
 export default function RoleIdPage() {
   const [roleInfo, setRoleInfo] = useState<Role | null>(null);
   const [loading, setLoading] = useState(true);
   const theme = useTheme();
-  const { user } = useAuth();
   const params = useParams();
-  console.log(params);
 
   useEffect(() => {
     const fetchRoleInfo = async () => {
@@ -76,7 +73,7 @@ export default function RoleIdPage() {
 
   return (
     <>
-      {hasPermission(user, "get roles by id") && (
+      <Can I="get" a="roles/:id">
         <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto space-y-8">
             <Typography
@@ -190,7 +187,7 @@ export default function RoleIdPage() {
             </Card>
           </div>
         </div>
-      )}
+      </Can>
     </>
   );
 }

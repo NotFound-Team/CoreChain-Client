@@ -1,3 +1,4 @@
+import { Can } from "@/context/casl/AbilityContext";
 import ButtonCreateUser from "./CreateUser";
 import ListUser from "./ListUser";
 import { Metadata } from "next";
@@ -15,7 +16,9 @@ export default function UserManagement() {
           <div className="text-2xl font-bold">User Management</div>
           <ButtonCreateUser />
         </div>
-        <ListUser />
+        <Can I="get" a="users">
+          <ListUser />
+        </Can>
       </div>
     </>
   );

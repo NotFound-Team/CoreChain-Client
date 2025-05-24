@@ -1,3 +1,4 @@
+import { Can } from "@/context/casl/AbilityContext";
 import { Metadata } from "next";
 import React from "react";
 
@@ -12,8 +13,10 @@ type TProps = {
 
 export default function LayoutDepartment({ children }: TProps) {
   return (
-    <div>
-      <div>{children}</div>
-    </div>
+    <Can I="get" a="departments">
+      <div>
+        <div>{children}</div>
+      </div>
+    </Can>
   );
 }

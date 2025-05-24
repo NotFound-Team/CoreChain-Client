@@ -39,6 +39,7 @@ import { useSnackbar } from "@/hooks/useSnackbar";
 import FallbackSpinner from "@/components/fall-back";
 import { FaPlus } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import { Can } from "@/context/casl/AbilityContext";
 
 interface Employee {
   _id: string;
@@ -165,29 +166,35 @@ export default function Index() {
             }}
           >
             <Stack direction="row" spacing={1}>
-              <IconButton
-                onClick={() => {
-                  router.push(`/department/${params.id}`);
-                }}
-              >
-                <MdVisibility />
-              </IconButton>
-              <IconButton
-                onClick={() => {
-                  handleOpenForm(String(params.id));
-                  setSelectedDepartmentId(String(params.id));
-                }}
-              >
-                <MdEdit />
-              </IconButton>
-              <IconButton
-                onClick={() => {
-                  setSelectedDepartmentId(String(params.id));
-                  setOpenConfirmDelete(true);
-                }}
-              >
-                <MdDelete />
-              </IconButton>
+              <Can I="get" a="departments/:id">
+                <IconButton
+                  onClick={() => {
+                    router.push(`/department/${params.id}`);
+                  }}
+                >
+                  <MdVisibility />
+                </IconButton>
+              </Can>
+              <Can I="patch" a="departments/:id">
+                <IconButton
+                  onClick={() => {
+                    handleOpenForm(String(params.id));
+                    setSelectedDepartmentId(String(params.id));
+                  }}
+                >
+                  <MdEdit />
+                </IconButton>
+              </Can>
+              <Can I="delete" a="departments/:id">
+                <IconButton
+                  onClick={() => {
+                    setSelectedDepartmentId(String(params.id));
+                    setOpenConfirmDelete(true);
+                  }}
+                >
+                  <MdDelete />
+                </IconButton>
+              </Can>
             </Stack>
           </Box>
         );
@@ -202,6 +209,7 @@ export default function Index() {
   const {
     handleSubmit,
     control,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     formState: { errors },
     reset,
   } = useForm<TDepartment>({
@@ -262,7 +270,7 @@ export default function Index() {
         fetchDepartment();
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       showToast("An error occurred please try again", "error");
     } finally {
       setOpenConfirmDelete(false);
@@ -373,25 +381,27 @@ export default function Index() {
                 Department Management
               </Typography>
             </Box>
-            <Button
-              variant="contained"
-              startIcon={<FaPlus />}
-              onClick={() => handleOpenForm()}
-              sx={{
-                borderRadius: 2,
-                px: 3,
-                py: 1,
-                textTransform: "none",
-                fontWeight: 600,
-                boxShadow: "none",
-                "&:hover": {
+            <Can I="post" a="departments">
+              <Button
+                variant="contained"
+                startIcon={<FaPlus />}
+                onClick={() => handleOpenForm()}
+                sx={{
+                  borderRadius: 2,
+                  px: 3,
+                  py: 1,
+                  textTransform: "none",
+                  fontWeight: 600,
                   boxShadow: "none",
-                  backgroundColor: "primary.dark",
-                },
-              }}
-            >
-              Create Department
-            </Button>
+                  "&:hover": {
+                    boxShadow: "none",
+                    backgroundColor: "primary.dark",
+                  },
+                }}
+              >
+                Create Department
+              </Button>
+            </Can>
           </Box>
           <Typography variant="body1" color="text.secondary">
             Manage and organize positions within your organization

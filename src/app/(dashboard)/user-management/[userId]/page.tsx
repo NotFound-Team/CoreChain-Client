@@ -29,8 +29,6 @@ export default async function PageUser({ params }: TProps) {
     // Fetch data from API in Server Component
     const user: UserResponse = response.data;
 
-    console.log(response);
-
     if (!user) {
       return <div>User not found</div>;
     }

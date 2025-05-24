@@ -1,7 +1,7 @@
 "use client";
 
 // -- Context --
-import { AuthProvider } from "@/context/AuthContext";
+// import { AuthProvider } from "@/context/AuthContext";
 
 // -- MUI --
 import { Tooltip, useTheme } from "@mui/material";
@@ -40,6 +40,8 @@ import { useSnackbar } from "@/hooks/useSnackbar";
 // -- Component --
 import VerticalDashboard from "@/components/VerticalDashboard";
 import HorizontalDashboard from "@/components/HorizontalDashboard";
+import AbilityProvider from "@/components/AbilityProvider";
+import { useAuth } from "@/hooks/useAuth";
 
 const drawerWidth = 240;
 const appBarHeight = 64;
@@ -49,6 +51,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [mobileOpen, setMobileOpen] = useState(false);
   const { Toast, showToast } = useSnackbar();
   const theme = useTheme();
+  const { user } = useAuth();
 
   const handleDrawerToggle = () => {
     // console.log(mobileOpen);
@@ -63,7 +66,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       showToast("Logut successfully!", "success");
       router.push("/login");
     } catch (error) {
-      console.log("error", error);
+      console.error("error", error);
       showToast("Error during logout. Please try again!", "error");
     }
   };
@@ -166,7 +169,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   );
 
   return (
-    <AuthProvider>
+    <AbilityProvider permissions={user?.permissions}>
       <Box sx={{ display: "flex", minHeight: "100vh" }}>
         <CssBaseline />
 
@@ -198,6 +201,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <main className="w-full h-full">{children}</main>
         </Box>
       </Box>
-    </AuthProvider>
+    </AbilityProvider>
   );
 }

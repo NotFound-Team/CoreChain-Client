@@ -29,6 +29,7 @@ import { TCreateTask, TTask } from "@/types/task";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useSnackbar } from "@/hooks/useSnackbar";
 import dayjs from "dayjs";
+import { Can } from "@/context/casl/AbilityContext";
 
 const TaskManager = () => {
   const { Toast, showToast } = useSnackbar();
@@ -55,11 +56,10 @@ const TaskManager = () => {
       showToast("Deleted task successfully!", "success");
     } catch (error) {
       showToast("Error!", "error");
-      console.log("error", error);
+      console.error("error", error);
     }
   };
 
-  console.log(params);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -113,7 +113,7 @@ const TaskManager = () => {
         showToast("Create task success!", "success");
       }
     } catch (error) {
-      console.log("error", error);
+      console.error("error", error);
     } finally {
       setOpen(false);
     }
@@ -142,20 +142,22 @@ const TaskManager = () => {
           <IoMdAdd style={{ marginRight: 12 }} />
           Task Management
         </Typography>
-        <Button
-          variant="contained"
-          startIcon={<IoMdAdd />}
-          onClick={handleClickOpen}
-          sx={{
-            px: 4,
-            py: 1.5,
-            borderRadius: 2,
-            textTransform: "none",
-            fontWeight: 600,
-          }}
-        >
-          New Task
-        </Button>
+        <Can I="post" a="tasks">
+          <Button
+            variant="contained"
+            startIcon={<IoMdAdd />}
+            onClick={handleClickOpen}
+            sx={{
+              px: 4,
+              py: 1.5,
+              borderRadius: 2,
+              textTransform: "none",
+              fontWeight: 600,
+            }}
+          >
+            New Task
+          </Button>
+        </Can>
       </Box>
 
       {/* Add Task Form */}
@@ -307,11 +309,13 @@ const TaskManager = () => {
       </Dialog>
 
       {/* Task List */}
+      {/* <Can I="get" a="tasks"> */}
       <List sx={{ "& .MuiListItem-root": { px: 0 } }}>
         {listTask.map((tasks) => (
           <TaskItem key={tasks._id} data={{ tasks, theme }} handleDeleteTask={handleDeleteTask} />
         ))}
       </List>
+      {/* </Can> */}
     </Box>
   );
 };

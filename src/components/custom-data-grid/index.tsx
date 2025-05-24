@@ -16,6 +16,7 @@ const StyleCustomGrid = styled(DataGrid)<DataGridProps>(({ theme }) => ({
   },
 }));
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const CustomDataGrid = React.forwardRef((props: DataGridProps, ref: Ref<any>) => {
   return (
     <Box sx={{ height: "100%", width: "100%", overflow: "auto" }}>

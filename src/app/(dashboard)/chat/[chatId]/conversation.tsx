@@ -127,7 +127,7 @@ export default function Conversation({ chatId }: { chatId: string }) {
     }
   }, [listMessages]);
 
-  console.log("otherInfo", otherInfo);
+  // console.log("otherInfo", otherInfo);
 
   return (
     <section className="flex-1 bg-[#F2F3F7] flex flex-col h-screen z-20">

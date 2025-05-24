@@ -14,6 +14,7 @@ import { TFormDataCreateUser, TRole } from "@/types/user";
 import dynamic from "next/dynamic";
 import { DialogActions, DialogContent, DialogTitle, Grid, Skeleton } from "@mui/material";
 import { useRouter } from "next/navigation";
+import { Can } from "@/context/casl/AbilityContext";
 
 const FormCreateUser = dynamic(() => import("./FormCreateUser"), {
   ssr: false,
@@ -114,10 +115,10 @@ export default function ButtonCreateUser() {
     setLoading(true);
 
     try {
-      console.log("Submitting:", formData);
+      // console.log("Submitting:", formData);
       // Replace with actual API call
       const response = await fetchApi(`${CONFIG_API.USER.INDEX}`, "POST", formData);
-      console.log(response);
+      // console.log(response);
       if (response.statusCode === 201) {
         router.refresh();
       }
@@ -147,25 +148,26 @@ export default function ButtonCreateUser() {
 
   return (
     <>
-      <Button
-        variant="contained"
-        startIcon={<FaUserPlus />}
-        sx={{
-          borderRadius: 2,
-          px: 3,
-          textTransform: "none",
-          fontWeight: 600,
-          boxShadow: "none",
-          "&:hover": {
+      <Can I="post" a="users">
+        <Button
+          variant="contained"
+          startIcon={<FaUserPlus />}
+          sx={{
+            borderRadius: 2,
+            px: 3,
+            textTransform: "none",
+            fontWeight: 600,
             boxShadow: "none",
-            backgroundColor: "primary.dark",
-          },
-        }}
-        onClick={handleClickOpen}
-      >
-        Create user
-      </Button>
-
+            "&:hover": {
+              boxShadow: "none",
+              backgroundColor: "primary.dark",
+            },
+          }}
+          onClick={handleClickOpen}
+        >
+          Create user
+        </Button>
+      </Can>
       <FormCreateUser
         data={{
           open,
