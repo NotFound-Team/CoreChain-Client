@@ -32,7 +32,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
     const newSocket = io(CONFIG_API.CHAT.INDEX, {
       transports: ["websocket"],
       withCredentials: true,
-      auth: { token: user.token },
+      auth: { token: user?.token },
     });
 
     socketRef.current = newSocket;
