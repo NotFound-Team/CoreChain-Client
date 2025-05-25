@@ -79,6 +79,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         if (response.statusCode === 200 && response.data) {
           const newUser = { ...response.data.user, token };
+          console.log("fetch");
           setUser(newUser);
         } else {
           throw new Error("User data not found");
@@ -95,7 +96,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     checkAndFetchUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router]);
+  }, [router, user?.token]);
 
   const login = async ({ username, password }: UserLogin) => {
     try {

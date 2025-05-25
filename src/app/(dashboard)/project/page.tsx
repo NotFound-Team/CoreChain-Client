@@ -143,8 +143,6 @@ export default function ProjectList() {
     handleClose();
   };
 
-  React.useEffect(() => {}, []);
-
   React.useEffect(() => {
     if (projectList.length > 0) {
       localStorage.setItem("projects", JSON.stringify(projectList));
