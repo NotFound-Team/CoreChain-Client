@@ -5,8 +5,8 @@ import "../globals.css";
 import { Metadata } from "next";
 
 // -- Components --
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import Header from "@/components/layout-home-page/Header";
+import Footer from "@/components/layout-home-page/Footer";
 
 export const metadata: Metadata = {
   title: "Login | Blockchain HR Management",

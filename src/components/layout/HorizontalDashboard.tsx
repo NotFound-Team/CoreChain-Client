@@ -48,6 +48,7 @@ export default function HorizontalDashboard({
         open={mobileOpen}
         onClose={handleDrawerToggle}
         ModalProps={{ keepMounted: true }}
+        disableScrollLock={true}
         sx={{
           display: { xs: "block", sm: "none" },
           "& .MuiDrawer-paper": { width: drawerWidth },

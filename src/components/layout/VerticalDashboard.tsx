@@ -12,7 +12,7 @@ import Toolbar from "@mui/material/Toolbar";
 // -- React-icon --
 import { AiOutlineMenuFold, AiOutlineMenuUnfold } from "react-icons/ai";
 import { MdMenu } from "react-icons/md";
-import { UserDropdown } from "./layout/user-dropdown";
+import { UserDropdown } from "./user-dropdown";
 
 const MiniDrawerWidth = 72;
 
