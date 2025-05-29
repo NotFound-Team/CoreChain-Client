@@ -38,10 +38,10 @@ import { CONFIG_API } from "@/configs/api";
 import { useSnackbar } from "@/hooks/useSnackbar";
 
 // -- Component --
-import VerticalDashboard from "@/components/VerticalDashboard";
-import HorizontalDashboard from "@/components/HorizontalDashboard";
 import AbilityProvider from "@/components/AbilityProvider";
 import { useAuth } from "@/hooks/useAuth";
+import VerticalDashboard from "@/components/layout/VerticalDashboard";
+import HorizontalDashboard from "@/components/layout/HorizontalDashboard";
 
 const drawerWidth = 240;
 const appBarHeight = 64;

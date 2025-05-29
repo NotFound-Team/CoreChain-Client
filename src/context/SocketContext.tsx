@@ -22,12 +22,12 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
 
   useEffect(() => {
-    if (!user?.token) {
-      socketRef.current?.disconnect();
-      socketRef.current = null;
-      setSocket(null);
-      return router.push("/login");
-    }
+    // if (!user?.token) {
+    //   socketRef.current?.disconnect();
+    //   socketRef.current = null;
+    //   setSocket(null);
+    //   return router.push("/login");
+    // }
 
     const newSocket = io(CONFIG_API.CHAT.INDEX, {
       transports: ["websocket"],
