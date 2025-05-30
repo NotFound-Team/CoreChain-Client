@@ -21,6 +21,7 @@ type User = {
 export type AuthContextType = {
   user: User | null;
   loading: boolean;
+  setLoading: Dispatch<boolean>;
   setUser: Dispatch<SetStateAction<User | null>>;
   login: (credentials: UserLogin) => Promise<void>;
   logout: () => void;

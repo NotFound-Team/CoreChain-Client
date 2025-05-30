@@ -27,12 +27,13 @@ type MyJwtPayload = JwtPayload & { exp: number };
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
     const checkAndFetchUser = async () => {
+      setLoading(true);
       const token = localStorage.getItem("token");
 
       if (!token && pathname !== "/") {
@@ -47,6 +48,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       try {
+        setLoading(true);
         const decoded = jwtDecode<MyJwtPayload>(token);
 
         // Token hết hạn
@@ -70,19 +72,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           localStorage.removeItem("token");
           localStorage.removeItem("projects");
           localStorage.removeItem("list-conversation");
+          Cookies.remove("token");
+
           router.push("/login");
           return;
-        }
-
-        // Nếu token còn hạn thì fetch user
-        const response = await fetchApi(CONFIG_API.USER.ACCOUNT, "GET");
-
-        if (response.statusCode === 200 && response.data) {
-          const newUser = { ...response.data.user, token };
-          console.log("fetch");
-          setUser(newUser);
-        } else {
-          throw new Error("User data not found");
         }
       } catch (error) {
         console.error("Failed to fetch user data:", error);
@@ -92,6 +85,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       } finally {
         setLoading(false);
       }
+
+      try {
+        setLoading(true);
+        // Nếu token còn hạn thì fetch user
+        const response = await fetchApi(CONFIG_API.USER.ACCOUNT, "GET");
+
+        if (response.statusCode === 200 && response.data) {
+          const newUser = { ...response.data.user, token };
+          setUser(newUser);
+          setLoading(false);
+        } else {
+          throw new Error("User data not found");
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (error) {
+        if (pathname !== "/") {
+          router.push("/login");
+        }
+        setLoading(false);
+      }
     };
 
     checkAndFetchUser();
@@ -99,10 +112,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [router, user?.token]);
 
   const login = async ({ username, password }: UserLogin) => {
+    setLoading(true);
     try {
-      setLoading(true);
       const response = await fetchApi(CONFIG_API.AUTH.LOGIN, "POST", { username, password });
-      // console.log(response.data);
+
       if (response) {
         const { user, access_token } = response.data;
         const newUser = { ...user, access_token };
@@ -127,6 +140,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem("token");
     Cookies.remove("token");
     setUser(null);
+    router.push("/login");
   };
 
   if (loading) {
@@ -137,7 +151,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     );
   }
 
-  return <AuthContext.Provider value={{ user, loading, setUser, login, logout }}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ user, loading, setLoading, setUser, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 // export { AuthContext, AuthProvider }

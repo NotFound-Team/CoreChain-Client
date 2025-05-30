@@ -33,6 +33,7 @@ import { useEffect, useState } from "react";
 import { useSnackbar } from "@/hooks/useSnackbar";
 import { InputAdornment } from "@mui/material";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+import FallbackSpinner from "@/components/fall-back";
 
 const schema = yup.object({
   username: yup
@@ -46,9 +47,10 @@ const schema = yup.object({
 });
 
 export default function Login() {
+  const [loading, setLoading] = useState(false);
+  // ** theme
   const theme = useTheme();
-  const { login } = useAuth();
-  const { user } = useAuth();
+  const { login, user } = useAuth();
 
   const router = useRouter();
 
@@ -66,25 +68,36 @@ export default function Login() {
   });
 
   const onSubmit = async (data: UserLogin) => {
+    setLoading(true);
     try {
       await login(data);
       showToast("Login successfully!", "success");
-      router.push("/dashboard");
+
+      await router.push("/dashboard");
     } catch (error) {
       showToast("Incorrect username or password!", "error");
       console.error("Login failed:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token && user) {
-      router.push("/dashboard");
-    }
+    const checkToken = async () => {
+      setLoading(true);
+      const token = localStorage.getItem("token");
+      if (token && user?.token && user) {
+        await router.push("/dashboard");
+      }
+      setLoading(false);
+    };
+    router.prefetch("/dashboard");
+    checkToken();
   }, [router, user]);
 
   return (
     <>
+      {loading && <FallbackSpinner />}
       <Toast />
       <Box
         sx={{

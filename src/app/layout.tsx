@@ -1,5 +1,3 @@
-"use client";
-
 // -- font --
 import { Geist, Geist_Mono } from "next/font/google";
 

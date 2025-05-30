@@ -1,6 +1,3 @@
-// -- css --
-import "../globals.css";
-
 // -- Next --
 import { Metadata } from "next";
 
