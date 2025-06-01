@@ -1,4 +1,3 @@
-// app/dashboard/page.tsx
 import { cookies } from "next/headers";
 import { BASE_URL, CONFIG_API } from "@/configs/api";
 import DashboardClient from "./DashboardClient";
