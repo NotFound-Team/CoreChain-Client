@@ -59,3 +59,35 @@ export type CreateUserModalProps = {
     formData: TFormDataCreateUser;
   };
 };
+
+export interface TParamsEmployee {
+  id: string;
+  name: string;
+  email: string;
+  dateOfBirth: string;
+  male: boolean;
+  personalPhoneNumber: string;
+  nationality: string;
+  permanentAddress: string;
+  employeeId: string;
+  department: {
+    _id: string;
+    name: string;
+  };
+  role: {
+    _id: string;
+    name: string;
+  };
+  createdAt: string;
+  employeeContractCode: string;
+  salary: number;
+  allowances: number;
+  netSalary: number;
+  loansSupported: number;
+  backAccountNumber: string;
+  healthInsuranceCode: string;
+  lifeInsuranceCode: string;
+  healthCheckRecordCode: string[];
+  medicalHistory: string;
+  isActive: boolean;
+}
