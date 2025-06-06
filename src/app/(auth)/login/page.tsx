@@ -72,7 +72,6 @@ export default function Login() {
     try {
       await login(data);
       showToast("Login successfully!", "success");
-
       await router.push("/dashboard");
     } catch (error) {
       showToast("Incorrect username or password!", "error");
@@ -94,6 +93,10 @@ export default function Login() {
     router.prefetch("/dashboard");
     checkToken();
   }, [router, user]);
+
+  useEffect(() => {
+    router.prefetch("/dashboard");
+  }, []);
 
   return (
     <>
