@@ -21,4 +21,5 @@ export const CONFIG_API = {
   FILE: "/files/upload",
   DEPARTMENT: "/departments",
   POSITION: "/positions",
+  FEEDBACK: "/feedback",
 };

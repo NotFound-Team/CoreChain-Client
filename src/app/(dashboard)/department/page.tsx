@@ -154,6 +154,8 @@ export default function Index() {
       field: "action",
       headerName: "Action",
       width: 200,
+      headerAlign: "center",
+      align: 'center',   
       sortable: false,
       filterable: false,
       renderCell: (params) => {
@@ -428,7 +430,7 @@ export default function Index() {
             // rows={rowsDepartment}
             columns={columns}
             pageSizeOptions={[10, 25, 50]}
-            autoHeight={false}
+            autoHeight
           />
         </Box>
         {/* Form popup */}
