@@ -21,12 +21,7 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 // -- React-icon
-import { IoIosChatbubbles } from "react-icons/io";
-import { GoProject } from "react-icons/go";
-import { MdDashboard, MdSettings, MdExitToApp } from "react-icons/md";
-import { FaBox, FaRegUserCircle, FaUsersCog, FaUserShield } from "react-icons/fa";
-import { BsBuildingFillLock } from "react-icons/bs";
-import { PiBookOpenUserBold } from "react-icons/pi";
+import { MdExitToApp } from "react-icons/md";
 
 // -- Utils --
 import fetchApi from "@/utils/fetchApi";
@@ -42,6 +37,7 @@ import AbilityProvider from "@/components/AbilityProvider";
 import { useAuth } from "@/hooks/useAuth";
 import VerticalDashboard from "@/components/layout/VerticalDashboard";
 import HorizontalDashboard from "@/components/layout/HorizontalDashboard";
+import { listItem } from "@/configs/layout";
 
 const drawerWidth = 240;
 const appBarHeight = 64;
@@ -72,66 +68,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   };
 
   // Item section drawer
-  const listItem = [
-    {
-      title: "Dashboard",
-      icon: <MdDashboard size={24} />,
-      href: "/dashboard",
-    },
-    {
-      title: "Project",
-      icon: <GoProject size={24} />,
-      href: "/project",
-    },
-    {
-      title: "Chat",
-      icon: <IoIosChatbubbles size={24} />,
-      href: "/chat",
-    },
-    {
-      title: "Role",
-      icon: <FaUserShield size={24} />,
-      href: "/role",
-    },
-    {
-      title: "Permission",
-      icon: <BsBuildingFillLock size={24} />,
-      href: "/permission",
-    },
-    {
-      title: "User Manager",
-      icon: <FaUsersCog size={24} />,
-      href: "/user-management",
-    },
-    {
-      title: "Position",
-      icon: <PiBookOpenUserBold size={24} />,
-      href: "/position",
-    },
-    {
-      title: "Department",
-      icon: <FaBox size={24} />,
-      href: "/department",
-    },
-    {
-      title: "Profile",
-      icon: <FaRegUserCircle size={24} />,
-      href: "/profile",
-    },
-    {
-      title: "Settings",
-      icon: <MdSettings size={24} />,
-      href: "/setting",
-    },
-  ];
+  const listItemMenu = listItem();
 
   const drawer = (
     <div>
       <Toast />
       <Toolbar />
       <List>
-        {listItem.map((item) => (
-          <Link href={item.href} key={item.title}>
+        {listItemMenu.map((item) => (
+          <Link href={item.href} key={item.id}>
             <Tooltip disableHoverListener={mobileOpen ? true : false} arrow placement="right" title={item.title}>
               <ListItem
                 sx={{
@@ -141,7 +86,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   },
                 }}
               >
-                <ListItemIcon>{item.icon}</ListItemIcon>
+                <ListItemIcon>
+                  <item.icon size={24} />
+                </ListItemIcon>
                 <ListItemText primary={item.title} />
               </ListItem>
             </Tooltip>
