@@ -43,7 +43,7 @@ const schema = yup.object({
   password: yup
     .string()
     .required("The field is required")
-    .matches(PASSWORD_REG, "Password must be at least 8 characters, including uppercase and special characters."),
+    // .matches(PASSWORD_REG, "Password must be at least 8 characters, including uppercase and special characters."),
 });
 
 export default function Login() {
@@ -93,10 +93,6 @@ export default function Login() {
     router.prefetch("/dashboard");
     checkToken();
   }, [router, user]);
-
-  useEffect(() => {
-    router.prefetch("/dashboard");
-  }, []);
 
   return (
     <>

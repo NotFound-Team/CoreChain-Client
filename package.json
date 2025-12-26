@@ -23,6 +23,7 @@
     "@tinymce/tinymce-react": "^6.2.1",
     "@types/recharts": "^1.8.29",
     "axios": "^1.8.4",
+    "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "gsap": "^3.12.7",
     "js-cookie": "^3.0.5",
