@@ -7,11 +7,10 @@ export const metadata: Metadata = {
   description: "View and manage your personal profile and account settings.",
 };
 
-export default function LayoutProfile({ children, title }: { children: React.ReactNode; title: React.ReactNode }) {
+export default function LayoutProfile({ children }: { children: React.ReactNode }) {
   return (
     <Can I="get" a="users/:id">
       <div>
-        {title}
         <div>{children}</div>
       </div>
     </Can>

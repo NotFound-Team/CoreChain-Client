@@ -1,6 +1,6 @@
 import { IoIosChatbubbles } from "react-icons/io";
 import { GoProject } from "react-icons/go";
-import { MdDashboard, MdOutlineFeedback, MdSettings } from "react-icons/md";
+import { MdDashboard, MdOutlineFeedback, MdReport, MdSettings } from "react-icons/md";
 import { FaBox, FaRegUserCircle, FaUsersCog, FaUserShield } from "react-icons/fa";
 import { BsBuildingFillLock } from "react-icons/bs";
 import { PiBookOpenUserBold } from "react-icons/pi";
@@ -85,6 +85,13 @@ export const listItem = (): TListItem[] => {
       icon: MdOutlineFeedback,
       href: "/feedback",
       permissions: [],
+    },
+    {
+      id: "report",
+      title: "Report",
+      icon: MdReport,
+      href: "/report",
+      permissions: ["public"],
     },
     {
       id: "setting",

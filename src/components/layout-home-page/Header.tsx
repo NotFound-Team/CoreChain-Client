@@ -68,7 +68,7 @@ export default function Header() {
         >
           <div className="container mx-auto w-full max-sm:px-4">
             <div className="flex items-center justify-between py-4">
-              <div>
+              <Link href={'/'}>
                 <Image
                   src={"/images/logo-color 1.png"}
                   alt="Logo company"
@@ -76,7 +76,7 @@ export default function Header() {
                   height={100}
                   className="max-lg:w-[100px]"
                 />
-              </div>
+              </Link>
 
               <nav className="max-lg:hidden">
                 <ul className="flex items-center gap-x-6 text-[#5C5F6E] max-xl:text-[14px]">

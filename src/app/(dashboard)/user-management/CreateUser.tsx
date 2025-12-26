@@ -6,46 +6,16 @@ import Button from "@mui/material/Button";
 // import FormControlLabel from "@mui/material/FormControlLabel";
 // import Box from "@mui/material/Box";
 // import Chip from "@mui/material/Chip";
-import { useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 import { FaUserPlus } from "react-icons/fa";
 import fetchApi from "@/utils/fetchApi";
 import { CONFIG_API } from "@/configs/api";
 import { TFormDataCreateUser, TRole } from "@/types/user";
-import dynamic from "next/dynamic";
 // import { DialogActions, DialogContent, DialogTitle, Grid, Skeleton } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { Can } from "@/context/casl/AbilityContext";
+import FormCreateUser from "./FormCreateUser";
 
-const FormCreateUser = dynamic(() => import("./FormCreateUser"), {
-  ssr: false,
-  // loading: () => (
-  //   <>
-  //     <DialogTitle sx={{ fontWeight: 700, fontSize: "1.5rem", textAlign: "center", pt: 2 }}>
-  //       <Skeleton width="40%" height={30} sx={{ mx: "auto" }} />
-  //     </DialogTitle>
-
-  //     <DialogContent>
-  //       <Grid container spacing={2}>
-  //         {[...Array(6)].map((_, index) => (
-  //           <Grid item xs={12} md={index < 2 ? 6 : 12} key={index}>
-  //             <Skeleton height={56} variant="rectangular" sx={{ borderRadius: 2 }} />
-  //           </Grid>
-  //         ))}
-  //         {[...Array(3)].map((_, index) => (
-  //           <Grid item xs={12} md={index < 2 ? 6 : 12} key={`select-${index}`}>
-  //             <Skeleton height={56} variant="rectangular" sx={{ borderRadius: 2 }} />
-  //           </Grid>
-  //         ))}
-  //       </Grid>
-  //     </DialogContent>
-
-  //     <DialogActions sx={{ px: 3, pb: 3, justifyContent: "space-between" }}>
-  //       <Skeleton width={100} height={36} variant="rectangular" sx={{ borderRadius: 2 }} />
-  //       <Skeleton width={100} height={36} variant="rectangular" sx={{ borderRadius: 2 }} />
-  //     </DialogActions>
-  //   </>
-  // ),
-});
 
 export default function ButtonCreateUser() {
   const [open, setOpen] = useState(false);
@@ -69,7 +39,7 @@ export default function ButtonCreateUser() {
     setOpen(true);
   };
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setOpen(false);
     setFormData({
       name: "",
@@ -81,22 +51,22 @@ export default function ButtonCreateUser() {
       department: "",
       // isActive: true,
     });
-  };
+  }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
-  };
+  }, []);
 
-  const handleSelectChange = (name: string, value: string) => {
+  const handleSelectChange = useCallback((name: string, value: string) => {
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
-  };
+  }, []);
 
   const handleCreateUser = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -105,7 +75,7 @@ export default function ButtonCreateUser() {
     try {
       // Replace with actual API call
       const response = await fetchApi(`${CONFIG_API.USER.INDEX}`, "POST", formData);
-      
+
       if (response.statusCode === 201) {
         router.refresh();
       }
@@ -179,20 +149,22 @@ export default function ButtonCreateUser() {
           Create user
         </Button>
       </Can>
-      <FormCreateUser
-        data={{
-          open,
-          loading,
-          roles,
-          departments,
-          positions,
-          handleSelectChange,
-          handleClose,
-          handleCreateUser,
-          handleChange,
-          formData,
-        }}
-      />
+      <Suspense fallback={<div>Loading...</div>}>
+        <FormCreateUser
+          data={{
+            open,
+            loading,
+            roles,
+            departments,
+            positions,
+            handleSelectChange,
+            handleClose,
+            handleCreateUser,
+            handleChange,
+            formData,
+          }}
+        />
+      </Suspense>
     </>
   );
 }

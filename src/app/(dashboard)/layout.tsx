@@ -15,7 +15,7 @@ import Toolbar from "@mui/material/Toolbar";
 
 // -- Next --
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 // -- React --
 import React, { useState } from "react";
@@ -48,6 +48,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const { Toast, showToast } = useSnackbar();
   const theme = useTheme();
   const { user } = useAuth();
+  const pathName = usePathname();
 
   const handleDrawerToggle = () => {
     // console.log(mobileOpen);
@@ -73,10 +74,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const drawer = (
     <div>
       <Toast />
-      <Toolbar />
+      <Toolbar>LOGO</Toolbar>
       <List>
         {listItemMenu.map((item) => (
-          <Link href={item.href} key={item.id}>
+          <Link href={item.href} key={item.id} className="bg-red-300">
             <Tooltip disableHoverListener={mobileOpen ? true : false} arrow placement="right" title={item.title}>
               <ListItem
                 sx={{
@@ -84,12 +85,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     backgroundColor: theme.palette.action.hover,
                     transition: "background-color 0.5s",
                   },
+                  backgroundColor: pathName === item.href ? theme.palette.action.focus : "",
+
+                  borderRadius: "12px",
                 }}
               >
                 <ListItemIcon>
                   <item.icon size={24} />
                 </ListItemIcon>
-                <ListItemText primary={item.title} />
+                <ListItemText sx={{ fontWeight: pathName === item.href ? "bold" : "normal" }} primary={item.title} />
               </ListItem>
             </Tooltip>
           </Link>

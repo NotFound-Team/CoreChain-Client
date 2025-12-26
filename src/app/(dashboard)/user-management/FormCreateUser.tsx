@@ -1,3 +1,4 @@
+import React from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -12,6 +13,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { CreateUserModalProps } from "@/types/user";
 import Button from "@mui/material/Button";
 
+// use memoization later if needed
 const FormCreateUser: React.FC<CreateUserModalProps> = ({ data }) => {
   const {
     open,
@@ -251,4 +253,4 @@ const FormCreateUser: React.FC<CreateUserModalProps> = ({ data }) => {
   );
 };
 
-export default FormCreateUser;
+export default React.memo(FormCreateUser);

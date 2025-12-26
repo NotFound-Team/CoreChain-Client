@@ -1,5 +1,6 @@
 // -- Next --
 import Image from "next/image";
+import Link from "next/link";
 
 // -- React-icon --
 import { FaFacebookF, FaGithub, FaTwitter, FaYoutube } from "react-icons/fa";
@@ -24,8 +25,8 @@ export default function Footer() {
                   <Image
                     src={"/images/GDPR compliant - GDPR Copy 5.png"}
                     alt="GDPR Compliant"
-                    width={0}
-                    height={0}
+                    width={100}
+                    height={100}
                     style={{
                       width: "66px",
                       height: "auto",
@@ -36,8 +37,8 @@ export default function Footer() {
                   <Image
                     src="/images/norton-by-symantec-vector-logo 1.png"
                     alt="Norton Security"
-                    width={0}
-                    height={0}
+                    width={100}
+                    height={100}
                     style={{
                       width: "66px",
                       height: "auto",
@@ -48,8 +49,8 @@ export default function Footer() {
                   <Image
                     src={"/images/stripe-seeklogo.com 1.png"}
                     alt="Stripe"
-                    width={0}
-                    height={0}
+                    width={100}
+                    height={100}
                     style={{
                       width: "66px",
                       height: "auto",
@@ -60,8 +61,8 @@ export default function Footer() {
                   <Image
                     src={"/images/paypal.png"}
                     alt="PayPal"
-                    width={0}
-                    height={0}
+                    width={100}
+                    height={100}
                     style={{
                       width: "66px",
                       height: "auto",
@@ -93,19 +94,19 @@ export default function Footer() {
                   <h3 className="font-semibold mb-7">Resources</h3>
                   <ul className="flex flex-col gap-y-4">
                     <li>
-                      <a href="/user-guide">User Guide</a>
+                      <Link href="/user-guide">User Guide</Link>
                     </li>
                     <li>
-                      <a href="/technical-documentation">Technical Documentation</a>
+                      <Link href="/technical-documentation">Technical Documentation</Link>
                     </li>
                     <li>
-                      <a href="/faq">FAQ</a>
+                      <Link href="/faq">FAQ</Link>
                     </li>
                     <li>
-                      <a href="/privacy-policy">Privacy Policy</a>
+                      <Link href="/privacy-policy">Privacy Policy</Link>
                     </li>
                     <li>
-                      <a href="/terms-of-service">Terms of Service</a>
+                      <Link href="/terms-of-service">Terms of Service</Link>
                     </li>
                   </ul>
                 </li>
@@ -138,24 +139,24 @@ export default function Footer() {
             <p className="text-[14px]">© 2025 HR Management Platform. Powered by 404Team</p>
             <ul className="flex items-center space-x-4">
               <li className="text-black text-xl w-[30px] h-[30px] bg-white flex items-center justify-center rounded-full">
-                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
+                <Link href="https://facebook.com" target="_blank" rel="noopener noreferrer">
                   <FaFacebookF />
-                </a>
+                </Link>
               </li>
               <li className="text-black text-xl w-[30px] h-[30px] bg-white flex items-center justify-center rounded-full">
-                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
+                <Link href="https://twitter.com" target="_blank" rel="noopener noreferrer">
                   <FaTwitter />
-                </a>
+                </Link>
               </li>
               <li className="text-black text-xl w-[30px] h-[30px] bg-white flex items-center justify-center rounded-full">
-                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer">
+                <Link href="https://youtube.com" target="_blank" rel="noopener noreferrer">
                   <FaYoutube />
-                </a>
+                </Link>
               </li>
               <li className="text-black text-xl w-[30px] h-[30px] bg-white flex items-center justify-center rounded-full">
-                <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+                <Link href="https://github.com/NotFound-Team" target="_blank" rel="noopener noreferrer">
                   <FaGithub />
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

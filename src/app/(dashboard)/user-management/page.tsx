@@ -2,6 +2,7 @@ import { Can } from "@/context/casl/AbilityContext";
 import ButtonCreateUser from "./CreateUser";
 import ListUser from "./ListUser";
 import { Metadata } from "next";
+import { UserManagementSummary } from "./UserManagementSummary";
 
 export const metadata: Metadata = {
   title: "User Management | Dashboard",
@@ -13,7 +14,7 @@ export default function UserManagement() {
     <>
       <div>
         <div className="flex items-center justify-between">
-          <div className="text-2xl font-bold">User Management</div>
+          <UserManagementSummary />
           <ButtonCreateUser />
         </div>
         <Can I="get" a="users">

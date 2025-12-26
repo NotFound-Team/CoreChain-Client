@@ -24,6 +24,7 @@ import { Role } from "@/types/role";
 import ListRole from "./ListRole";
 import { useAuth } from "@/hooks/useAuth";
 import { Can } from "@/context/casl/AbilityContext";
+import { RoleManagementSummary } from "./RoleManagementSummary";
 
 export default function RolePage() {
   const { user } = useAuth();
@@ -113,12 +114,14 @@ export default function RolePage() {
     <>
       <Can I="get" a="roles">
         <div className="p-6">
-          <div className="flex justify-end">
+          <div className="flex justify-between">
+            <RoleManagementSummary />
             <Button
               variant="contained"
               startIcon={<FaRegAddressCard />}
               sx={{ borderRadius: 2, px: 3 }}
               onClick={handleClickOpen}
+              className="h-12"
             >
               New role
             </Button>

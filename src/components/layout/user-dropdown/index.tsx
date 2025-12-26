@@ -46,7 +46,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
-export const UserDropdown = () => {
+ const UserDropdown = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -145,3 +145,5 @@ export const UserDropdown = () => {
     </>
   );
 };
+
+export default UserDropdown;
