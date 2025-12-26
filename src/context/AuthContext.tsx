@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isInitializing, setIsInitializing] = useState<boolean>(true);
   const router = useRouter();
   const pathname = usePathname();
-  
+
   const hasCheckedAuth = useRef(false);
 
   useEffect(() => {
@@ -86,7 +86,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     checkAndFetchUser();
-  }, []); // Empty dependency - chỉ chạy một lần khi mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Memoized login function
   const login = useCallback(async ({ username, password }: UserLogin) => {
@@ -124,23 +125,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     router.push("/login");
   }, [router]);
 
-  const contextValue = useMemo(() => ({
-    user,
-    loading,
-    isInitializing,
-    setLoading,
-    setUser,
-    login,
-    logout,
-  }), [user, loading, isInitializing, login, logout]);
+  const contextValue = useMemo(
+    () => ({
+      user,
+      loading,
+      isInitializing,
+      setLoading,
+      setUser,
+      login,
+      logout,
+    }),
+    [user, loading, isInitializing, login, logout]
+  );
 
   if (isInitializing) {
     return <FallbackSpinner />;
   }
 
-  return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 };

@@ -7,14 +7,14 @@ import { FaFacebookF, FaGithub, FaTwitter, FaYoutube } from "react-icons/fa";
 
 export default function Footer() {
   return (
-    <div className="bg-[#1A284E]">
+    <div className="bg-[var(--bg-footer)]">
       <div className="container mx-auto w-full max-sm:px-4">
         <div className="text-[#E2E4E9] py-8">
           {/* What is the Project? */}
-          <div className="flex items-start justify-between">
-            <div className="flex flex-col gap-y-6">
+          <div className="flex flex-col lg:flex-row items-start justify-between gap-10">
+            <div className="flex flex-col gap-y-6 max-w-sm">
               <div className="font-bold text-lg">What is Our HR Management Platform?</div>
-              <p className="max-w-[363px]">
+              <p className="text-sm text-gray-300">
                 We provide blockchain-based human resource management services, ensuring information security,
                 optimizing management processes, and enhancing transparency.
               </p>
@@ -72,27 +72,23 @@ export default function Footer() {
               </ul>
             </div>
 
-            {/* Products Section */}
-            <div>
-              <ul className="flex flex-wrap justify-between text-sm">
-                <li className="mr-8">
+            {/* Links Section Container */}
+            <div className="flex flex-wrap gap-8 lg:gap-16 w-full lg:w-auto justify-between lg:justify-end">
+                {/* Products Section */}
+                <div>
                   <h3 className="font-semibold mb-7">Products</h3>
-                  <ul className="flex flex-col gap-y-4">
+                  <ul className="flex flex-col gap-y-4 text-sm text-gray-300">
                     <li>Human Resource Management</li>
                     <li>Blockchain Security</li>
                     <li>Recruitment Features</li>
                     <li>Analytics and Reporting</li>
                   </ul>
-                </li>
-              </ul>
-            </div>
+                </div>
 
-            {/* Resource Section */}
-            <div>
-              <ul className="flex flex-wrap justify-between text-sm">
-                <li className="mr-8">
+                {/* Resource Section */}
+                <div>
                   <h3 className="font-semibold mb-7">Resources</h3>
-                  <ul className="flex flex-col gap-y-4">
+                  <ul className="flex flex-col gap-y-4 text-sm text-gray-300">
                     <li>
                       <Link href="/user-guide">User Guide</Link>
                     </li>
@@ -109,16 +105,12 @@ export default function Footer() {
                       <Link href="/terms-of-service">Terms of Service</Link>
                     </li>
                   </ul>
-                </li>
-              </ul>
-            </div>
+                </div>
 
-            {/* Community Section */}
-            <div>
-              <ul className="flex flex-wrap justify-between text-sm">
-                <li className="mr-8">
+                {/* Community Section */}
+                <div>
                   <h3 className="font-semibold mb-7">Community</h3>
-                  <ul className="flex flex-col gap-y-4">
+                  <ul className="flex flex-col gap-y-4 text-sm text-gray-300">
                     <li>
                       <a href="/community-forum">Community Forum</a>
                     </li>
@@ -129,8 +121,7 @@ export default function Footer() {
                       <a href="/support">Customer Support</a>
                     </li>
                   </ul>
-                </li>
-              </ul>
+                </div>
             </div>
           </div>
 

@@ -1,7 +1,8 @@
 "use client";
 
 // -- Mui --
-import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
 
 // -- React icon --
 import { MdDarkMode, MdLightMode } from "react-icons/md";
@@ -14,26 +15,28 @@ import useTheme from "@mui/material/styles/useTheme";
 export default function ButtonMode() {
   const { mode, toggleTheme } = useThemeMode();
   const theme = useTheme();
+  
   return (
-    <>
-      {/* change mode */}
-      <Button
-        variant="contained"
-        sx={{
-          borderRadius: 10,
-          width: 50,
-          height: 50,
-          padding: 0,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: 18,
-          backgroundColor: theme.palette.action.disabledBackground
-        }}
+    <Tooltip title={mode === "light" ? "Switch to Dark Mode" : "Switch to Light Mode"}>
+      <IconButton
         onClick={toggleTheme}
+        sx={{
+          width: 44,
+          height: 44,
+          borderRadius: 2,
+          backgroundColor: theme.palette.action.hover,
+          color: theme.palette.text.primary,
+          transition: "all 0.2s ease-in-out",
+          "&:hover": {
+            backgroundColor: theme.palette.primary.main,
+            color: theme.palette.common.white,
+            transform: "scale(1.05)",
+          },
+        }}
       >
-        {mode === "light" ? <MdDarkMode /> : <MdLightMode />}
-      </Button>
-    </>
+        {mode === "light" ? <MdDarkMode size={22} /> : <MdLightMode size={22} />}
+      </IconButton>
+    </Tooltip>
   );
 }
+

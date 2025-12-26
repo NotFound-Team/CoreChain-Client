@@ -29,7 +29,6 @@ interface FormCreateProps {
   department: any[];
 }
 
-// cập nhật props
 export const FormCreate = ({
   open,
   handleClose,

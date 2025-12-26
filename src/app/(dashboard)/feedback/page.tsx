@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense, useCallback } from "react";
 import {
   Box,
   Button,
@@ -165,7 +165,6 @@ export default function PositionPage() {
   const {
     handleSubmit,
     control,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     formState: { errors },
     reset,
   } = useForm<TFeedback>({
@@ -234,7 +233,7 @@ export default function PositionPage() {
     });
   };
 
-  const handleConfirmDelete = async () => {
+  const handleConfirmDelete = useCallback(async () => {
     if (!feedbackId) return;
     setLoadingFetchDetailsFeedback(true);
     try {
@@ -243,7 +242,6 @@ export default function PositionPage() {
         showToast("Feedback deleted successfully", "success");
         fetchFeedbacks();
       }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_) {
       showToast("Failed to delete Feedback", "error");
     } finally {
@@ -251,12 +249,13 @@ export default function PositionPage() {
       setFeedbackId(null);
       setLoadingFetchDetailsFeedback(false);
     }
-  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [feedbackId]);
 
-  const handleCancelDelete = () => {
+  const handleCancelDelete = useCallback(() => {
     setDeleteDialogOpen(false);
     setFeedbackId(null);
-  };
+  }, []);
 
   const onSubmit = async (data: { sender?: string; title: string; category: string; content: string }) => {
     if (data && user?._id) {
@@ -270,7 +269,6 @@ export default function PositionPage() {
       }
       handleClose();
       fetchFeedbacks();
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_) {
       showToast("Failed to save position", "error");
     } finally {
@@ -424,7 +422,6 @@ export default function PositionPage() {
                         name="createdAt"
                         disabled={!!feedbackId}
                         control={control}
-                        // eslint-disable-next-line @typescript-eslint/no-unused-vars
                         render={({ field: { onChange, onBlur, value } }) => (
                           <Typography>{dayjs(value).format("DD/MM/YYYY")}</Typography>
                         )}
@@ -438,7 +435,6 @@ export default function PositionPage() {
                         name="isFlagged"
                         disabled={!!feedbackId}
                         control={control}
-                        // eslint-disable-next-line @typescript-eslint/no-unused-vars
                         render={({ field: { onChange, onBlur, value } }) => (
                           <Chip
                             label={value ? "Unreviewed" : "Reviewed"}
@@ -499,15 +495,15 @@ export default function PositionPage() {
             </DialogActions>
           </form>
         </Dialog>
-
-        <ConfirmDelete
-          deleteDialogOpen={deleteDialogOpen}
-          handleCancelDelete={handleCancelDelete}
-          handleConfirmDelete={handleConfirmDelete}
-          titleConfirmDelete="Delete Feedback"
-          descriptionConfirmDelete=" Are you sure you want to delete this position? This action cannot be undone."
-        />
-
+        <Suspense fallback={<div>Loading...</div>}>
+          <ConfirmDelete
+            deleteDialogOpen={deleteDialogOpen}
+            handleCancelDelete={handleCancelDelete}
+            handleConfirmDelete={handleConfirmDelete}
+            titleConfirmDelete="Delete Feedback"
+            descriptionConfirmDelete=" Are you sure you want to delete this position? This action cannot be undone."
+          />
+        </Suspense>
         <Toast />
       </Box>
     </>

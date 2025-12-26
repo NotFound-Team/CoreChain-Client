@@ -1,8 +1,87 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ===== Brand Colors - synced with MUI theme palette ===== */
+  --color-primary: #7367F0;
+  --color-primary-light: #8479F2;
+  --color-primary-dark: #655BD3;
+  
+  --color-secondary: #A8AAAE;
+  --color-secondary-light: #B2B4B8;
+  --color-secondary-dark: #949699;
+  
+  --color-accent: #00CFE8;
+  --color-accent-light: #1FD5EB;
+  --color-accent-dark: #00B6CC;
+  
+  --color-success: #28C76F;
+  --color-warning: #FF9F43;
+  --color-error: #EA5455;
+  --color-info: #00CFE8;
+  
+  /* ===== Background ===== */
+  --bg-default: #ffffff;
+  --bg-paper: #ffffff;
+  --bg-footer: #1A284E;
+  --bg-hero: #00CFE8;
+  
+  /* ===== Text ===== */
+  --text-primary: rgba(47, 43, 61, 0.78);
+  --text-secondary: #5C5F6E;
+  --text-disabled: rgba(47, 43, 61, 0.42);
+  --text-on-primary: #ffffff;
+  
+  /* ===== Spacing ===== */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  
+  /* ===== Border Radius ===== */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-full: 9999px;
+  
+  /* ===== Shadows ===== */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+  
+  /* ===== Transitions ===== */
+  --transition-fast: 150ms ease;
+  --transition-normal: 300ms ease;
+  --transition-slow: 500ms ease;
+  
+  /* Legacy support */
+  --background: var(--bg-default);
+  --foreground: var(--text-primary);
+}
+
+/* ===== Dark Mode ===== */
+.dark {
+  --color-primary: #8479F2;
+  --color-primary-light: #9A91F4;
+  --color-primary-dark: #7367F0;
+  
+  --bg-default: #2F3349;
+  --bg-paper: #2F3349;
+  --bg-footer: #25293C;
+  
+  --text-primary: rgba(208, 212, 241, 0.78);
+  --text-secondary: #B4B7BD;
+  --text-disabled: rgba(208, 212, 241, 0.42);
+  
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.3);
+  
+  --background: var(--bg-default);
+  --foreground: var(--text-primary);
 }
 
 @theme inline {
@@ -12,21 +91,40 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--bg-default);
+  color: var(--text-primary);
   font-family: Arial, Helvetica, sans-serif;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
 }
 
-/* Custom tailwind */
+/* ===== Custom Utilities ===== */
 .flex-center {
   @apply flex items-center justify-center;
 }
-/* End Custom */
+
+/* Button base styles */
+.btn-primary {
+  background-color: var(--color-primary);
+  color: var(--text-on-primary);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-dark);
+  transform: translateY(-1px);
+}
+
+/* Card styles */
+.card {
+  background-color: var(--bg-paper);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  transition: box-shadow var(--transition-normal), transform var(--transition-normal);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}

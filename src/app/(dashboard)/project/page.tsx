@@ -1,7 +1,18 @@
 "use client";
 
 import * as React from "react";
-import { Box, IconButton, Typography, Button, SelectChangeEvent } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  Typography,
+  Button,
+  SelectChangeEvent,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Skeleton,
+} from "@mui/material";
 import { MdAddBox, MdOutlineGridView } from "react-icons/md";
 import { LuRows3 } from "react-icons/lu";
 import { TCreateProject, TProject, Employee } from "@/types/project";
@@ -36,6 +47,25 @@ export default function ProjectPage() {
     startDate: null,
     endDate: null,
   });
+  const [viewMode, setViewMode] = React.useState<"grid" | "list">("grid");
+  const [filterStatus, setFilterStatus] = React.useState<number | "">("");
+  const [filterPriority, setFilterPriority] = React.useState<number | "">("");
+
+  const handleFilterStatusChange = (event: SelectChangeEvent<number>) => {
+    setFilterStatus(event.target.value as number | "");
+  };
+
+  const handleFilterPriorityChange = (event: SelectChangeEvent<number>) => {
+    setFilterPriority(event.target.value as number | "");
+  };
+
+  const filteredProjectList = React.useMemo(() => {
+    return projectList.filter((project: any) => {
+      const matchesStatus = filterStatus === "" || project.status === filterStatus;
+      const matchesPriority = filterPriority === "" || project.priority === filterPriority;
+      return matchesStatus && matchesPriority;
+    });
+  }, [projectList, filterStatus, filterPriority]);
 
   const handleClickOpen = React.useCallback(() => {
     setOpen(true);
@@ -203,27 +233,83 @@ export default function ProjectPage() {
       <Toast />
       <Loading open={loading} message="Creating project..." />
       {loading || projectList.length === 0 ? (
-        <Box sx={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 3 }}>
-          {Array.from({ length: 5 }).map((_, index) => (
-            <ProjectCardSkeleton key={index} index={index} />
-          ))}
-        </Box>
+        <>
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 4 }}>
+            <Skeleton variant="rounded" width={128} height={40} />
+
+            {/* Skeleton cho Client và Budget */}
+            <Box sx={{ display: "flex", gap: 1 }}>
+              <Skeleton variant="text" width={120} height={70} />
+              <Skeleton variant="text" width={120} height={70} />
+              <Skeleton variant="text" width={36} height={70} />
+              <Skeleton variant="text" width={36} height={70} />
+              <Skeleton variant="text" width={210} height={70} />
+            </Box>
+          </Box>
+          <Box sx={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 3 }}>
+            {Array.from({ length: 5 }).map((_, index) => (
+              <ProjectCardSkeleton key={index} index={index} />
+            ))}
+          </Box>
+        </>
       ) : (
         <Box sx={{ p: 3 }}>
           <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 4 }}>
             <Typography variant="h4" sx={{ fontSize: { xs: "20px", sm: "28px", md: "32px" } }} fontWeight={700}>
               Projects
             </Typography>
-            <Box sx={{ display: "flex", gap: 1 }}>
+            <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+              <FormControl size="small" sx={{ minWidth: 120 }}>
+                <InputLabel id="filter-status-label">Status</InputLabel>
+                <Select
+                  labelId="filter-status-label"
+                  id="filter-status"
+                  value={filterStatus}
+                  label="Status"
+                  onChange={handleFilterStatusChange}
+                >
+                  <MenuItem value="">All</MenuItem>
+                  <MenuItem value={1}>Not Started</MenuItem>
+                  <MenuItem value={2}>In Progress</MenuItem>
+                  <MenuItem value={3}>Completed</MenuItem>
+                </Select>
+              </FormControl>
+
+              <FormControl size="small" sx={{ minWidth: 120 }}>
+                <InputLabel id="filter-priority-label">Priority</InputLabel>
+                <Select
+                  labelId="filter-priority-label"
+                  id="filter-priority"
+                  value={filterPriority}
+                  label="Priority"
+                  onChange={handleFilterPriorityChange}
+                >
+                  <MenuItem value="">All</MenuItem>
+                  <MenuItem value={1}>Low</MenuItem>
+                  <MenuItem value={2}>Medium</MenuItem>
+                  <MenuItem value={3}>High</MenuItem>
+                </Select>
+              </FormControl>
+
               <IconButton
                 color="primary"
-                sx={{ bgcolor: "action.selected", borderRadius: 2, "&:hover": { bgcolor: "action.hover" } }}
+                onClick={() => setViewMode("grid")}
+                sx={{
+                  bgcolor: viewMode === "grid" ? "action.selected" : "transparent",
+                  borderRadius: 2,
+                  "&:hover": { bgcolor: "action.hover" },
+                }}
               >
                 <MdOutlineGridView size={20} />
               </IconButton>
               <IconButton
                 color="primary"
-                sx={{ bgcolor: "action.selected", borderRadius: 2, "&:hover": { bgcolor: "action.hover" } }}
+                onClick={() => setViewMode("list")}
+                sx={{
+                  bgcolor: viewMode === "list" ? "action.selected" : "transparent",
+                  borderRadius: 2,
+                  "&:hover": { bgcolor: "action.hover" },
+                }}
               >
                 <LuRows3 size={20} />
               </IconButton>
@@ -263,7 +349,7 @@ export default function ProjectPage() {
           </React.Suspense>
           {/* Form popup */}
 
-          <ProjectList projectList={projectList as TProject[]} />
+          <ProjectList projectList={filteredProjectList as TProject[]} viewMode={viewMode} />
         </Box>
       )}
     </>

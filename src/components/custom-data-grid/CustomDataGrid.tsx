@@ -1,3 +1,5 @@
+"use client";
+
 import React, { memo, Ref } from "react";
 import Box from "@mui/material/Box";
 import { DataGrid, DataGridProps } from "@mui/x-data-grid";

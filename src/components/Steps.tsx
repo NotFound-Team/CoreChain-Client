@@ -14,91 +14,52 @@ export default function Steps() {
           efficiently using blockchain technology. The process is simple in 3
           steps:
         </p>
-        <div className="flex items-center justify-center gap-x-14 mb-8">
-          <div className="text-2xl text-white w-[70px] h-[70px] rounded-full bg-[#651FFF] flex items-center justify-center hover:bg-[#7C4DFF] hover:shadow-lg hover:-translate-y-2 transition-all duration-300">
-            <FaUserEdit />
+        <div className="flex flex-col lg:flex-row items-start justify-center gap-8 relative">
+          {/* Step 1 */}
+          <div className="flex flex-col items-center flex-1 z-10">
+            <div className="text-2xl text-white w-[70px] h-[70px] rounded-full bg-[#651FFF] flex items-center justify-center hover:bg-[#7C4DFF] hover:shadow-lg hover:-translate-y-2 transition-all duration-300 mb-6 relative">
+              <FaUserEdit />
+            </div>
+            <h3 className="font-semibold mb-4 text-xl">Create an account</h3>
+            <p className="max-w-[300px] text-gray-600">
+              Register and set up your company profile to start managing
+              employees on a decentralized platform.
+            </p>
           </div>
-          <ul className="flex items-center justify-center gap-x-2">
-            <li>
-              <RxBorderDashed />
-            </li>
-            <li>
-              <RxBorderDashed />
-            </li>
-            <li>
-              <RxBorderDashed />
-            </li>
-            <li>
-              <RxBorderDashed />
-            </li>
-            <li>
-              <RxBorderDashed />
-            </li>
-            <li>
-              <RxBorderDashed />
-            </li>
-            <li>
-              <RxBorderDashed />
-            </li>
-          </ul>
-          <div className="text-2xl text-white w-[70px] h-[70px] rounded-full bg-[#651FFF] flex items-center justify-center hover:bg-[#7C4DFF] hover:shadow-lg hover:-translate-y-2 transition-all duration-300">
-            <SiGoogleauthenticator />
+
+          {/* Connector 1 */}
+          <div className="hidden lg:flex items-center justify-center pt-8 w-[100px]">
+             <div className="border-t-2 border-dashed border-gray-300 w-full mb-12"></div>
           </div>
-          <ul className="flex items-center justify-center gap-x-2">
-            <li>
-              <RxBorderDashed />
-            </li>
-            <li>
-              <RxBorderDashed />
-            </li>
-            <li>
-              <RxBorderDashed />
-            </li>
-            <li>
-              <RxBorderDashed />
-            </li>
-            <li>
-              <RxBorderDashed />
-            </li>
-            <li>
-              <RxBorderDashed />
-            </li>
-            <li>
-              <RxBorderDashed />
-            </li>
-          </ul>
-          <div className="text-2xl text-white w-[70px] h-[70px] rounded-full bg-[#651FFF] flex items-center justify-center hover:bg-[#7C4DFF] hover:shadow-lg hover:-translate-y-2 transition-all duration-300">
-            <IoMdShare />
+
+          {/* Step 2 */}
+          <div className="flex flex-col items-center flex-1 z-10">
+            <div className="text-2xl text-white w-[70px] h-[70px] rounded-full bg-[#651FFF] flex items-center justify-center hover:bg-[#7C4DFF] hover:shadow-lg hover:-translate-y-2 transition-all duration-300 mb-6">
+              <SiGoogleauthenticator />
+            </div>
+            <h3 className="font-semibold mb-4 text-xl">Store & verify data</h3>
+            <p className="max-w-[300px] text-gray-600">
+              All HR data is encrypted and stored on the blockchain, ensuring
+              security and transparency.
+            </p>
           </div>
-        </div>
-        <div>
-          <ul className="flex items-center justify-center gap-x-4">
-            <li>
-              <h3 className="font-semibold mb-4">Create an account</h3>
-              <p className="max-w-[327px]">
-                Register and set up your company profile to start managing
-                employees on a decentralized platform.
-              </p>
-            </li>
-            <li>
-              <h3 className="font-semibold mb-4">
-                Store & verify employee data
-              </h3>
-              <p className="max-w-[327px]">
-                All HR data is encrypted and stored on the blockchain, ensuring
-                security and transparency, eliminating fraud and errors.
-              </p>
-            </li>
-            <li>
-              <h3 className="font-semibold mb-4">
-                Share & manage records easily
-              </h3>
-              <p className="max-w-[327px]">
-                Securely share employee information, allowing employees to
-                control their personal data and grant access flexibly.
-              </p>
-            </li>
-          </ul>
+
+          {/* Connector 2 */}
+          <div className="hidden lg:flex items-center justify-center pt-8 w-[100px]">
+             <div className="border-t-2 border-dashed border-gray-300 w-full mb-12"></div>
+          </div>
+
+          {/* Step 3 */}
+          <div className="flex flex-col items-center flex-1 z-10">
+            <div className="text-2xl text-white w-[70px] h-[70px] rounded-full bg-[#651FFF] flex items-center justify-center hover:bg-[#7C4DFF] hover:shadow-lg hover:-translate-y-2 transition-all duration-300 mb-6">
+              <IoMdShare />
+            </div>
+            <h3 className="font-semibold mb-4 text-xl">Share & manage</h3>
+            <p className="max-w-[300px] text-gray-600">
+              Securely share employee information, allowing employees to
+              control their personal data flexibly.
+            </p>
+          </div>
         </div>
       </div>
     </section>

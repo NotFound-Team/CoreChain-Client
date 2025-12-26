@@ -15,28 +15,25 @@ export default function PlatformIntro() {
             improves transparency—without the need for third-party
             subscriptions.
           </p>
-          <div className="flex justify-center space-x-8">
-            <button className="bg-purple-600 text-white font-semibold py-2 px-8 rounded-lg hover:bg-purple-700">
+          <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-x-8">
+            <button className="bg-purple-600 text-white font-semibold py-2 px-8 rounded-lg hover:bg-purple-700 w-full sm:w-auto">
               Get Started
             </button>
-            <button className="bg-transparent border-2 border-black text-black font-semibold py-2 px-10 rounded-lg hover:bg-purple-100">
+            <button className="bg-transparent border-2 border-black text-black font-semibold py-2 px-10 rounded-lg hover:bg-purple-100 w-full sm:w-auto">
               Pricing
             </button>
           </div>
         </div>
 
         {/* Image section */}
-        <div className="w-full flex items-center justify-center">
+        <div className="w-full flex items-center justify-center mt-10">
           <Image
             src={"/images/deupoad-hero-screen 1.png"}
             alt="HR platform dashboard"
             width={0}
             height={0}
             sizes="100vw"
-            style={{
-              width: "70%",
-              height: "auto",
-            }}
+            className="w-full sm:w-[70%] h-auto"
           />
         </div>
       </div>

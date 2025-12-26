@@ -10,9 +10,7 @@ export const metadata: Metadata = {
 export default function LayoutProject({ children }: { children: React.ReactNode }) {
   return (
     <Can I="get" a="projects">
-      <div>
-        <div>{children}</div>
-      </div>
+      <div>{children}</div>
     </Can>
   );
 }

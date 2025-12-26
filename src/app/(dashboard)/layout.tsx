@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 // -- Context --
@@ -18,7 +19,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 // -- React --
-import React, { useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 
 // -- React-icon
 import { MdExitToApp } from "react-icons/md";
@@ -55,7 +56,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     setMobileOpen(!mobileOpen);
   };
 
-  const handleLogout = async () => {
+  const handleLogout = useCallback(async () => {
     try {
       await fetchApi(`${CONFIG_API.AUTH.LOGOUT}`, "POST");
       localStorage.removeItem("token");
@@ -66,57 +67,60 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       console.error("error", error);
       showToast("Error during logout. Please try again!", "error");
     }
-  };
+  }, []);
 
   // Item section drawer
-  const listItemMenu = listItem();
+  const listItemMenu = useMemo(() => listItem(), []);
 
-  const drawer = (
-    <div>
-      <Toast />
-      <Toolbar>LOGO</Toolbar>
-      <List>
-        {listItemMenu.map((item) => (
-          <Link href={item.href} key={item.id} className="bg-red-300">
-            <Tooltip disableHoverListener={mobileOpen ? true : false} arrow placement="right" title={item.title}>
-              <ListItem
-                sx={{
-                  "&:hover": {
-                    backgroundColor: theme.palette.action.hover,
-                    transition: "background-color 0.5s",
-                  },
-                  backgroundColor: pathName === item.href ? theme.palette.action.focus : "",
+  const drawer = useMemo(
+    () => (
+      <div>
+        <Toast />
+        <Toolbar>LOGO</Toolbar>
+        <List>
+          {listItemMenu.map((item) => (
+            <Link href={item.href} key={item.id} className="bg-red-300">
+              <Tooltip disableHoverListener={mobileOpen ? true : false} arrow placement="right" title={item.title}>
+                <ListItem
+                  sx={{
+                    "&:hover": {
+                      backgroundColor: theme.palette.action.hover,
+                      transition: "background-color 0.5s",
+                    },
+                    backgroundColor: pathName === item.href ? theme.palette.action.focus : "",
 
-                  borderRadius: "12px",
-                }}
-              >
-                <ListItemIcon>
-                  <item.icon size={24} />
-                </ListItemIcon>
-                <ListItemText sx={{ fontWeight: pathName === item.href ? "bold" : "normal" }} primary={item.title} />
-              </ListItem>
-            </Tooltip>
-          </Link>
-        ))}
+                    borderRadius: "12px",
+                  }}
+                >
+                  <ListItemIcon>
+                    <item.icon size={24} />
+                  </ListItemIcon>
+                  <ListItemText sx={{ fontWeight: pathName === item.href ? "bold" : "normal" }} primary={item.title} />
+                </ListItem>
+              </Tooltip>
+            </Link>
+          ))}
 
-        <Tooltip disableHoverListener={mobileOpen ? true : false} arrow placement="right" title="Logout">
-          <ListItem
-            sx={{
-              "&:hover": {
-                backgroundColor: theme.palette.action.hover,
-                transition: "background-color 0.5s",
-              },
-            }}
-            onClick={handleLogout}
-          >
-            <ListItemIcon>
-              <MdExitToApp size={24} />
-            </ListItemIcon>
-            <ListItemText primary="Logout" />
-          </ListItem>
-        </Tooltip>
-      </List>
-    </div>
+          <Tooltip disableHoverListener={mobileOpen ? true : false} arrow placement="right" title="Logout">
+            <ListItem
+              sx={{
+                "&:hover": {
+                  backgroundColor: theme.palette.action.hover,
+                  transition: "background-color 0.5s",
+                },
+              }}
+              onClick={handleLogout}
+            >
+              <ListItemIcon>
+                <MdExitToApp size={24} />
+              </ListItemIcon>
+              <ListItemText primary="Logout" />
+            </ListItem>
+          </Tooltip>
+        </List>
+      </div>
+    ),
+    [listItemMenu, mobileOpen, pathName, theme]
   );
 
   return (
@@ -145,7 +149,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             paddingLeft: 3,
             paddingRight: 3,
             paddingTop: 10,
-            bgcolor: theme.palette.background.paper,
+            // bgcolor: theme.palette.background.default,
+            bgcolor: "#F5F7FA",
             minHeight: "100vh",
           }}
         >

@@ -1,4 +1,5 @@
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material";
+import { memo } from "react";
 
 type TProps = {
   deleteDialogOpen: boolean;
@@ -65,4 +66,4 @@ const ConfirmDelete = (props: TProps) => {
   );
 };
 
-export default ConfirmDelete;
+export default memo(ConfirmDelete);
