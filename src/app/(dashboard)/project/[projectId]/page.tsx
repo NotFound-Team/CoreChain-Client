@@ -18,6 +18,7 @@ import Fade from "@mui/material/Fade";
 import { useTheme } from "@mui/material/styles";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { LocalizationProvider } from "@mui/x-date-pickers";
+import { GiCancel } from "react-icons/gi";
 
 // -- React --
 import React, { useEffect, useState } from "react";
@@ -41,16 +42,33 @@ import { TProject } from "@/types/project";
 import dayjs from "dayjs";
 
 // -- React-icon --
-import { MdFolderDelete } from "react-icons/md";
+import { MdCheckCircleOutline, MdFolderDelete } from "react-icons/md";
 import { Can } from "@/context/casl/AbilityContext";
-import { Alert, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+import {
+  Alert,
+  Autocomplete,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  InputAdornment,
+  MenuItem,
+  TextField,
+} from "@mui/material";
 import { useSnackbar } from "@/hooks/useSnackbar";
 import FallbackSpinner from "@/components/fall-back";
+import { IoPeopleSharp, IoPersonAddSharp } from "react-icons/io5";
+import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 
 const ProjectDetail = () => {
   const theme = useTheme();
   const params = useParams<{ projectId: string }>();
   const [loading, setLoading] = useState(false);
+  const [addMembers, setAddMembers] = useState(false);
+  const [employeesForDepartment, setEmployeesForDepartment] = useState<{ name: string; id: string }[]>([]);
+  const [selectedMembers, setSelectedMembers] = useState<{ name: string; id: string }[]>([]);
   const [projects, setProjects] = useState<TProject>();
   const [openConfirmDelete, setOpenConfirmDelete] = useState(false);
   const router = useRouter();
@@ -80,19 +98,50 @@ const ProjectDetail = () => {
     }
   };
 
-  useEffect(() => {
-    const dataProjectDetail = async () => {
-      try {
-        const response = await fetchApi(`${CONFIG_API.PROJECT}/${params.projectId}`);
-        // console.log(response);
-        if (response && response.statusCode === 200) {
-          setProjects(response.data);
-        }
-      } catch (error) {
-        console.error("Error:", error);
+  const fetchProjectDetail = async () => {
+    try {
+      const response = await fetchApi(`${CONFIG_API.PROJECT}/${params.projectId}`);
+      // console.log(response);
+      if (response && response.statusCode === 200) {
+        setProjects(response.data);
+        fetchDepartment(response.data.department);
       }
-    };
-    dataProjectDetail();
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const fetchDepartment = async (id: string) => {
+    try {
+      setLoading(true);
+      const response = await fetchApi(`${CONFIG_API.DEPARTMENT}/${id}`, "GET");
+      if (response.statusCode === 200) {
+        // const manager = await fetchApi(`${CONFIG_API.USER.INDEX}/${response.data?.manager}`);
+        // response.data.manager = manager.data.name;
+
+        const employeeOptions = await Promise.all(
+          response.data.employees.map(async (employee: string) => {
+            const employeeInfo = await fetchApi(`${CONFIG_API.USER.INDEX}/${employee}`);
+            return {
+              id: employeeInfo?.data._id,
+              name: employeeInfo?.data.name ?? "Unknown",
+            };
+          })
+        );
+        response.data.employees = employeeOptions;
+        setEmployeesForDepartment(response.data.employees);
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      showToast("Failed to fetch department details", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProjectDetail();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.projectId]);
 
   if (loading) {
@@ -274,75 +323,190 @@ const ProjectDetail = () => {
                         gap: 4,
                       }}
                     >
-                      <Paper
-                        elevation={2}
+                      <Box sx={{ mb: 3 }}>
+                        {!addMembers ? (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 2,
+                              flexWrap: "wrap",
+                              transition: "all 0.3s ease",
+                              p: 1,
+                              borderRadius: 1,
+                              "&:hover": { bgcolor: "action.hover" },
+                            }}
+                          >
+                            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                              <Tooltip title="Add members">
+                                <IconButton
+                                  color="primary"
+                                  sx={{
+                                    bgcolor: "primary.light",
+                                    color: "primary.contrastText",
+                                    "&:hover": { bgcolor: "primary.main" },
+                                  }}
+                                  onClick={() => setAddMembers(true)}
+                                >
+                                  <IoPersonAddSharp />
+                                </IconButton>
+                              </Tooltip>
+                              <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                                Team Members
+                              </Typography>
+                            </Box>
+
+                            <AvatarGroup
+                              max={6}
+                              sx={{
+                                "& .MuiAvatar-root": {
+                                  transition: "transform 0.2s",
+                                  "&:hover": {
+                                    transform: "scale(1.1)",
+                                    boxShadow: 2,
+                                  },
+                                },
+                              }}
+                            >
+                              {projects?.teamMembers.map((member, index) => (
+                                <Tooltip key={member} title={`Member ${index + 1}`}>
+                                  <Avatar
+                                    src={"/images/img_avatar.png"}
+                                    sx={{ width: 40, height: 40, border: "2px solid white" }}
+                                  />
+                                </Tooltip>
+                              ))}
+                            </AvatarGroup>
+                          </Box>
+                        ) : (
+                          // Chế độ thêm thành viên
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 1,
+                              p: 2,
+                              bgcolor: "background.paper",
+                              borderRadius: 1,
+                              boxShadow: 1,
+                              transition: "all 0.3s ease",
+                            }}
+                          >
+                            <Autocomplete<{ name: string; id: string }, true, false, false>
+                              multiple
+                              options={employeesForDepartment}
+                              getOptionLabel={(option) => option.name || "N/A"}
+                              value={selectedMembers}
+                              onChange={(e, newValue: any) => {
+                                setSelectedMembers([...newValue]);
+                                console.log("Selected:", newValue);
+                              }}
+                              disableCloseOnSelect
+                              fullWidth
+                              renderOption={(props, option, { selected }) => (
+                                <MenuItem
+                                  {...props}
+                                  sx={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    py: 1.5,
+                                    bgcolor: selected ? "action.selected" : "inherit",
+                                  }}
+                                >
+                                  <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                                    <Avatar src={"/images/img_avatar.png"} sx={{ width: 32, height: 32 }} />
+                                    <Typography>{option.name || "N/A"}</Typography>
+                                  </Box>
+                                  {selected && <MdCheckCircleOutline color="primary" />}
+                                </MenuItem>
+                              )}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  label="Select team members"
+                                  placeholder="Search employees..."
+                                  variant="outlined"
+                                  size="small"
+                                  InputProps={{
+                                    ...params.InputProps,
+                                    startAdornment: (
+                                      <>
+                                        <InputAdornment position="start">
+                                          <IoPeopleSharp color="action" />
+                                        </InputAdornment>
+                                        {params.InputProps.startAdornment}
+                                      </>
+                                    ),
+                                  }}
+                                />
+                              )}
+                              sx={{ flexGrow: 1 }}
+                            />
+
+                            <Tooltip title="Cancel">
+                              <IconButton
+                                color="error"
+                                onClick={() => setAddMembers(false)}
+                                sx={{
+                                  background: theme.palette.error.light + "20",
+                                  "&:hover": { background: theme.palette.error.light + "40" },
+                                }}
+                              >
+                                <GiCancel />
+                              </IconButton>
+                            </Tooltip>
+
+                            <Tooltip title="Save changes">
+                              <IconButton
+                                sx={{
+                                  color: "skyblue",
+                                  background: theme.palette.info.light + "20",
+                                  "&:hover": { background: theme.palette.info.light + "40" },
+                                }}
+                              >
+                                <IoIosCheckmarkCircleOutline size={24} />
+                              </IconButton>
+                            </Tooltip>
+                          </Box>
+                        )}
+                      </Box>
+
+                      <Typography
+                        variant="h5"
+                        gutterBottom
+                        sx={{ fontWeight: 700, mt: 3, display: "flex", alignItems: "center" }}
+                      >
+                        🛠️ Tech Stack
+                      </Typography>
+                      <Box
                         sx={{
-                          p: 3,
-                          borderRadius: 3,
-                          background: theme.palette.background.paper,
+                          display: "flex",
+                          flexWrap: "wrap",
+                          gap: 1,
+                          "& .MuiChip-root": {
+                            borderRadius: 2,
+                            fontWeight: 500,
+                            px: 1.5,
+                            py: 1,
+                          },
                         }}
                       >
-                        <Typography
-                          variant="h5"
-                          gutterBottom
-                          sx={{ fontWeight: 700, display: "flex", alignItems: "center" }}
-                        >
-                          👥 Team Members
-                        </Typography>
-                        <AvatarGroup max={6} sx={{ justifyContent: "center", mb: 3 }}>
-                          {projects?.teamMembers.map((member, index) => (
-                            <Tooltip key={index} title={`Member ${index + 1}`}>
-                              <Avatar
-                                src={"/images/img_avatar.png"}
-                                sx={{
-                                  width: 56,
-                                  height: 56,
-                                  border: "2px solid #fff",
-                                  "&:hover": { transform: "scale(1.1)" },
-                                  transition: "transform 0.2s",
-                                }}
-                              />
-                            </Tooltip>
-                          ))}
-                        </AvatarGroup>
-
-                        <Typography
-                          variant="h5"
-                          gutterBottom
-                          sx={{ fontWeight: 700, mt: 3, display: "flex", alignItems: "center" }}
-                        >
-                          🛠️ Tech Stack
-                        </Typography>
-                        <Box
-                          sx={{
-                            display: "flex",
-                            flexWrap: "wrap",
-                            gap: 1,
-                            "& .MuiChip-root": {
-                              borderRadius: 2,
-                              fontWeight: 500,
-                              px: 1.5,
-                              py: 1,
-                            },
-                          }}
-                        >
-                          {[
-                            { label: "React", color: "primary" },
-                            { label: "Node.js", color: "secondary" },
-                            { label: "Python", color: "warning" },
-                            { label: "TensorFlow", color: "success" },
-                            { label: "MongoDB", color: "info" },
-                            { label: "AWS", color: "error" },
-                          ].map((tech, index) => (
-                            <Chip
-                              key={index}
-                              label={tech.label}
-                              color={tech.color as "primary" | "secondary" | "warning" | "success" | "info" | "error"}
-                              variant="outlined"
-                            />
-                          ))}
-                        </Box>
-                      </Paper>
+                        {[
+                          { label: "React", color: "primary" },
+                          { label: "Node.js", color: "secondary" },
+                          { label: "Python", color: "warning" },
+                          { label: "TensorFlow", color: "success" },
+                          { label: "MongoDB", color: "info" },
+                          { label: "AWS", color: "error" },
+                        ].map((tech, index) => (
+                          <Chip
+                            key={index}
+                            label={tech.label}
+                            color={tech.color as "primary" | "secondary" | "warning" | "success" | "info" | "error"}
+                            variant="outlined"
+                          />
+                        ))}
+                      </Box>
                     </Box>
                   </Grid>
                 </Grid>

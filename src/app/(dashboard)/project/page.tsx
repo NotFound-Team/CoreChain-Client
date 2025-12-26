@@ -131,6 +131,7 @@ export default function ProjectList() {
           _id: response.data,
         };
         setProjectList((prev) => [...prev, newProject]);
+        fetchProjects();
         showToast("Create project success!", "success");
       }
     } catch (error) {
@@ -143,63 +144,52 @@ export default function ProjectList() {
     handleClose();
   };
 
-  React.useEffect(() => {
-    if (projectList.length > 0) {
-      localStorage.setItem("projects", JSON.stringify(projectList));
+  // ** Fetch api
+  const fetchProjects = async () => {
+    const response = await fetchApi(`${CONFIG_API.PROJECT}`, "GET");
+    // console.log(response);
+    if (response && response.statusCode === 200) {
+      setProjectList(response.data.projects);
     }
-  }, [projectList]);
+  };
+  const fetchData = async () => {
+    try {
+      // Gọi song song 2 API
+      const [deptRes, empRes] = await Promise.all([
+        fetchApi(`${CONFIG_API.DEPARTMENT}`, "GET"),
+        fetchApi(`${CONFIG_API.USER.INDEX}`, "GET"),
+      ]);
+
+      // Xử lý department
+      if (deptRes && deptRes.statusCode === 200) {
+        setDepartment(
+          deptRes.data.result.map((item: any) => ({
+            name: item.name,
+            _id: item._id,
+            manager: item.manager,
+            employees: item.employees,
+            budget: item.budget,
+          }))
+        );
+      }
+
+      // Xử lý employees
+      if (empRes && empRes.statusCode === 200) {
+        setEmployees(
+          empRes.data.result.map((item: any) => ({
+            name: item.name,
+            _id: item._id,
+          }))
+        );
+      }
+    } catch (error) {
+      console.error("Fetch department hoặc employees thất bại:", error);
+      // Bạn có thể showToast báo lỗi ở đây nếu muốn
+    }
+  };
 
   React.useEffect(() => {
-    const cachedProjects = localStorage.getItem("projects");
-    const fetchProjects = async () => {
-      const response = await fetchApi(`${CONFIG_API.PROJECT}`, "GET");
-      // console.log(response);
-      if (response && response.statusCode === 200) {
-        setProjectList(response.data.projects);
-      }
-    };
-
-    if (cachedProjects) {
-      setProjectList(JSON.parse(cachedProjects));
-    } else {
-      fetchProjects();
-    }
-
-    const fetchData = async () => {
-      try {
-        // Gọi song song 2 API
-        const [deptRes, empRes] = await Promise.all([
-          fetchApi(`${CONFIG_API.DEPARTMENT}`, "GET"),
-          fetchApi(`${CONFIG_API.USER.INDEX}`, "GET"),
-        ]);
-
-        // Xử lý department
-        if (deptRes && deptRes.statusCode === 200) {
-          setDepartment(
-            deptRes.data.result.map((item: any) => ({
-              name: item.name,
-              _id: item._id,
-              manager: item.manager,
-              employees: item.employees,
-              budget: item.budget,
-            }))
-          );
-        }
-
-        // Xử lý employees
-        if (empRes && empRes.statusCode === 200) {
-          setEmployees(
-            empRes.data.result.map((item: any) => ({
-              name: item.name,
-              _id: item._id,
-            }))
-          );
-        }
-      } catch (error) {
-        console.error("Fetch department hoặc employees thất bại:", error);
-        // Bạn có thể showToast báo lỗi ở đây nếu muốn
-      }
-    };
+    fetchProjects();
 
     fetchData();
 

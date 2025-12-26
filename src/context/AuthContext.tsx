@@ -13,12 +13,13 @@ import { UserLogin, User, AuthContextType } from "@/types/auth";
 import fetchApi from "@/utils/fetchApi";
 
 // -- configs --
-import { CONFIG_API } from "@/configs/api";
+import { BASE_URL, CONFIG_API } from "@/configs/api";
 
 import Cookies from "js-cookie";
 import FallbackSpinner from "@/components/fall-back";
 
 import { jwtDecode, JwtPayload } from "jwt-decode";
+import axios from "axios";
 // import axios from "axios";
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -114,10 +115,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = async ({ username, password }: UserLogin) => {
     setLoading(true);
     try {
-      const response = await fetchApi(CONFIG_API.AUTH.LOGIN, "POST", { username, password });
+      const response = await axios.post(`${BASE_URL}${CONFIG_API.AUTH.LOGIN}`, { username, password });
+      console.log(response)
 
       if (response) {
-        const { user, access_token } = response.data;
+        const { user, access_token } = response.data.data;
         const newUser = { ...user, access_token };
         localStorage.setItem("token", access_token);
         Cookies.set("token", access_token, { expires: 1 });

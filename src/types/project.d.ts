@@ -49,6 +49,7 @@ export type TProject = {
   startDate: Date;
   status: Status;
   tasks: string[];
+  department?: string,
   teamMembers: string[];
   updatedAt?: Date;
   manager: {
