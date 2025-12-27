@@ -28,6 +28,8 @@ import { useSnackbar } from "@/hooks/useSnackbar";
 import fetchApi from "@/utils/fetchApi";
 import { CONFIG_API } from "@/configs/api";
 import { Can } from "@/context/casl/AbilityContext";
+import dynamic from "next/dynamic";
+const DialogConfirmDelete = dynamic(() => import("@/components/dialog-confirm-delete"), { ssr: false });
 
 interface Position {
   _id: string;
@@ -402,57 +404,13 @@ export default function PositionPage() {
           </DialogActions>
         </form>
       </Dialog>
-
-      <Dialog
-        open={deleteDialogOpen}
-        onClose={handleCancelDelete}
-        PaperProps={{
-          sx: {
-            borderRadius: 2,
-          },
-        }}
-      >
-        <DialogTitle sx={{ pb: 1 }}>
-          <Typography sx={{ fontWeight: 600 }}>Delete Position</Typography>
-        </DialogTitle>
-        <DialogContent>
-          <Alert
-            severity="warning"
-            sx={{
-              mt: 2,
-              borderRadius: 2,
-            }}
-          >
-            Are you sure you want to delete this position? This action cannot be undone.
-          </Alert>
-        </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button
-            onClick={handleCancelDelete}
-            sx={{
-              borderRadius: 2,
-              px: 3,
-              textTransform: "none",
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleConfirmDelete}
-            color="error"
-            variant="contained"
-            sx={{
-              borderRadius: 2,
-              px: 3,
-              textTransform: "none",
-              fontWeight: 600,
-            }}
-          >
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
-
+      <DialogConfirmDelete
+        deleteDialogOpen={deleteDialogOpen}
+        titleConfirmDelete="Delete Position"
+        descriptionConfirmDelete=" Are you sure you want to delete this position? This action cannot be undone."
+        handleConfirmDelete={handleConfirmDelete}
+        handleCancelDelete={handleCancelDelete}
+      />
       <Toast />
     </Box>
   );

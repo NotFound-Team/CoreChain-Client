@@ -26,7 +26,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { MdCheckCircleOutline, MdWork } from "react-icons/md";
 import { MdVisibility, MdEdit, MdDelete } from "react-icons/md";
 import { Avatar, AvatarGroup, IconButton, Stack } from "@mui/material";
@@ -40,6 +40,8 @@ import FallbackSpinner from "@/components/fall-back";
 import { FaPlus } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { Can } from "@/context/casl/AbilityContext";
+import dynamic from "next/dynamic";
+const DialogConfirmDelete = dynamic(() => import("@/components/dialog-confirm-delete"), { ssr: false });
 
 interface Employee {
   _id: string;
@@ -155,7 +157,7 @@ export default function Index() {
       headerName: "Action",
       width: 200,
       headerAlign: "center",
-      align: 'center',   
+      align: "center",
       sortable: false,
       filterable: false,
       renderCell: (params) => {
@@ -205,14 +207,17 @@ export default function Index() {
     },
   ];
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setOpen(!open);
-  };
+  }, [open]);
+
+  const handleCloseCofirm = useCallback(() => {
+    setOpenConfirmDelete(false);
+  }, []);
 
   const {
     handleSubmit,
     control,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     formState: { errors },
     reset,
   } = useForm<TDepartment>({
@@ -263,7 +268,7 @@ export default function Index() {
     }
   };
 
-  const handleDeleteDepartment = async () => {
+  const handleDeleteDepartment = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetchApi(`${CONFIG_API.DEPARTMENT}/${selectedDepartmentId}`, "DELETE");
@@ -279,7 +284,8 @@ export default function Index() {
       setOpenConfirmDelete(false);
       setLoading(false);
     }
-  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedDepartmentId]);
 
   const fetchDepartment = async () => {
     try {
@@ -616,53 +622,15 @@ export default function Index() {
           </form>
         </Dialog>
         {/* Form popup */}
-
+        
         {/* Alert comfirm delete department */}
-        <Dialog
-          open={openConfirmDelete}
-          onClose={handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-            <Typography variant="h6" sx={{ fontWeight: 600 }}>
-              Delete Department
-            </Typography>
-          </DialogTitle>
-          <DialogContent>
-            <Alert severity="warning" sx={{ mt: 2, borderRadius: 2 }}>
-              <DialogContentText id="alert-dialog-description">
-                Are you sure you want to delete this role? This action cannot be undone.
-              </DialogContentText>
-            </Alert>
-          </DialogContent>
-          <DialogActions sx={{ px: 3, pb: 2 }}>
-            <Button
-              onClick={() => setOpenConfirmDelete(false)}
-              color="inherit"
-              sx={{
-                borderRadius: 2,
-                px: 3,
-                textTransform: "none",
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleDeleteDepartment}
-              color="error"
-              variant="contained"
-              sx={{
-                borderRadius: 2,
-                px: 3,
-                textTransform: "none",
-                fontWeight: 600,
-              }}
-            >
-              Delete
-            </Button>
-          </DialogActions>
-        </Dialog>
+        <DialogConfirmDelete
+          deleteDialogOpen={openConfirmDelete}
+          titleConfirmDelete=" Delete Department"
+          descriptionConfirmDelete=" Are you sure you want to delete this department? This action cannot be undone."
+          handleConfirmDelete={handleDeleteDepartment}
+          handleCancelDelete={handleCloseCofirm}
+        />
       </Box>
     </>
   );

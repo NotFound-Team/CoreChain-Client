@@ -18,11 +18,13 @@ import {
   Skeleton,
   Tooltip,
 } from "@mui/material";
+import dynamic from "next/dynamic";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { IoEye } from "react-icons/io5";
 import { MdDelete } from "react-icons/md";
+const DialogConfirmDelete = dynamic(() => import("@/components/dialog-confirm-delete"), { ssr: false });
 
 export default function ListUser() {
   const [listUser, setListUser] = React.useState<UserResponse[] | []>([]);
@@ -58,11 +60,11 @@ export default function ListUser() {
     };
   }, []);
 
-  const handleClose = () => {
+  const handleCloseCofirm = useCallback(() => {
     setOpenConfirmDelete(false);
-  };
+  }, []);
 
-  const handleDeleteUser = async () => {
+  const handleDeleteUser = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetchApi(`${CONFIG_API.USER.INDEX}/${selectedUserId}`, "DELETE");
@@ -75,7 +77,7 @@ export default function ListUser() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedUserId]);
 
   // console.log(listUser);
 
@@ -205,29 +207,13 @@ export default function ListUser() {
           </table>
         </Can>
       </Can>
-      <Dialog
-        open={openConfirmDelete}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <Alert severity="warning" sx={{ borderRadius: 0 }}>
-          <DialogTitle id="alert-dialog-title">Confirm Delete</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              Are you sure you want to delete this role? This action cannot be undone.
-            </DialogContentText>
-          </DialogContent>
-        </Alert>
-        <DialogActions sx={{ backgroundColor: "#fff" }}>
-          <Button onClick={() => setOpenConfirmDelete(false)} color="inherit">
-            Cancel
-          </Button>
-          <Button onClick={handleDeleteUser} color="error" variant="contained" autoFocus>
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <DialogConfirmDelete
+        deleteDialogOpen={openConfirmDelete}
+        titleConfirmDelete="Delete User"
+        descriptionConfirmDelete=" Are you sure you want to delete this user? This action cannot be undone."
+        handleConfirmDelete={handleDeleteUser}
+        handleCancelDelete={handleCloseCofirm}
+      />
     </>
   );
 }
