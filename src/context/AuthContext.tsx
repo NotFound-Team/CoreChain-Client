@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
 
         // Token còn hạn - fetch user data
-        const response = await fetchApi(CONFIG_API.USER.ACCOUNT, "GET");
+        const response = await fetchApi(CONFIG_API.AUTH.ACCOUNT, "GET");
 
         if (response.statusCode === 200 && response.data) {
           const newUser = { ...response.data.user, token };

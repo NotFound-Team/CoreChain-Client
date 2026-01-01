@@ -250,7 +250,7 @@ export default function Index() {
     data.budget = Number(data.budget);
     try {
       const method = selectedDepartmentId ? "PATCH" : "POST";
-      const url = selectedDepartmentId ? `${CONFIG_API.DEPARTMENT}/${selectedDepartmentId}` : CONFIG_API.DEPARTMENT;
+      const url = selectedDepartmentId ? `${CONFIG_API.DEPARTMENT.DETAIL(selectedDepartmentId)}` : `${CONFIG_API.DEPARTMENT}`;
       const response = await fetchApi(url, method, data);
       if (response.statusCode === (selectedDepartmentId ? 200 : 201)) {
         showToast(
@@ -271,7 +271,7 @@ export default function Index() {
   const handleDeleteDepartment = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetchApi(`${CONFIG_API.DEPARTMENT}/${selectedDepartmentId}`, "DELETE");
+      const response = await fetchApi(`${CONFIG_API.DEPARTMENT.DETAIL(selectedDepartmentId as string)}`, "DELETE");
       if (response.statusCode === 200) {
         fetchDepartment();
         showToast("Delete department successfully!", "success");
@@ -290,7 +290,7 @@ export default function Index() {
   const fetchDepartment = async () => {
     try {
       setLoadingFetchDepartment(true);
-      const departmentResponse = await fetchApi(CONFIG_API.DEPARTMENT, "GET");
+      const departmentResponse = await fetchApi(CONFIG_API.DEPARTMENT.INDEX, "GET");
       const userResponse = await fetchApi(CONFIG_API.USER.INDEX, "GET");
       const userMap = new Map();
       userResponse?.data?.result.forEach((user: any) => {

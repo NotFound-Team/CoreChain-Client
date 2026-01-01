@@ -119,7 +119,7 @@ export default function ProjectPage() {
         // }
 
         try {
-          const response = await fetchApi(`${CONFIG_API.FILE}`, "POST", data, {
+          const response = await fetchApi(`${CONFIG_API.FILE.UPLOAD}`, "POST", data, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
@@ -134,7 +134,7 @@ export default function ProjectPage() {
     try {
       setLoading(true);
       // console.log("formData 2", formData);
-      const response = await fetchApi(`${CONFIG_API.PROJECT}`, "POST", formData);
+      const response = await fetchApi(`${CONFIG_API.PROJECT.INDEX}`, "POST", formData);
       if (response && response.statusCode === 201) {
         // console.log("NEW PROJECT", response);
         const newProject = {
@@ -157,7 +157,7 @@ export default function ProjectPage() {
 
   // ** Fetch api
   const fetchProjects = async () => {
-    const response = await fetchApi(`${CONFIG_API.PROJECT}`, "GET");
+    const response = await fetchApi(`${CONFIG_API.PROJECT.INDEX}`, "GET");
     // console.log(response);
     if (response && response.statusCode === 200) {
       setProjectList(response.data.projects);
@@ -167,7 +167,7 @@ export default function ProjectPage() {
     try {
       // Gọi song song 2 API
       const [deptRes, empRes] = await Promise.all([
-        fetchApi(`${CONFIG_API.DEPARTMENT}`, "GET"),
+        fetchApi(`${CONFIG_API.DEPARTMENT.INDEX}`, "GET"),
         fetchApi(`${CONFIG_API.USER.INDEX}`, "GET"),
       ]);
 

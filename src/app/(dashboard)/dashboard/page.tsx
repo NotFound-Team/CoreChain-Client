@@ -13,12 +13,12 @@ export default async function DashboardPage() {
   const token = cookieStore.get("token")?.value;
 
   const [projects, tasks, users] = await Promise.all([
-    fetch(`${BASE_URL}${CONFIG_API.PROJECT}`, {
+    fetch(`${BASE_URL}${CONFIG_API.PROJECT.INDEX}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     }).then((res) => res.json()),
-    fetch(`${BASE_URL}${CONFIG_API.TASK}`, {
+    fetch(`${BASE_URL}${CONFIG_API.TASK.INDEX}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

@@ -106,7 +106,7 @@ const TaskItem = React.memo<TaskItemProps>(({ data, handleDeleteTask }) => {
   const handleEditTask = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const response = await fetchApi(`${CONFIG_API.TASK}/${tasks._id}`, "PATCH", formData, {
+      const response = await fetchApi(`${CONFIG_API.TASK.DETAIL(tasks._id)}`, "PATCH", formData, {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
       });
       if (response) {

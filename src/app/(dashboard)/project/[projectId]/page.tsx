@@ -84,7 +84,7 @@ const ProjectDetail = () => {
   const handleDeleteProject = async () => {
     try {
       setLoading(true);
-      const response = await fetchApi(`${CONFIG_API.PROJECT}/${params.projectId}`, "DELETE");
+      const response = await fetchApi(`${CONFIG_API.PROJECT.DETAIL(params.projectId)}`, "DELETE");
       if (response.statusCode === 200) {
         router.push("/project");
         showToast("Delete project successfully!", "success");
@@ -100,7 +100,7 @@ const ProjectDetail = () => {
 
   const fetchProjectDetail = async () => {
     try {
-      const response = await fetchApi(`${CONFIG_API.PROJECT}/${params.projectId}`);
+      const response = await fetchApi(`${CONFIG_API.PROJECT.DETAIL(params.projectId)}`);
       // console.log(response);
       if (response && response.statusCode === 200) {
         setProjects(response.data);
@@ -114,14 +114,14 @@ const ProjectDetail = () => {
   const fetchDepartment = async (id: string) => {
     try {
       setLoading(true);
-      const response = await fetchApi(`${CONFIG_API.DEPARTMENT}/${id}`, "GET");
+      const response = await fetchApi(`${CONFIG_API.DEPARTMENT.DETAIL(id)}`, "GET");
       if (response.statusCode === 200) {
         // const manager = await fetchApi(`${CONFIG_API.USER.INDEX}/${response.data?.manager}`);
         // response.data.manager = manager.data.name;
 
         const employeeOptions = await Promise.all(
           response.data.employees.map(async (employee: string) => {
-            const employeeInfo = await fetchApi(`${CONFIG_API.USER.INDEX}/${employee}`);
+            const employeeInfo = await fetchApi(`${CONFIG_API.USER.DETAIL(employee)}`);
             return {
               id: employeeInfo?.data._id,
               name: employeeInfo?.data.name ?? "Unknown",
@@ -131,7 +131,6 @@ const ProjectDetail = () => {
         response.data.employees = employeeOptions;
         setEmployeesForDepartment(response.data.employees);
       }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       showToast("Failed to fetch department details", "error");
     } finally {

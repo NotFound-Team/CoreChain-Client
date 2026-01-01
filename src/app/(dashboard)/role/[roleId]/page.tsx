@@ -38,7 +38,7 @@ export default function RoleIdPage() {
   useEffect(() => {
     const fetchRoleInfo = async () => {
       try {
-        const response = await fetchApi(`${CONFIG_API.ROLE}/${params.roleId}`);
+        const response = await fetchApi(`${CONFIG_API.ROLE.DETAIL((params.roleId) as string)}`, "GET");
         if (response && response.statusCode === 200) {
           setRoleInfo(response.data);
         }

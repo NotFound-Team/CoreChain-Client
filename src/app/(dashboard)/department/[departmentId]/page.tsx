@@ -83,15 +83,15 @@ export default function DepartmentDetailPage({ params }: DepartmentDetailPagePro
   const fetchDepartment = async () => {
     try {
       setLoading(true);
-      const response = await fetchApi(`${CONFIG_API.DEPARTMENT}/${departmentId}`, "GET");
+      const response = await fetchApi(`${CONFIG_API.DEPARTMENT.DETAIL(departmentId)}`, "GET");
       // console.log("response", response);
       if (response.statusCode === 200) {
-        const manager = await fetchApi(`${CONFIG_API.USER.INDEX}/${response.data?.manager}`);
+        const manager = await fetchApi(`${CONFIG_API.USER.DETAIL(response.data?.manager)}`);
         // console.log("manager", manager);
         response.data.manager = manager.data.name;
         const employeeNames = await Promise.all(
           response.data.employees.map(async (employee: string) => {
-            const employeeInfo = await fetchApi(`${CONFIG_API.USER.INDEX}/${employee}`);
+            const employeeInfo = await fetchApi(`${CONFIG_API.USER.DETAIL(employee)}`);
             return employeeInfo?.data.name ?? "Unknown";
           })
         );
@@ -140,7 +140,7 @@ export default function DepartmentDetailPage({ params }: DepartmentDetailPagePro
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetchApi(`${CONFIG_API.DEPARTMENT}/${departmentId}`, "PATCH", formData);
+      const response = await fetchApi(`${CONFIG_API.DEPARTMENT.DETAIL(departmentId)}`, "PATCH", formData);
       if (response.statusCode === 200) {
         showToast("Department updated successfully", "success");
         setEditDialogOpen(false);

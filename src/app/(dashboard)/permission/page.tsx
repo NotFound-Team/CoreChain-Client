@@ -39,7 +39,7 @@ export default function PermissionPage() {
 
   useEffect(() => {
     const fecthPermission = async () => {
-      const response = await fetchApi(`${CONFIG_API.PERMISSION}?current=1&pageSize=100`, "GET");
+      const response = await fetchApi(`${CONFIG_API.PERMISSION.INDEX}?current=1&pageSize=100`, "GET");
       if (response && response.statusCode === 200) {
         // console.log("PERMISSION", response.data.result);
         setListPermissions(response.data.result);
@@ -50,7 +50,7 @@ export default function PermissionPage() {
 
   useEffect(() => {
     const fecthRole = async () => {
-      const response = await fetchApi(`${CONFIG_API.ROLE}`, "GET");
+      const response = await fetchApi(`${CONFIG_API.ROLE.INDEX}`, "GET");
       if (response && response.statusCode === 200) {
         console.log("ROLE", response.data.result);
         setRolePermissions(response.data.result);
@@ -100,7 +100,7 @@ export default function PermissionPage() {
     try {
       setLoading(true);
       for (const item of newRolePermissions) {
-        await fetchApi(`${CONFIG_API.ROLE}/${item._id}`, "PATCH", { permissions: item.permissions });
+        await fetchApi(`${CONFIG_API.ROLE.DETAIL(item._id)}`, "PATCH", { permissions: item.permissions });
       }
       showToast("Update permission successfully!", "success");
     } catch (error) {

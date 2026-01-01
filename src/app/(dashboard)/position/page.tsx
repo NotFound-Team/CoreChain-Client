@@ -60,7 +60,7 @@ export default function PositionPage() {
   const fetchPositions = async () => {
     try {
       setLoading(true);
-      const response = await fetchApi(`${CONFIG_API.POSITION}`, "GET");
+      const response = await fetchApi(`${CONFIG_API.POSITION.INDEX}`, "GET");
       if (response.statusCode === 200) {
         setPositions(response.data.result);
       }
@@ -116,7 +116,7 @@ export default function PositionPage() {
     if (!positionToDelete) return;
 
     try {
-      const response = await fetchApi(`${CONFIG_API.POSITION}/${positionToDelete}`, "DELETE");
+      const response = await fetchApi(`${CONFIG_API.POSITION.DETAIL(positionToDelete)}`, "DELETE");
       if (response.statusCode === 200) {
         showToast("Position deleted successfully", "success");
         fetchPositions();
@@ -139,12 +139,12 @@ export default function PositionPage() {
     e.preventDefault();
     try {
       if (editingPosition) {
-        const response = await fetchApi(`${CONFIG_API.POSITION}/${editingPosition._id}`, "PATCH", formData);
+        const response = await fetchApi(`${CONFIG_API.POSITION.DETAIL(editingPosition._id)}`, "PATCH", formData);
         if (response.statusCode === 200) {
           showToast("Position updated successfully", "success");
         }
       } else {
-        const response = await fetchApi(`${CONFIG_API.POSITION}`, "POST", formData);
+        const response = await fetchApi(`${CONFIG_API.POSITION.INDEX}`, "POST", formData);
         if (response.statusCode === 201) {
           showToast("Position created successfully", "success");
         }

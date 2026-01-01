@@ -91,9 +91,9 @@ export default function ButtonCreateUser() {
     const fetchAllData = async () => {
       try {
         const [roleRes, positionRes, departmentRes] = await Promise.all([
-          fetchApi(`${CONFIG_API.ROLE}`, "GET"),
-          fetchApi(`${CONFIG_API.POSITION}`, "GET"),
-          fetchApi(`${CONFIG_API.DEPARTMENT}`, "GET"),
+          fetchApi(`${CONFIG_API.ROLE.INDEX}`, "GET"),
+          fetchApi(`${CONFIG_API.POSITION.INDEX}`, "GET"),
+          fetchApi(`${CONFIG_API.DEPARTMENT.INDEX}`, "GET"),
         ]);
 
         // Xử lý role

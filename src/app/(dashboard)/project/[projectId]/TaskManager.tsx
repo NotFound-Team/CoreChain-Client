@@ -95,7 +95,7 @@ const TaskManager = () => {
     event.preventDefault();
     // console.log(formData);
     try {
-      const response = await fetchApi(`${CONFIG_API.TASK}`, "POST", formData);
+      const response = await fetchApi(`${CONFIG_API.TASK.INDEX}`, "POST", formData);
 
       if (response && response.statusCode === 201) {
         // console.log("add task", response);
@@ -120,7 +120,7 @@ const TaskManager = () => {
   };
   useEffect(() => {
     const fetchTask = async () => {
-      const response = await fetchApi(`${CONFIG_API.TASK}?projectId=${params.projectId}`, "GET");
+      const response = await fetchApi(`${CONFIG_API.TASK.INDEX}?projectId=${params.projectId}`, "GET");
       if (response && response.statusCode === 200) {
         setListTask(response.data.result);
       }

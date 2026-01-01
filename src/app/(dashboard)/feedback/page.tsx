@@ -177,7 +177,7 @@ export default function PositionPage() {
   const fetchFeedbacks = async () => {
     try {
       setLoadingFetchFeedback(true);
-      const response = await fetchApi(`${CONFIG_API.FEEDBACK}`, "GET");
+      const response = await fetchApi(`${CONFIG_API.FEEDBACK.INDEX}`, "GET");
       if (response.statusCode === 200) {
         setPositions(response.data.result);
       }
@@ -192,7 +192,7 @@ export default function PositionPage() {
   const fetchDetailsFeedbacks = async (id: string) => {
     try {
       setLoadingFetchDetailsFeedback(true);
-      const response = await fetchApi(`${CONFIG_API.FEEDBACK}/${id}`, "GET");
+      const response = await fetchApi(`${CONFIG_API.FEEDBACK.DETAIL(id)}`, "GET");
       if (response.statusCode === 200) {
         reset({
           sender: response.data.sender,
@@ -237,7 +237,7 @@ export default function PositionPage() {
     if (!feedbackId) return;
     setLoadingFetchDetailsFeedback(true);
     try {
-      const response = await fetchApi(`${CONFIG_API.FEEDBACK}/${feedbackId}`, "DELETE");
+      const response = await fetchApi(`${CONFIG_API.FEEDBACK.DETAIL(feedbackId)}`, "DELETE");
       if (response.statusCode === 200) {
         showToast("Feedback deleted successfully", "success");
         fetchFeedbacks();
@@ -263,7 +263,7 @@ export default function PositionPage() {
     }
     setLoadingFetchDetailsFeedback(true);
     try {
-      const response = await fetchApi(`${CONFIG_API.FEEDBACK}`, "POST", data);
+      const response = await fetchApi(`${CONFIG_API.FEEDBACK.INDEX}`, "POST", data);
       if (response.statusCode === 201) {
         showToast("Feedback sent successfully", "success");
       }

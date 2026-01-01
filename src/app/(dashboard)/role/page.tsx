@@ -67,7 +67,7 @@ export default function RolePage() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await fetchApi(`${CONFIG_API.ROLE}`, "POST", formData);
+      const response = await fetchApi(`${CONFIG_API.ROLE.INDEX}`, "POST", formData);
       if (response && response.statusCode === 201) {
         // console.log(response);
         const NewRole: Role = {
@@ -84,7 +84,7 @@ export default function RolePage() {
 
   const handleDeleteRole = async () => {
     try {
-      const response = await fetchApi(`${CONFIG_API.ROLE}/${selectedRoleId}`, "DELETE");
+      const response = await fetchApi(`${CONFIG_API.ROLE.DETAIL(selectedRoleId as string)}`, "DELETE");
       if (response.statusCode === 200) {
         setRolePermissions((prev) => {
           if (prev !== null) {
@@ -102,7 +102,7 @@ export default function RolePage() {
 
   useEffect(() => {
     const fecthRole = async () => {
-      const response = await fetchApi(`${CONFIG_API.ROLE}`, "GET");
+      const response = await fetchApi(`${CONFIG_API.ROLE.INDEX}`, "GET");
       if (response && response.statusCode === 200) {
         // console.log("ROLE", response.data.result);
         setRolePermissions(response.data.result);
