@@ -29,15 +29,13 @@ export default async function PageUser({ params }: TProps) {
     // Fetch data from API in Server Component
     const user: UserResponse = response.data;
 
+    console.log("Fetched user data:", user);
+
     if (!user) {
       return <div>User not found</div>;
     }
 
-    return (
-      <div>
-        <UserDetails user={user} />
-      </div>
-    );
+    return <UserDetails user={user} />;
   } catch (error) {
     console.error("Failed to fetch user data:", error);
     return <div>Error loading user data!</div>;

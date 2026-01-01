@@ -1,135 +1,258 @@
+"use client"
+
 import { UserResponse } from "@/types/user";
-import { Box, Card, CardContent, Chip, Divider, Typography } from "@mui/material";
+import { Card, CardContent, Chip, Typography, Avatar, Grid, Paper, Tooltip } from "@mui/material";
 import dayjs from "dayjs";
-import { FaHistory, FaInfoCircle, FaListAlt } from "react-icons/fa";
+import {
+  FaIdCard,
+  FaBuilding,
+  FaUserTag,
+  FaClock,
+  FaKey,
+  FaHistory,
+  FaExternalLinkAlt,
+  FaComments,
+} from "react-icons/fa";
 import { IconType } from "react-icons/lib";
-import { FaUserCog } from "react-icons/fa";
 import ButtonBack from "./ButtonBack";
+import { CONFIG_API } from "@/configs/api";
+import fetchApi from "@/utils/fetchApi";
+import { useEffect, useState } from "react";
 
 export default function UserDetails({ user }: { user: UserResponse }) {
-  const SectionHeader = ({ icon: Icon, title }: { icon: IconType; title: string }) => (
-    <div className="flex items-center gap-3 mb-4">
-      <Icon className="w-6 h-6 text-primary-500 dark:text-primary-400" />
-      <Typography variant="h6" component="h3" className="font-semibold text-gray-800 dark:text-gray-100">
-        {title}
+  // const [loading, setLoading] = useState(false);
+
+
+  //  const fetchUserPrivate = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const response = await fetchApi(`${CONFIG_API.USER.PRIVATE}/${user?._id}`);
+  //     if (response.statusCode === 200) {
+  //       console.log("Private user data:", response.data);
+  //       setLoading(false);
+  //     }
+  //   } catch (error) {
+  //     setLoading(false);
+  //     console.error(error);
+  //   }
+  // };
+
+
+  const InfoRow = ({
+    icon: Icon,
+    label,
+    value,
+    isCode = false,
+  }: {
+    icon: IconType;
+    label: string;
+    value: string | number;
+    isCode?: boolean;
+  }) => (
+    <div className="flex flex-col gap-1">
+      <div className="flex items-center gap-2 text-slate-500">
+        <Icon className="w-3.5 h-3.5" />
+        <span className="text-xs font-semibold uppercase tracking-wider">{label}</span>
+      </div>
+      <Typography
+        variant="body1"
+        className={`text-slate-800 font-medium ${isCode ? "font-mono text-sm break-all bg-slate-100 p-1 rounded" : ""}`}
+      >
+        {value || "N/A"}
       </Typography>
     </div>
   );
+
+  // useEffect(() => {
+  //   fetchUserPrivate();
+  // }, [])
+
   return (
-    <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto space-y-8">
-        <Typography
-          variant="h4"
-          className="text-center font-bold text-gray-800 dark:text-gray-100 mb-6"
-          sx={{
-            // background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-            bgcolor: "red",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            letterSpacing: "-0.05rem",
-          }}
-        >
-          User Details
-        </Typography>
-
-        <Card className="shadow-xl hover:shadow-2xl transition-shadow duration-300 border border-gray-200 dark:border-gray-700 bg-gradient-to-br from-gray-50/50 to-white/50 dark:from-gray-800/50 dark:to-gray-900/50">
+    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8 bg-[#f8fafc]">
+      <div className="mx-auto space-y-6">
+        <div className="flex items-center justify-between">
           <ButtonBack />
-          <CardContent className="space-y-8 py-6">
-            {/* Header Section */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-gray-200 dark:border-gray-700">
-              <div className="space-y-1">
-                <Typography variant="h3" className="font-bold text-gray-900 dark:text-white text-2xl">
-                  {user?.name}
-                </Typography>
-                <Typography variant="body2" component="div" className="text-2xl text-gray-500 dark:text-gray-400">
-                  <SectionHeader icon={FaUserCog} title={`Role: ${user.role?.name || "No role"}`} />
-                  <div></div>
-                </Typography>
-              </div>
-              {/* <Chip
-                label={roleInfo?.isActive ? "Active" : "Inactive"}
-                color={roleInfo?.isActive ? "success" : "error"}
-                variant="filled"
-                sx={{
-                  fontWeight: 600,
-                  fontSize: "0.875rem",
-                  px: 2,
-                  py: 1,
-                }}
-              /> */}
-            </div>
+          <div className="text-right">
+            <Typography variant="caption" className="text-slate-400 block uppercase font-bold">
+              Admin View
+            </Typography>
+            <Typography variant="h6" className="text-slate-800 leading-none">
+              User Profile
+            </Typography>
+          </div>
+        </div>
 
-            {/* Description Section */}
-            <Box>
-              <SectionHeader icon={FaInfoCircle} title="Feedback" />
-              <div className="bg-gray-100/50 dark:bg-gray-700/30 p-4 rounded-lg">
-                <Typography variant="body1" className="text-gray-700 dark:text-gray-300 italic">
-                  {user?.feedback || "No feedback available for this user."}
-                </Typography>
-              </div>
-            </Box>
+        <Grid container spacing={3}>
+          <Grid item xs={12} lg={4}>
+            <div className="space-y-6">
+              <Card className="border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl overflow-hidden">
+                <div className="h-28 bg-gradient-to-br from-indigo-600 to-violet-700" />
+                <CardContent className="relative pt-0 flex flex-col items-center">
+                  <Avatar
+                    sx={{
+                      width: 100,
+                      height: 100,
+                      mt: -6,
+                      border: "6px solid white",
+                      boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
+                      bgcolor: "indigo.500",
+                      fontSize: "2.5rem",
+                    }}
+                  >
+                    {user?.name?.charAt(0).toUpperCase()}
+                  </Avatar>
+                  <Typography variant="h5" className="mt-4 font-bold text-slate-900">
+                    {user?.name}
+                  </Typography>
+                  <Typography variant="body2" className="text-slate-500 mb-4">
+                    {user?.email}
+                  </Typography>
 
-            <Divider className="dark:border-gray-700" />
-
-            {/* Permissions Section */}
-            <Box>
-              <SectionHeader icon={FaListAlt} title="Permissions" />
-              {user && user.permissions && user.permissions.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {user?.permissions.map((item, index) => (
+                  <div className="flex flex-wrap justify-center gap-2 mb-2">
                     <Chip
-                      key={`${item}-${index}`}
-                      label={item}
-                      color="primary"
-                      variant="outlined"
-                      className="border-dashed hover:border-solid transition-all"
-                      sx={{
-                        "&:hover": {
-                          color: "white",
-                          bgcolor: "primary.light",
-                          borderColor: "primary.main",
-                        },
-                      }}
+                      label={user.role?.name || "No Role"}
+                      size="small"
+                      className="bg-indigo-50 text-indigo-700 font-bold"
                     />
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-4">
-                  <Typography variant="body2" className="text-gray-500 dark:text-gray-400">
-                    No permissions assigned to this role
-                  </Typography>
-                </div>
-              )}
-            </Box>
+                    <Chip
+                      label={user.employeeId}
+                      size="small"
+                      variant="outlined"
+                      className="border-slate-200 text-slate-600 font-mono"
+                    />
+                  </div>
+                </CardContent>
+              </Card>
 
-            <Divider className="dark:border-gray-700" />
+              <Card className="border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl p-6">
+                <Typography
+                  variant="subtitle2"
+                  className="text-slate-400 uppercase font-bold mb-4 flex items-center gap-2"
+                >
+                  <FaClock /> Performance Metrics
+                </Typography>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-amber-50 p-4 rounded-2xl border border-amber-100">
+                    <Typography className="text-amber-600 text-xs font-bold uppercase">Days Off</Typography>
+                    <Typography variant="h4" className="text-amber-700 font-black">
+                      {user.dayOff ?? 0}
+                    </Typography>
+                  </div>
+                  <div className="bg-emerald-50 p-4 rounded-2xl border border-emerald-100">
+                    <Typography className="text-emerald-600 text-xs font-bold uppercase">Working Hrs</Typography>
+                    <Typography variant="h4" className="text-emerald-700 font-black">
+                      {user.workingHours ?? 0}
+                    </Typography>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          </Grid>
 
-            {/* Metadata Section */}
-            <Box>
-              <SectionHeader icon={FaHistory} title="Last Updated" />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div className="space-y-1">
-                  <Typography variant="body2" className="text-gray-600 dark:text-gray-400">
-                    <strong>Create Date:</strong>{" "}
-                    {user?.updatedAt ? dayjs(user.updatedAt).format("DD MMM YYYY, HH:mm") : "N/A"}
-                  </Typography>
-                  {/* <Typography variant="body2" className="text-gray-600 dark:text-gray-400">
-                    <strong>Updated By:</strong> {roleInfo?.updatedBy?.email || "Unknown"}
-                  </Typography> */}
-                </div>
-                <div className="space-y-1">
-                  <Typography variant="body2" className="text-gray-600 dark:text-gray-400">
-                    <strong>Created Date:</strong>{" "}
-                    {user?.createdAt ? dayjs(user.createdAt).format("DD MMM YYYY, HH:mm") : "N/A"}
-                  </Typography>
-                  <Typography variant="body2" className="text-gray-600 dark:text-gray-400">
-                    {/* <strong>Created At:</strong> {user?.createdBy?.email || "Unknown"} */}
+          <Grid item xs={12} lg={8}>
+            <div className="space-y-6">
+              <Card className="border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl p-8">
+                <div className="flex items-center gap-2 mb-6 border-b border-slate-50 pb-4">
+                  <div className="p-2 bg-slate-100 rounded-lg text-slate-600">
+                    <FaBuilding />
+                  </div>
+                  <Typography variant="h6" className="font-bold text-slate-800">
+                    Organizational Details
                   </Typography>
                 </div>
-              </div>
-            </Box>
-          </CardContent>
-        </Card>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <InfoRow icon={FaBuilding} label="Department" value={user.department?.name || "Unassigned"} />
+                  <InfoRow icon={FaUserTag} label="Position" value={user.position?.title || "Unassigned"} />
+                  <InfoRow icon={FaIdCard} label="Employee ID" value={user.employeeId} />
+                  <InfoRow
+                    icon={FaHistory}
+                    label="Last Updated"
+                    value={user.updatedAt ? dayjs(user.updatedAt).format("DD-MM-YYYY") : "N/A"}
+                  />
+                </div>
+              </Card>
+
+              {/* Permissions & Blockchain Card */}
+              <Card className="border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl p-8">
+                <div className="flex items-center gap-2 mb-6 border-b border-slate-50 pb-4">
+                  <div className="p-2 bg-slate-100 rounded-lg text-slate-600">
+                    <FaKey />
+                  </div>
+                  <Typography variant="h6" className="font-bold text-slate-800">
+                    Access & Security
+                  </Typography>
+                </div>
+
+                <div className="space-y-6">
+                  <div>
+                    <Typography variant="caption" className="text-slate-400 font-bold uppercase block mb-3">
+                      System Permissions
+                    </Typography>
+                    <div className="flex flex-wrap gap-2">
+                      {user?.permissions?.length > 0 ? (
+                        user.permissions.map((p, i) => (
+                          <Chip key={i} label={p} size="small" className="bg-slate-100 text-slate-600 font-medium" />
+                        ))
+                      ) : (
+                        <span className="text-sm text-slate-400 italic">No special permissions</span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <Typography variant="caption" className="text-slate-400 font-bold uppercase block mb-2">
+                      Blockchain Transaction Hash
+                    </Typography>
+                    <Paper
+                      elevation={0}
+                      className="bg-slate-50 border border-slate-200 p-3 rounded-xl flex items-center justify-between"
+                    >
+                      <Typography variant="body2" className="font-mono text-slate-500 truncate mr-4">
+                        {user.txHash || "0x0000000000000000000000000000000000000000"}
+                      </Typography>
+                      <Tooltip title="View on Explorer">
+                        <button className="text-indigo-600 hover:text-indigo-800">
+                          <FaExternalLinkAlt size={14} />
+                        </button>
+                      </Tooltip>
+                    </Paper>
+                  </div>
+                </div>
+              </Card>
+
+              {/* Feedback Section */}
+              <Card className="border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl p-8">
+                <div className="flex items-center gap-2 mb-6">
+                  <div className="p-2 bg-slate-100 rounded-lg text-slate-600">
+                    <FaComments />
+                  </div>
+                  <Typography variant="h6" className="font-bold text-slate-800">
+                    Admin Feedback
+                  </Typography>
+                </div>
+
+                {user.feedback && user.feedback.length > 0 ? (
+                  <div className="space-y-3">
+                    {/* Map qua feedback nếu là array */}
+                    {user.feedback.map((item: any, idx: number) => (
+                      <div
+                        key={idx}
+                        className="p-4 bg-slate-50 rounded-2xl border border-slate-100 text-slate-700 italic"
+                      >
+                        &quot;{item}&quot;
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-6 border-2 border-dashed border-slate-100 rounded-2xl text-slate-400">
+                    No feedback records found.
+                  </div>
+                )}
+              </Card>
+            </div>
+          </Grid>
+        </Grid>
       </div>
     </div>
   );

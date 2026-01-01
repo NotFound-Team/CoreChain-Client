@@ -84,8 +84,10 @@ export default function DepartmentDetailPage({ params }: DepartmentDetailPagePro
     try {
       setLoading(true);
       const response = await fetchApi(`${CONFIG_API.DEPARTMENT}/${departmentId}`, "GET");
+      // console.log("response", response);
       if (response.statusCode === 200) {
         const manager = await fetchApi(`${CONFIG_API.USER.INDEX}/${response.data?.manager}`);
+        // console.log("manager", manager);
         response.data.manager = manager.data.name;
         const employeeNames = await Promise.all(
           response.data.employees.map(async (employee: string) => {
@@ -93,7 +95,9 @@ export default function DepartmentDetailPage({ params }: DepartmentDetailPagePro
             return employeeInfo?.data.name ?? "Unknown";
           })
         );
+        // console.log("employeeNames", employeeNames);
         response.data.employees = employeeNames;
+        // console.log("response with names", response);
         setDepartment(response.data);
         setFormData({
           name: response.data.name,
@@ -161,6 +165,8 @@ export default function DepartmentDetailPage({ params }: DepartmentDetailPagePro
       </Box>
     );
   }
+
+  // console.log("department", department);
 
   return (
     <Can I="get" a="departments/:id">
@@ -323,10 +329,10 @@ export default function DepartmentDetailPage({ params }: DepartmentDetailPagePro
                   }}
                 >
                   <FaUsers style={{ fontSize: 18, marginRight: 8, color: theme.palette.text.secondary }} />
-                  Team Members ({department.employees.length})
+                  Team Members ({department?.employees.length})
                 </Typography>
                 <Grid container spacing={1}>
-                  {department.employees.map((employee) => (
+                  {department?.employees.map((employee) => (
                     <Grid item xs={12} sm={6} key={employee}>
                       <Box
                         sx={{

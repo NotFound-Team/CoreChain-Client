@@ -4,6 +4,18 @@ export type UserResponse = {
   email: string;
   feedback?: [];
   role?: { _id: string; name: string };
+  department?: {
+    _id: string,
+    name: string,
+  },
+  position?: {
+    _id: string,
+    title: string,
+  },
+  employeeId: string,
+  dayOff: number,
+  txHash: string,
+  workingHours: number,
   permissions: string[];
   createdAt?: Date;
   updatedAt?: Date;
@@ -91,3 +103,28 @@ export interface TParamsEmployee {
   medicalHistory: string;
   isActive: boolean;
 }
+
+
+
+// export interface PrivateUser {
+//   netSalary?: number;
+//   personalIdentificationNumber: string;
+//   dateOfBirth?: Date;
+//   personalPhoneNumber?: string;
+//   male?: boolean;
+//   nationality?: string;
+//   permanentAddress?: string;
+//   biometricData?: string;
+//   employeeContractCode?: mongoose.Schema.Types.ObjectId;
+//   salary?: number;
+//   allowances?: number;
+//   adjustments?: AdjustmentDto[];
+//   loansSupported?: number;
+//   healthCheckRecordCode?: string[];
+//   medicalHistory?: string;
+//   healthInsuranceCode?: string;
+//   lifeInsuranceCode?: string;
+//   socialInsuranceNumber?: string;
+//   personalTaxIdentificationNumber?: string;
+//   backAccountNumber?: string;
+// }
