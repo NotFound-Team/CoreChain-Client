@@ -1,75 +1,57 @@
 "use client";
 
+import React, { useCallback, useState, useEffect, useMemo } from "react";
+import { Box, Chip, IconButton, Tooltip, Typography, Stack, Avatar } from "@mui/material";
+import { GridColDef } from "@mui/x-data-grid";
+import dynamic from "next/dynamic";
+import Link from "next/link";
+import { FaRegEdit } from "react-icons/fa";
+import { IoEye } from "react-icons/io5";
+import { MdDelete } from "react-icons/md";
+
 import { CONFIG_API } from "@/configs/api";
 import { Can } from "@/context/casl/AbilityContext";
 import { UserResponse } from "@/types/user";
 import fetchApi from "@/utils/fetchApi";
-import {
-  Alert,
-  Box,
-  Button,
-  Chip,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  IconButton,
-  Skeleton,
-  Tooltip,
-} from "@mui/material";
-import dynamic from "next/dynamic";
-import Link from "next/link";
-import React, { useCallback, useState } from "react";
-import { FaRegEdit } from "react-icons/fa";
-import { IoEye } from "react-icons/io5";
-import { MdDelete } from "react-icons/md";
+import CustomDataGrid from "@/components/custom-data-grid/CustomDataGrid";
+
 const DialogConfirmDelete = dynamic(() => import("@/components/dialog-confirm-delete"), { ssr: false });
 
 export default function ListUser() {
-  const [listUser, setListUser] = React.useState<UserResponse[] | []>([]);
-  const [openConfirmDelete, setOpenConfirmDelete] = React.useState<boolean>(false);
-  const [selectedUserId, setSelectedUserId] = React.useState<string | null>(null);
+  const [listUser, setListUser] = useState<UserResponse[]>([]);
+  const [openConfirmDelete, setOpenConfirmDelete] = useState<boolean>(false);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  React.useEffect(() => {
-    const controller = new AbortController();
-
-    const fetchListUser = async () => {
-      try {
-        setLoading(true);
-        const response = await fetchApi(`${CONFIG_API.USER.INDEX}`, "GET", {
-          signal: controller.signal,
-        });
-        if (response && response.statusCode === 200) {
-          setListUser(response.data.result);
-        } else {
-          console.error("Failed to fetch users");
-        }
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchListUser();
-
-    return () => {
-      controller.abort();
-    };
-  }, []);
-
-  const handleCloseCofirm = useCallback(() => {
-    setOpenConfirmDelete(false);
-  }, []);
-
-  const handleDeleteUser = useCallback(async () => {
-    setLoading(true);
+  const fetchListUser = useCallback(async (signal?: AbortSignal) => {
     try {
+      setLoading(true);
+      const response = await fetchApi(`${CONFIG_API.USER.INDEX}`, "GET", { signal });
+      if (response && response.statusCode === 200) {
+        setListUser(response.data.result);
+      }
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetchListUser(controller.signal);
+    return () => controller.abort();
+  }, [fetchListUser]);
+
+  const handleCloseConfirm = () => setOpenConfirmDelete(false);
+
+  const handleDeleteUser = async () => {
+    if (!selectedUserId) return;
+    try {
+      setLoading(true);
       const response = await fetchApi(`${CONFIG_API.USER.INDEX}/${selectedUserId}`, "DELETE");
       if (response && response.statusCode === 200) {
-        setListUser((prev) => prev?.filter((user) => user._id !== selectedUserId));
+        setListUser((prev) => prev.filter((user) => user._id !== selectedUserId));
         setOpenConfirmDelete(false);
       }
     } catch (error) {
@@ -77,143 +59,161 @@ export default function ListUser() {
     } finally {
       setLoading(false);
     }
-  }, [selectedUserId]);
+  };
 
-  // console.log(listUser);
+  const columns = useMemo<GridColDef[]>(
+    () => [
+      {
+        field: "index",
+        headerName: "No.",
+        width: 70,
+        sortable: false,
+        renderCell: (params) => params.api.getAllRowIds().indexOf(params.id) + 1,
+      },
+      {
+        field: "name",
+        headerName: "User Information",
+        flex: 1,
+        minWidth: 250,
+        renderCell: (params) => (
+          <Stack
+            direction="row"
+            spacing={2}
+            alignItems="center"
+            sx={{
+              height: "100%",
+              width: "100%",
+              py: 0.5,
+            }}
+          >
+            <Avatar
+              sx={{
+                width: 36,
+                height: 36,
+                fontSize: "15px",
+                fontWeight: 600,
+                bgcolor: "primary.light",
+                color: "primary.main",
+              }}
+            >
+              {params.row.name?.charAt(0).toUpperCase()}
+            </Avatar>
+            <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+              <Typography
+                variant="body2"
+                fontWeight={600}
+                sx={{
+                  lineHeight: 1.4,
+                  color: "text.primary",
+                }}
+              >
+                {params.row.name}
+              </Typography>
+              <Typography
+                variant="caption"
+                sx={{
+                  lineHeight: 1.2,
+                  color: "text.secondary",
+                  display: "block",
+                }}
+              >
+                {params.row.email}
+              </Typography>
+            </Box>
+          </Stack>
+        ),
+      },
+      {
+        field: "role",
+        headerName: "Role",
+        width: 200,
+        valueGetter: (params, row) => row.role?.name || "No role assigned",
+        renderCell: (params) => (
+          <Typography variant="body2" color="text.secondary">
+            {params.value}
+          </Typography>
+        ),
+      },
+      {
+        field: "status",
+        headerName: "Status",
+        width: 130,
+        align: "center",
+        headerAlign: "center",
+        renderCell: () => (
+          <Chip label="Active" color="success" size="small" variant="filled" sx={{ fontWeight: 600 }} />
+        ),
+      },
+      {
+        field: "actions",
+        headerName: "Actions",
+        width: 150,
+        sortable: false,
+        align: "center",
+        headerAlign: "center",
+        renderCell: (params) => (
+          <Stack direction="row" spacing={0.5}>
+            <Can I="get" a="users/:id">
+              <Tooltip title="View" arrow>
+                <IconButton size="small" color="primary" component={Link} href={`/user-management/${params.row._id}`}>
+                  <IoEye size={20} />
+                </IconButton>
+              </Tooltip>
+            </Can>
 
-  if (loading) {
-    return (
-      <Box className="mt-4">
-        <table className="w-full">
-          <thead>
-            <tr className="bg-gray-100 font-bold">
-              <th className="text-left p-2">No.</th>
-              <th className="text-left p-2">User name</th>
-              <th className="text-left p-2">Email</th>
-              <th className="text-left p-2">Role</th>
-              <th className="text-center p-2">Status</th>
-              <th className="text-center p-2">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Array.from({ length: 10 }).map((_, index) => (
-              <tr key={index} className="border-t-[1px] border-t-gray-300">
-                <td className="p-2">
-                  <Skeleton variant="text" width={30} />
-                </td>
-                <td className="p-2">
-                  <Skeleton variant="text" width="70%" />
-                </td>
-                <td className="p-2">
-                  <Skeleton variant="text" width="80%" />
-                </td>
-                <td className="p-2">
-                  <Skeleton variant="text" width="100%" />
-                </td>
-                <td className="p-2 flex justify-center">
-                  <Skeleton variant="rounded" width={60} height={30} />
-                </td>
-                <td className="p-2 text-center">
-                  <div className="flex justify-center gap-2">
-                    <Skeleton variant="circular" width={30} height={30} />
-                    <Skeleton variant="circular" width={30} height={30} />
-                    <Skeleton variant="circular" width={30} height={30} />
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </Box>
-    );
-  }
+            <Can I="patch" a="users/:id">
+              <Tooltip title="Edit" arrow>
+                <IconButton size="small" color="warning">
+                  <FaRegEdit size={18} />
+                </IconButton>
+              </Tooltip>
+            </Can>
 
-  if (listUser.length === 0) {
-    return (
-      <Box className="mt-4">
-        <Alert severity="info">No users available</Alert>
-      </Box>
-    );
-  }
+            <Can I="delete" a="users/:id">
+              <Tooltip title="Delete" arrow>
+                <IconButton
+                  size="small"
+                  color="error"
+                  onClick={() => {
+                    setSelectedUserId(params.row._id);
+                    setOpenConfirmDelete(true);
+                  }}
+                >
+                  <MdDelete size={20} />
+                </IconButton>
+              </Tooltip>
+            </Can>
+          </Stack>
+        ),
+      },
+    ],
+    []
+  );
 
   return (
-    <>
+    <Box sx={{ height: "calc(100vh - 200px)", width: "100%", mt: 2 }}>
       <Can I="get" a="users">
-        <Can I="post" a="users">
-          <table className="w-full mt-4">
-            <thead>
-              <tr className="bg-gray-100 font-bold">
-                <th className="text-left p-2">No.</th>
-                <th className="text-left p-2">User name</th>
-                <th className="text-left p-2">Email</th>
-                <th className="text-left p-2">Role</th>
-                <th className="text-center p-2">Status</th>
-                <th className="text-center p-2">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {listUser.map((user, index) => (
-                <tr key={user._id} className="border-t-[1px] border-t-gray-300">
-                  <td className="p-2 text-left">{index + 1}</td>
-                  <td className="p-2 text-left text-[14px] font-semibold">{user.name}</td>
-                  <td className="p-2 text-left text-[14px]">{user.email}</td>
-                  <td className="p-2 text-left max-w-48">
-                    <p className="text-ellipsis line-clamp-2">
-                      {user?.role?.name ? user.role.name : "No role assigned"}
-                    </p>
-                  </td>
-                  <td className="p-2 text-center">
-                    <Chip label="Active" color="success" variant="filled" />
-                    {/* {user.isActive ? (
-                  <Chip label="Active" color="success" variant="filled" />
-                ) : (
-                  <Chip label="Inactive" color="error" variant="filled" />
-                )} */}
-                  </td>
-                  <td className="p-2 text-center flex items-center justify-center">
-                    <Can I="get" a="users/:id">
-                      <Tooltip title="View" arrow>
-                        <Link href={`/user-management/${user._id}`}>
-                          <IconButton color="primary">
-                            <IoEye />
-                          </IconButton>
-                        </Link>
-                      </Tooltip>
-                    </Can>
-                    <Can I="patch" a="users/:id">
-                      <Tooltip title="Edit" arrow>
-                        <IconButton color="warning">
-                          <FaRegEdit />
-                        </IconButton>
-                      </Tooltip>
-                    </Can>
-                    <Can I="delete" a="users/:id">
-                      <Tooltip title="Delete" arrow>
-                        <IconButton
-                          color="error"
-                          onClick={() => {
-                            setSelectedUserId(user._id);
-                            setOpenConfirmDelete(true);
-                          }}
-                        >
-                          <MdDelete />
-                        </IconButton>
-                      </Tooltip>
-                    </Can>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Can>
+        <CustomDataGrid
+          rows={listUser}
+          columns={columns}
+          getRowId={(row: UserResponse) => row._id}
+          loading={loading}
+          pagination
+          pageSizeOptions={[10, 25, 50]}
+          initialState={{
+            pagination: { paginationModel: { pageSize: 10 } },
+          }}
+          disableRowSelectionOnClick
+        />
       </Can>
+
       <DialogConfirmDelete
         deleteDialogOpen={openConfirmDelete}
         titleConfirmDelete="Delete User"
-        descriptionConfirmDelete=" Are you sure you want to delete this user? This action cannot be undone."
+        descriptionConfirmDelete="Are you sure you want to delete this user? This action cannot be undone."
         handleConfirmDelete={handleDeleteUser}
-        handleCancelDelete={handleCloseCofirm}
+        handleCancelDelete={handleCloseConfirm}
       />
-    </>
+    </Box>
   );
 }
