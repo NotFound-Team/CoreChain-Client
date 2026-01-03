@@ -16,6 +16,7 @@ import {
   FormControl,
   DialogActions,
   SelectChangeEvent,
+  Autocomplete,
   // Autocomplete,
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -30,8 +31,9 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useSnackbar } from "@/hooks/useSnackbar";
 import dayjs from "dayjs";
 import { Can } from "@/context/casl/AbilityContext";
+import { Employee } from "@/types/project";
 
-const TaskManager = () => {
+const TaskManager = ({ employees }: { employees: Employee[] }) => {
   const { Toast, showToast } = useSnackbar();
   const theme: Theme = useTheme();
   const [open, setOpen] = useState(false);
@@ -41,7 +43,7 @@ const TaskManager = () => {
     name: "",
     title: "",
     description: "",
-    assignedTo: "67de058dbbc3c5d061a65dfe",
+    assignedTo: "",
     projectId: `${params.projectId}`,
     priority: 1,
     status: 1,
@@ -204,6 +206,29 @@ const TaskManager = () => {
                   value={formData.description}
                   onChange={handleFormChange}
                 />
+              </Grid>
+
+              <Grid item xs={12}>
+                <FormControl fullWidth variant="outlined">
+                  <InputLabel id="assignedTo-label">Assigned To</InputLabel>
+                  <Select
+                    labelId="assignedTo-label"
+                    id="assignedTo"
+                    name="assignedTo"
+                    label="assignedTo"
+                    value={formData.assignedTo}
+                    onChange={(e) => {
+                      console.log(e);
+                      handleSelectChange(e, "assignedTo");
+                    }}
+                  >
+                    {employees.map((employee: Employee) => (
+                      <MenuItem key={employee.id} value={employee.id}>
+                        {employee.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Grid>
 
               {/* <MultiAutocomplete /> */}

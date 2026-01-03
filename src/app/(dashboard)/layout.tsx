@@ -5,7 +5,7 @@
 // import { AuthProvider } from "@/context/AuthContext";
 
 // -- MUI --
-import { Tooltip, useTheme } from "@mui/material";
+import { Collapse, Tooltip, useTheme } from "@mui/material";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import List from "@mui/material/List";
@@ -22,7 +22,7 @@ import { usePathname, useRouter } from "next/navigation";
 import React, { useCallback, useMemo, useState } from "react";
 
 // -- React-icon
-import { MdExitToApp } from "react-icons/md";
+import { MdChevronRight, MdExitToApp, MdExpandMore } from "react-icons/md";
 
 // -- Utils --
 import fetchApi from "@/utils/fetchApi";
@@ -38,7 +38,7 @@ import AbilityProvider from "@/components/AbilityProvider";
 import { useAuth } from "@/hooks/useAuth";
 import VerticalDashboard from "@/components/layout/VerticalDashboard";
 import HorizontalDashboard from "@/components/layout/HorizontalDashboard";
-import { listItem } from "@/configs/layout";
+import { NAVIGATION_ITEMS, TNavigationItem } from "@/configs/layout";
 
 const drawerWidth = 240;
 const appBarHeight = 64;
@@ -70,35 +70,86 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }, []);
 
   // Item section drawer
-  const listItemMenu = useMemo(() => listItem(), []);
 
+  const MenuItem = ({ item, level = 0 }: { item: TNavigationItem; level?: number }) => {
+    const [isExpanded, setIsExpanded] = useState(false);
+    const router = useRouter();
+    const pathName = usePathname();
+    const theme = useTheme();
+
+    const hasChildren = item.childrens && item.childrens.length > 0;
+    const isSelected = pathName === item.href;
+
+    const handleClick = (e: React.MouseEvent) => {
+      if (hasChildren) {
+        e.stopPropagation();
+        setIsExpanded(!isExpanded);
+      } else {
+        router.push(item.href);
+      }
+    };
+
+    const paddingLeft = 2 + level * 3;
+
+    return (
+      <Box sx={{ width: "100%", display: "block" }}>
+        <Tooltip title={item.title} placement="right" arrow>
+          <ListItem
+            onClick={handleClick}
+            sx={{
+              cursor: "pointer",
+              borderRadius: "12px",
+              mb: 0.5,
+              pl: paddingLeft,
+              transition: "all 0.3s ease",
+              backgroundColor: isSelected ? theme.palette.action.selected : "transparent",
+              color: isSelected ? theme.palette.primary.main : "inherit",
+              "&:hover": {
+                backgroundColor: theme.palette.action.hover,
+              },
+            }}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: 40,
+                color: isSelected ? theme.palette.primary.main : "inherit",
+              }}
+            >
+              <item.icon size={22} />
+            </ListItemIcon>
+
+            <ListItemText
+              primary={item.title}
+              primaryTypographyProps={{
+                fontSize: "0.9rem",
+                fontWeight: isSelected ? 700 : 500,
+              }}
+            />
+
+            {hasChildren && (isExpanded ? <MdExpandMore size={20} /> : <MdChevronRight size={20} />)}
+          </ListItem>
+        </Tooltip>
+
+        {hasChildren && (
+          <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              {item.childrens?.map((child, index) => (
+                <MenuItem key={child.id} item={child} level={level + 1} />
+              ))}
+            </List>
+          </Collapse>
+        )}
+      </Box>
+    );
+  };
   const drawer = useMemo(
     () => (
       <div>
         <Toast />
         <Toolbar>LOGO</Toolbar>
         <List>
-          {listItemMenu.map((item) => (
-            <Link href={item.href} key={item.id} className="bg-red-300">
-              <Tooltip disableHoverListener={mobileOpen ? true : false} arrow placement="right" title={item.title}>
-                <ListItem
-                  sx={{
-                    "&:hover": {
-                      backgroundColor: theme.palette.action.hover,
-                      transition: "background-color 0.5s",
-                    },
-                    backgroundColor: pathName === item.href ? theme.palette.action.focus : "",
-
-                    borderRadius: "12px",
-                  }}
-                >
-                  <ListItemIcon>
-                    <item.icon size={24} />
-                  </ListItemIcon>
-                  <ListItemText sx={{ fontWeight: pathName === item.href ? "bold" : "normal" }} primary={item.title} />
-                </ListItem>
-              </Tooltip>
-            </Link>
+          {NAVIGATION_ITEMS.map((item) => (
+            <MenuItem key={item.id} item={item} />
           ))}
 
           <Tooltip disableHoverListener={mobileOpen ? true : false} arrow placement="right" title="Logout">
@@ -120,7 +171,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </List>
       </div>
     ),
-    [listItemMenu, mobileOpen, pathName, theme]
+    [mobileOpen, pathName, theme]
   );
 
   return (

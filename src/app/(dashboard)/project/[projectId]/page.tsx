@@ -514,7 +514,7 @@ const ProjectDetail = () => {
 
                 {/* Task Management Section */}
                 {/* <Can I="get" a="tasks"> */}
-                <TaskManager />
+                <TaskManager  employees={employeesForDepartment} />
                 {/* </Can> */}
               </Box>
             </Paper>

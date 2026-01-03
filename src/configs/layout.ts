@@ -1,104 +1,163 @@
 import { IoIosChatbubbles } from "react-icons/io";
 import { GoProject } from "react-icons/go";
-import { MdDashboard, MdOutlineFeedback, MdReport, MdSettings } from "react-icons/md";
-import { FaBox, FaRegUserCircle, FaUsersCog, FaUserShield } from "react-icons/fa";
+import {
+  MdAttachMoney,
+  MdAutoGraph,
+  MdCalculate,
+  MdDashboard,
+  MdFactCheck,
+  MdHistory,
+  MdOutlineFeedback,
+  MdPayments,
+  MdReport,
+  MdSettings,
+  MdWorkOutline,
+} from "react-icons/md";
+import { FaBox, FaFileContract, FaRegUserCircle, FaUserEdit, FaUsers, FaUsersCog, FaUserShield } from "react-icons/fa";
 import { BsBuildingFillLock } from "react-icons/bs";
-import { PiBookOpenUserBold } from "react-icons/pi";
 import { IconType } from "react-icons/lib";
 
-type TListItem = {
+export type TNavigationItem = {
   id: string;
   title: string;
   icon: IconType;
   href: string;
   permissions: string[];
+  childrens?: TNavigationItem[];
 };
 
-export const listItem = (): TListItem[] => {
-  return [
-    {
-      id: "dashboard",
-      title: "Dashboard",
-      icon: MdDashboard,
-      href: "/dashboard",
-      permissions: [],
-    },
-    {
-      id: "project",
-      title: "Project",
-      icon: GoProject,
-      href: "/project",
-      permissions: [],
-    },
-    {
-      id: "chat",
-      title: "Chat",
-      icon: IoIosChatbubbles,
-      href: "/chat",
-      permissions: [],
-    },
-    {
-      id: "role",
-      title: "Role",
-      icon: FaUserShield,
-      href: "/role",
-      permissions: [],
-    },
-    {
-      id: "permission",
-      title: "Permission",
-      icon: BsBuildingFillLock,
-      href: "/permission",
-      permissions: [],
-    },
-    {
-      id: "user-manager",
-      title: "User Manager",
-      icon: FaUsersCog,
-      href: "/user-management",
-      permissions: [],
-    },
-    {
-      id: "position",
-      title: "Position",
-      icon: PiBookOpenUserBold,
-      href: "/position",
-      permissions: [],
-    },
-    {
-      id: "department",
-      title: "Department",
-      icon: FaBox,
-      href: "/department",
-      permissions: [],
-    },
-    {
-      id: "profile",
-      title: "Profile",
-      icon: FaRegUserCircle,
-      href: "/profile",
-      permissions: ["public"],
-    },
-    {
-      id: "feedback",
-      title: "Feedback",
-      icon: MdOutlineFeedback,
-      href: "/feedback",
-      permissions: [],
-    },
-    {
-      id: "report",
-      title: "Report",
-      icon: MdReport,
-      href: "/report",
-      permissions: ["public"],
-    },
-    {
-      id: "setting",
-      title: "Setting",
-      icon: MdSettings,
-      href: "/setting",
-      permissions: ["public"],
-    },
-  ];
-};
+export const NAVIGATION_ITEMS: TNavigationItem[] = [
+  {
+    id: "dashboard",
+    title: "Dashboard",
+    icon: MdDashboard,
+    href: "/dashboard",
+    permissions: [],
+  },
+  {
+    id: "operation-group",
+    title: "Operations",
+    icon: GoProject,
+    href: "#",
+    permissions: [],
+    childrens: [
+      { id: "project", title: "Project", icon: GoProject, href: "/project", permissions: [] },
+      { id: "chat", title: "Chat", icon: IoIosChatbubbles, href: "/chat", permissions: [] },
+    ],
+  },
+  // --- (CORE HR) ---
+  {
+    id: "hr-management",
+    title: "HR Management",
+    icon: FaUsers,
+    href: "#",
+    permissions: ["view_hr"],
+    childrens: [
+      {
+        id: "personnel",
+        title: "Personnel List",
+        icon: FaUsers,
+        href: "/hr/personnel",
+        permissions: [],
+      },
+      {
+        id: "adjustment",
+        title: "Personnel Adjustments", // add adjustment api
+        icon: FaUserEdit,
+        href: "/hr/adjustments",
+        permissions: [],
+      },
+      {
+        id: "contract",
+        title: "Contracts",
+        icon: FaFileContract,
+        href: "/hr/contracts",
+        permissions: [],
+      },
+      {
+        id: "organization",
+        title: "Organization",
+        icon: FaBox,
+        href: "#",
+        permissions: [],
+        childrens: [
+          { id: "dept", title: "Departments", icon: FaBox, href: "/hr/departments", permissions: [] },
+          { id: "pos", title: "Positions", icon: MdWorkOutline, href: "/hr/positions", permissions: [] },
+        ],
+      },
+    ],
+  },
+  // --- (FINANCE & PAYROLL) ---
+  {
+    id: "finance-management",
+    title: "Finance & Payroll",
+    icon: MdAttachMoney,
+    href: "#",
+    permissions: ["view_finance"],
+    childrens: [
+      {
+        id: "payroll-calc",
+        title: "Payroll Calculation",
+        icon: MdCalculate,
+        href: "/finance/payroll",
+        permissions: [],
+      },
+      {
+        id: "kpi-calc",
+        title: "KPI Assessment",
+        icon: MdAutoGraph,
+        href: "/finance/kpi",
+        permissions: [],
+      },
+      {
+        id: "salary-advance",
+        title: "Salary Advance",
+        icon: MdPayments,
+        href: "#",
+        permissions: [],
+        childrens: [
+          {
+            id: "adv-request",
+            title: "Advance Requests",
+            icon: MdHistory,
+            href: "/finance/advance/requests",
+            permissions: [],
+          },
+          {
+            id: "adv-approve",
+            title: "Approve Advance",
+            icon: MdFactCheck,
+            href: "/finance/advance/approve",
+            permissions: [],
+          },
+        ],
+      },
+    ],
+  },
+  // --- SYSTEM ---
+  {
+    id: "system-control",
+    title: "System Control",
+    icon: FaUsersCog,
+    href: "#",
+    permissions: ["admin"],
+    childrens: [
+      { id: "users", title: "User Accounts", icon: FaRegUserCircle, href: "/system/users", permissions: [] },
+      { id: "roles", title: "Roles", icon: FaUserShield, href: "/system/roles", permissions: [] },
+      {
+        id: "permissions",
+        title: "Permissions",
+        icon: BsBuildingFillLock,
+        href: "/system/permissions",
+        permissions: [],
+      },
+    ],
+  },
+  {
+    id: "setting",
+    title: "Settings",
+    icon: MdSettings,
+    href: "/settings",
+    permissions: ["public"],
+  },
+];
