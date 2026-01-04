@@ -1,72 +1,102 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
+import ReactFlow, {
+  Background,
+  Controls,
+  Handle,
+  Position as FlowPosition,
+  useNodesState,
+  useEdgesState,
+  Node,
+  Edge,
+} from "reactflow";
+import "reactflow/dist/style.css";
+
 import {
   Box,
   Button,
-  Card,
-  CardContent,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Grid,
   IconButton,
+  Paper,
   TextField,
   Typography,
   CircularProgress,
-  Alert,
-  Paper,
-  Tooltip,
-  Fade,
   useTheme,
-  alpha,
 } from "@mui/material";
 import { FaPlus } from "react-icons/fa";
 import { MdEdit, MdDelete, MdWork } from "react-icons/md";
-import { useSnackbar } from "@/hooks/useSnackbar";
+import dynamic from "next/dynamic";
+
 import fetchApi from "@/utils/fetchApi";
 import { CONFIG_API } from "@/configs/api";
-import { Can } from "@/context/casl/AbilityContext";
-import dynamic from "next/dynamic";
+import { useSnackbar } from "@/hooks/useSnackbar";
+
 const DialogConfirmDelete = dynamic(() => import("@/components/dialog-confirm-delete"), { ssr: false });
 
-interface Position {
-  _id: string;
-  title: string;
-  description: string;
-  level: number;
-  isDeleted: boolean;
-  deletedAt: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
+const CustomNode = ({ data }: { data: any }) => {
+  return (
+    <Box>
+      <Handle type="target" position={FlowPosition.Top} style={{ background: "#bbb" }} />
+      <Paper
+        elevation={3}
+        sx={{
+          p: 1.5,
+          width: 220,
+          textAlign: "center",
+          borderRadius: 2,
+          border: "1px solid",
+          borderColor: "divider",
+          bgcolor: "#fff",
+        }}
+      >
+        <Typography variant="caption" fontWeight={800} color="primary" sx={{ display: "block", mb: 0.5 }}>
+          LEVEL {data.level}
+        </Typography>
+        <Typography variant="subtitle2" fontWeight={700} noWrap>
+          {data.title}
+        </Typography>
+        <Box sx={{ display: "flex", justifyContent: "center", gap: 0.5, mt: 1 }}>
+          <IconButton size="small" onClick={() => data.onEdit(data)}>
+            <MdEdit size={14} />
+          </IconButton>
+          <IconButton size="small" color="error" onClick={() => data.onDelete(data._id)}>
+            <MdDelete size={14} />
+          </IconButton>
+        </Box>
+      </Paper>
+      <Handle type="source" position={FlowPosition.Bottom} style={{ background: "#bbb" }} />
+    </Box>
+  );
+};
 
-export default function PositionPage() {
+export default function PositionLevelPage() {
   const theme = useTheme();
-  const [positions, setPositions] = useState<Position[]>([]);
+  const { Toast, showToast } = useSnackbar();
+
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+
+  const [rawPositions, setRawPositions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const [editingPosition, setEditingPosition] = useState<Position | null>(null);
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    level: 1,
-  });
+  const [editing, setEditing] = useState<any>(null);
+  const [formData, setFormData] = useState({ title: "", description: "", level: 0 });
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [positionToDelete, setPositionToDelete] = useState<string | null>(null);
-  const { Toast, showToast } = useSnackbar();
+  const [toDeleteId, setToDeleteId] = useState<string | null>(null);
+
+  const nodeTypes = useMemo(() => ({ customNode: CustomNode }), []);
 
   const fetchPositions = async () => {
     try {
       setLoading(true);
-      const response = await fetchApi(`${CONFIG_API.POSITION.INDEX}`, "GET");
-      if (response.statusCode === 200) {
-        setPositions(response.data.result);
-      }
-    } catch (error) {
-      console.error("Error fetching positions:", error);
-      showToast("Failed to fetch positions", "error");
+      const res = await fetchApi(CONFIG_API.POSITION.INDEX, "GET");
+      if (res?.statusCode === 200) setRawPositions(res.data.result);
+    } catch {
+      showToast("Lỗi tải dữ liệu", "error");
     } finally {
       setLoading(false);
     }
@@ -74,342 +104,191 @@ export default function PositionPage() {
 
   useEffect(() => {
     fetchPositions();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleOpen = () => {
-    setOpen(true);
-    setEditingPosition(null);
-    setFormData({
-      title: "",
-      description: "",
-      level: 1,
-    });
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    setEditingPosition(null);
-    setFormData({
-      title: "",
-      description: "",
-      level: 1,
-    });
-  };
-
-  const handleEdit = (position: Position) => {
-    setEditingPosition(position);
-    setFormData({
-      title: position.title,
-      description: position.description,
-      level: position.level,
-    });
-    setOpen(true);
-  };
-
-  const handleDelete = async (id: string) => {
-    setPositionToDelete(id);
-    setDeleteDialogOpen(true);
-  };
-
-  const handleConfirmDelete = async () => {
-    if (!positionToDelete) return;
-
-    try {
-      const response = await fetchApi(`${CONFIG_API.POSITION.DETAIL(positionToDelete)}`, "DELETE");
-      if (response.statusCode === 200) {
-        showToast("Position deleted successfully", "success");
-        fetchPositions();
-      }
-    } catch (error) {
-      console.error("Error deleting position:", error);
-      showToast("Failed to delete position", "error");
-    } finally {
-      setDeleteDialogOpen(false);
-      setPositionToDelete(null);
+  /* --- LOGIC VẼ NODE VÀ TỰ ĐỘNG NỐI DÂY --- */
+  useEffect(() => {
+    if (rawPositions.length === 0) {
+      setNodes([]);
+      setEdges([]);
+      return;
     }
+
+    const nodeWidth = 280;
+    const nodeHeight = 200;
+
+    const levelGroups: { [key: number]: any[] } = {};
+    rawPositions.forEach((pos: any) => {
+      if (!levelGroups[pos.level]) levelGroups[pos.level] = [];
+      levelGroups[pos.level].push(pos);
+    });
+
+    const sortedLevels = Object.keys(levelGroups)
+      .map(Number)
+      .sort((a, b) => a - b);
+
+    const newNodes = rawPositions.map((pos: any) => {
+      const indexInLevel = levelGroups[pos.level].indexOf(pos);
+      const rowWidth = levelGroups[pos.level].length * nodeWidth;
+      return {
+        id: pos._id,
+        type: "customNode",
+        data: { ...pos, onEdit: openEdit, onDelete: handleDelete },
+        position: {
+          x: indexInLevel * nodeWidth - rowWidth / 2,
+          y: pos.level * nodeHeight,
+        },
+      };
+    });
+
+    const newEdges: Edge[] = [];
+    for (let i = 0; i < sortedLevels.length - 1; i++) {
+      const currentLevel = sortedLevels[i];
+      const nextLevel = sortedLevels[i + 1];
+
+      levelGroups[currentLevel].forEach((parent) => {
+        levelGroups[nextLevel].forEach((child) => {
+          newEdges.push({
+            id: `e-${parent._id}-${child._id}`,
+            source: parent._id,
+            target: child._id,
+            type: "smoothstep",
+            style: { stroke: "#b1b1b7", strokeWidth: 1.5 },
+          });
+        });
+      });
+    }
+
+    setNodes(newNodes);
+    setEdges(newEdges);
+  }, [rawPositions]);
+
+  /* --- CRUD HELPERS --- */
+  const openEdit = (p: any) => {
+    setEditing(p);
+    setFormData({ title: p.title, description: p.description || "", level: p.level });
+    setOpen(true);
   };
 
-  const handleCancelDelete = () => {
-    setDeleteDialogOpen(false);
-    setPositionToDelete(null);
+  const handleDelete = (id: string) => {
+    setToDeleteId(id);
+    setDeleteDialogOpen(true);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      if (editingPosition) {
-        const response = await fetchApi(`${CONFIG_API.POSITION.DETAIL(editingPosition._id)}`, "PATCH", formData);
-        if (response.statusCode === 200) {
-          showToast("Position updated successfully", "success");
-        }
+      if (editing) {
+        await fetchApi(CONFIG_API.POSITION.DETAIL(editing._id), "PATCH", formData);
+        showToast("Cập nhật thành công", "success");
       } else {
-        const response = await fetchApi(`${CONFIG_API.POSITION.INDEX}`, "POST", formData);
-        if (response.statusCode === 201) {
-          showToast("Position created successfully", "success");
-        }
+        await fetchApi(CONFIG_API.POSITION.INDEX, "POST", formData);
+        showToast("Tạo mới thành công", "success");
       }
-      handleClose();
+      setOpen(false);
       fetchPositions();
-    } catch (error) {
-      console.error("Error saving position:", error);
-      showToast("Failed to save position", "error");
+    } catch {
+      showToast("Có lỗi xảy ra", "error");
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: name === "level" ? parseInt(value) || 1 : value,
-    }));
+  const confirmDelete = async () => {
+    if (!toDeleteId) return;
+    try {
+      await fetchApi(CONFIG_API.POSITION.DETAIL(toDeleteId), "DELETE");
+      showToast("Xóa vị trí thành công", "success");
+      fetchPositions();
+    } catch {
+      showToast("Xóa thất bại", "error");
+    } finally {
+      setDeleteDialogOpen(false);
+      setToDeleteId(null);
+    }
   };
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Paper
-        elevation={0}
-        sx={{
-          p: 3,
-          mb: 4,
-          borderRadius: 2,
-          background: `linear-gradient(45deg, ${alpha(theme.palette.primary.main, 0.1)}, ${alpha(
-            theme.palette.secondary.main,
-            0.1
-          )})`,
-          border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
-        }}
-      >
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-            <MdWork size={32} color={theme.palette.primary.main} />
-            <Typography
-              variant="h4"
-              component="h1"
-              sx={{
-                fontWeight: 600,
-                background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              Position Management
-            </Typography>
-          </Box>
-          <Can I="post" a="positions">
-            <Button
-              variant="contained"
-              startIcon={<FaPlus />}
-              onClick={handleOpen}
-              sx={{
-                borderRadius: 2,
-                px: 3,
-                py: 1,
-                textTransform: "none",
-                fontWeight: 600,
-                boxShadow: "none",
-                "&:hover": {
-                  boxShadow: "none",
-                  backgroundColor: "primary.dark",
-                },
-              }}
-            >
-              Create Position
-            </Button>
-          </Can>
-        </Box>
-        <Typography variant="body1" color="text.secondary">
-          Manage and organize positions within your organization
+    <Box sx={{ height: "100vh", display: "flex", flexDirection: "column" }}>
+      <Box sx={{ p: 2, display: "flex", justifyContent: "space-between", bgcolor: "#fff", borderBottom: 1, borderColor: "divider" }}>
+        <Typography variant="h6" fontWeight={700}>
+          Organization Levels
         </Typography>
-      </Paper>
+        <Button
+          variant="contained"
+          startIcon={<FaPlus />}
+          onClick={() => {
+            setEditing(null);
+            setFormData({ title: "", description: "", level: 0 });
+            setOpen(true);
+          }}
+        >
+          Thêm vị trí
+        </Button>
+      </Box>
 
-      {loading ? (
-        <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-          <CircularProgress />
-        </Box>
-      ) : (
-        <Grid container spacing={3}>
-          {positions.map((position) => (
-            <Grid item xs={12} sm={6} md={4} key={position._id}>
-              <Fade in={true} timeout={500}>
-                <Card
-                  sx={{
-                    height: "100%",
-                    borderRadius: 2,
-                    transition: "all 0.3s ease",
-                    "&:hover": {
-                      transform: "translateY(-4px)",
-                      boxShadow: theme.shadows[4],
-                    },
-                  }}
-                >
-                  <CardContent>
-                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-                      <Typography
-                        component="div"
-                        sx={{
-                          fontWeight: 600,
-                          color: theme.palette.primary.main,
-                        }}
-                      >
-                        {position.title}
-                      </Typography>
-                      <Box>
-                        <Can I="patch" a="positions/:id">
-                          <Tooltip title="Edit">
-                            <IconButton
-                              onClick={() => handleEdit(position)}
-                              size="small"
-                              sx={{
-                                color: theme.palette.primary.main,
-                                "&:hover": {
-                                  backgroundColor: alpha(theme.palette.primary.main, 0.1),
-                                },
-                              }}
-                            >
-                              <MdEdit />
-                            </IconButton>
-                          </Tooltip>
-                        </Can>
-                        <Can I="delete" a="positions/:id">
-                          <Tooltip title="Delete">
-                            <IconButton
-                              onClick={() => handleDelete(position._id)}
-                              size="small"
-                              color="error"
-                              sx={{
-                                "&:hover": {
-                                  backgroundColor: alpha(theme.palette.error.main, 0.1),
-                                },
-                              }}
-                            >
-                              <MdDelete />
-                            </IconButton>
-                          </Tooltip>
-                        </Can>
-                      </Box>
-                    </Box>
-                    <Box
-                      sx={{
-                        display: "inline-block",
-                        px: 1.5,
-                        py: 0.5,
-                        borderRadius: 1,
-                        backgroundColor: alpha(theme.palette.primary.main, 0.1),
-                        color: theme.palette.primary.main,
-                        fontSize: "0.875rem",
-                        fontWeight: 500,
-                        mb: 2,
-                      }}
-                    >
-                      Level {position.level}
-                    </Box>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{
-                        display: "-webkit-box",
-                        WebkitLineClamp: 3,
-                        WebkitBoxOrient: "vertical",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
-                      {position.description}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Fade>
-            </Grid>
-          ))}
-        </Grid>
-      )}
+      <Box sx={{ flex: 1, bgcolor: "#f4f6f8" }}>
+        {loading && rawPositions.length === 0 ? (
+           <Box sx={{ display: "flex", justifyContent: "center", mt: 10 }}><CircularProgress /></Box>
+        ) : (
+          <ReactFlow nodes={nodes} edges={edges} onNodesChange={onNodesChange} nodeTypes={nodeTypes} fitView>
+            <Background color="#ccc" gap={20} />
+            <Controls />
+          </ReactFlow>
+        )}
+      </Box>
 
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        maxWidth="sm"
-        fullWidth
-        PaperProps={{
-          sx: {
-            borderRadius: 2,
-          },
-        }}
-      >
-        <DialogTitle sx={{ pb: 1 }}>
-          <Typography sx={{ fontWeight: 600 }}>{editingPosition ? "Edit Position" : "Create Position"}</Typography>
-        </DialogTitle>
+      {/* DIALOG FORM */}
+      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>{editing ? "Edit Position" : "Create Position"}</DialogTitle>
         <form onSubmit={handleSubmit}>
           <DialogContent>
             <TextField
-              autoFocus
-              margin="dense"
-              name="title"
+              fullWidth
               label="Title"
-              type="text"
-              fullWidth
-              value={formData.title}
-              onChange={handleChange}
-              required
-              sx={{ mb: 2 }}
-            />
-            <TextField
               margin="dense"
-              name="description"
-              label="Description"
-              type="text"
+              required
+              value={formData.title}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+            />
+
+            <TextField
               fullWidth
+              label="Description"
+              margin="dense"
               multiline
               rows={4}
               value={formData.description}
-              onChange={handleChange}
-              required
-              sx={{ mb: 2 }}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             />
+
             <TextField
-              margin="dense"
-              name="level"
+              fullWidth
               label="Level"
               type="number"
-              fullWidth
-              value={formData.level}
-              onChange={handleChange}
+              margin="dense"
+              inputProps={{ min: 0 }}
               required
-              inputProps={{ min: 1 }}
+              value={formData.level}
+              onChange={(e) => setFormData({ ...formData, level: Number(e.target.value) })}
+              helperText="Level 0 là cấp cao nhất"
             />
           </DialogContent>
-          <DialogActions sx={{ px: 3, pb: 2 }}>
-            <Button
-              onClick={handleClose}
-              sx={{
-                borderRadius: 2,
-                px: 3,
-                textTransform: "none",
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              variant="contained"
-              sx={{
-                borderRadius: 2,
-                px: 3,
-                textTransform: "none",
-                fontWeight: 600,
-              }}
-            >
-              {editingPosition ? "Update" : "Create"}
+
+          <DialogActions>
+            <Button onClick={() => setOpen(false)}>Cancel</Button>
+            <Button type="submit" variant="contained">
+              {editing ? "Update" : "Create"}
             </Button>
           </DialogActions>
         </form>
       </Dialog>
+
+      {/* CONFIRM DELETE */}
       <DialogConfirmDelete
         deleteDialogOpen={deleteDialogOpen}
         titleConfirmDelete="Delete Position"
-        descriptionConfirmDelete=" Are you sure you want to delete this position? This action cannot be undone."
-        handleConfirmDelete={handleConfirmDelete}
-        handleCancelDelete={handleCancelDelete}
+        descriptionConfirmDelete="Are you sure you want to delete this position?"
+        handleConfirmDelete={confirmDelete}
+        handleCancelDelete={() => setDeleteDialogOpen(false)}
       />
       <Toast />
     </Box>
