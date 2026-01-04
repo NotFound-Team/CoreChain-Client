@@ -47,7 +47,7 @@ export default function ProjectPage() {
     startDate: null,
     endDate: null,
   });
-  const [viewMode, setViewMode] = React.useState<"grid" | "list">("grid");
+  const [viewMode, setViewMode] = React.useState<"grid" | "list">("list");
   const [filterStatus, setFilterStatus] = React.useState<number | "">("");
   const [filterPriority, setFilterPriority] = React.useState<number | "">("");
 
@@ -253,8 +253,8 @@ export default function ProjectPage() {
           </Box>
         </>
       ) : (
-        <Box sx={{ p: 3 }}>
-          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 4 }}>
+        <Box sx={{ p: 3, minHeight: "100vh" }}>
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2, backgroundColor: "background.default", padding: 2, borderRadius: 2 }}>
             <Typography variant="h4" sx={{ fontSize: { xs: "20px", sm: "28px", md: "32px" } }} fontWeight={700}>
               Projects
             </Typography>
