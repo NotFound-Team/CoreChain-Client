@@ -58,19 +58,27 @@ export const CONFIG_API = {
   },
 
   PERSONNEL: {
+    // ===== Adjustments =====
     ADJUSTMENT: (id: string) => `/personnel/adjustments/${id}`,
-    SALARY_CAL: (id: string) => `/personnel/salary/${id}`,
+
+    // ===== Working hours =====
     WORKING_HOURS: (id: string) => `/personnel/working-hours/${id}`,
-    KPI_CAL: (id: string) => `/personnel/kpi/${id}`,
+
+    // ===== KPI =====
+    KPI_CALCULATE: (id: string) => `/personnel/kpi/${id}`,
+
+    // ===== Salary =====
+    SALARY_LIST: "/personnel/salary",
+    SALARY_DETAIL: (id: string) => `/personnel/salary/${id}`,
+    SALARY_CALCULATE: (id: string) => `/personnel/salary/calculate/${id}`,
 
     SALARY_ADVANCE: "/personnel/salary",
-    APPROVE_ADVANCE: "/personnel/salary/approve",
-    CALCULATE_ADVANCE: "/personnel/salary/calculate",
+    SALARY_APPROVE: (id: string) => `/personnel/salary/approve/${id}`,
   },
 
   REPORT: {
     EMPLOYEES: "/reports/employees",
-    TURNOVER: "/reports/turnover",
+    EMPLOYEES_TURNOVER: "/reports/employees-turnover",
     WORKING_HOURS: "/reports/working-hours",
     DAY_OFF: "/reports/day-off",
     KPI: "/reports/kpi",

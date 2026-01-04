@@ -1,3 +1,5 @@
+import { IPagination } from "./common";
+
 export interface IContract {
   _id: string;
   contractCode: string;
@@ -36,3 +38,10 @@ export interface IContract {
     email: string;
   };
 }
+
+export type TCreateContract = Omit<IContract, "_id" | "createdAt" | "updatedAt">;
+
+export type TUpdateContract = Partial<TCreateContract>;
+
+
+export type TQueryContracts = Partial<IContract> & IPagination;

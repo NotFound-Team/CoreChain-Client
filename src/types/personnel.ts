@@ -1,3 +1,5 @@
+import { IPagination } from "./common";
+
 export interface ISalaryAdvance {
   _id: string;
   employee: string;
@@ -26,3 +28,66 @@ export interface ISalaryAdvance {
     email: string;
   };
 }
+
+export type TSalaryAdvanceCreate = {
+  amount: number;
+  reason: string;
+  returnDate: string;
+};
+
+export type TQuerySalaryAdvance = Partial<Pick<ISalaryAdvance, "employee" | "isApproved" | "isDeleted">> & {
+  current?: number;
+  pageSize?: number;
+};
+
+export interface IPersonnel {
+  _id: string;
+  employee: string;
+
+  baseSalary?: number;
+  workingHours?: number;
+  kpiScore?: number;
+
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export type TAdjustment = {
+  amount: number;
+  reason: string;
+  type: "BONUS" | "PENALTY";
+};
+
+export type TUpdatePersonnel = {
+  adjustment: TAdjustment;
+};
+
+export type TUpdateWorkingHours = {
+  workingHours: number;
+};
+
+export interface ISalaryCalculation {
+  employee: string;
+
+  baseSalary: number;
+  workingHours: number;
+
+  totalAllowance?: number;
+  totalAdjustment?: number;
+
+  finalSalary: number;
+}
+
+export interface IKpiResult {
+  employee: string;
+  score: number;
+  level: string;
+}
+
+export type TSalaryAdvance = {
+  amount: number;
+  reason: string;
+  returnDate: string; // ISO string
+};
+
+export type TQueryPersonnelSalary = Partial<IPersonnel> & IPagination;
