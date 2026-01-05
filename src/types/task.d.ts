@@ -1,3 +1,4 @@
+import { IPagination } from "./common";
 import { Status, Priority } from "./project";
 
 const TObjectCreateBy = {
@@ -24,10 +25,12 @@ export type TTask = {
   description: string;
   startDate: Date | null;
   dueDate: Date | null;
-  assignedTo: {
-    _id: string;
-    email: string;
-  } | string;
+  assignedTo:
+    | {
+        _id: string;
+        email: string;
+      }
+    | string;
   status: Status;
   priority: Priority;
   projectId: string;
@@ -38,3 +41,5 @@ export type TTask = {
   isDeleted: boolean;
   updatedAt: Date;
 };
+
+export type TQueryTask = Partial<TTask> & IPagination;

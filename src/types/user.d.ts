@@ -5,17 +5,17 @@ export type UserResponse = {
   feedback?: [];
   role?: { _id: string; name: string };
   department?: {
-    _id: string,
-    name: string,
-  },
+    _id: string;
+    name: string;
+  };
   position?: {
-    _id: string,
-    title: string,
-  },
-  employeeId: string,
-  dayOff: number,
-  txHash: string,
-  workingHours: number,
+    _id: string;
+    title: string;
+  };
+  employeeId: string;
+  dayOff: number;
+  txHash: string;
+  workingHours: number;
   permissions: string[];
   createdAt?: Date;
   updatedAt?: Date;
@@ -104,8 +104,6 @@ export interface TParamsEmployee {
   isActive: boolean;
 }
 
-
-
 // export interface PrivateUser {
 //   netSalary?: number;
 //   personalIdentificationNumber: string;
@@ -128,3 +126,11 @@ export interface TParamsEmployee {
 //   personalTaxIdentificationNumber?: string;
 //   backAccountNumber?: string;
 // }
+export type TQueryUser = {
+  pageSize: number;
+  current: number;
+  search?: string;
+  department?: string;
+  role?: string;
+  isActive?: boolean;
+};

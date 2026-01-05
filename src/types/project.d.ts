@@ -59,3 +59,12 @@ export type TProject = {
   };
   managerName?: string;
 };
+
+export type TQueryProject = {
+  pageSize: number;
+  current: number;
+  search?: string;
+  status?: number;
+  priority?: number;
+  department?: string;
+};

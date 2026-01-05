@@ -14,6 +14,7 @@ import { AiOutlineMenuFold, AiOutlineMenuUnfold } from "react-icons/ai";
 import { MdMenu } from "react-icons/md";
 import UserDropdown from "./user-dropdown";
 import { Suspense } from "react";
+import GreetingHeader from "./GreetingHeader";
 
 const MiniDrawerWidth = 72;
 
@@ -75,6 +76,7 @@ export default function VerticalDashboard({
           </Box>
           <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0 20px" }}>
             {/* <ButtonMode /> */}
+            <GreetingHeader />
             <Box>
               <Suspense fallback={<div>Loading...</div>}>
                 <UserDropdown />
