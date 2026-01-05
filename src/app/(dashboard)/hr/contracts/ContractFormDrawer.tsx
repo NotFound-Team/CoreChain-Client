@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { memo, useEffect } from "react";
 import { Box, Drawer, Typography, Stack, TextField, MenuItem, Button, IconButton, Divider, Grid } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { MdClose } from "react-icons/md";
@@ -22,15 +22,13 @@ interface CreateContractDto {
   confidentialityClause: string;
 }
 
-
 type UpdateContractDto = Partial<CreateContractDto>;
 
 interface Props {
   open: boolean;
   onClose: () => void;
- 
   onSubmit: (data: CreateContractDto | UpdateContractDto) => void;
-  initialData?: UpdateContractDto | null; 
+  initialData?: UpdateContractDto | null;
 }
 
 const ContractFormDrawer = ({ open, onClose, onSubmit, initialData }: Props) => {
@@ -54,7 +52,6 @@ const ContractFormDrawer = ({ open, onClose, onSubmit, initialData }: Props) => 
   useEffect(() => {
     if (open) {
       if (initialData) {
-
         const formattedData = {
           ...initialData,
           startDate: initialData.startDate ? new Date(initialData.startDate).toISOString().split("T")[0] : "",
@@ -303,7 +300,7 @@ const ContractFormDrawer = ({ open, onClose, onSubmit, initialData }: Props) => 
             sx={{
               textTransform: "none",
               px: 4,
-              bgcolor: isUpdate ? "#2563eb" : "#0f172a", 
+              bgcolor: isUpdate ? "#2563eb" : "#0f172a",
               "&:hover": { bgcolor: isUpdate ? "#1d4ed8" : "#1e293b" },
             }}
           >
@@ -315,4 +312,4 @@ const ContractFormDrawer = ({ open, onClose, onSubmit, initialData }: Props) => 
   );
 };
 
-export default ContractFormDrawer;
+export default memo(ContractFormDrawer);

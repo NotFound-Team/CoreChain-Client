@@ -9,6 +9,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 // -- Theme --
 import ThemeOptions from "@/theme/ThemeOptions";
 import DefaultPalette from "@/theme/palette";
+import { useSnackbar } from "@/hooks/useSnackbar";
 
 // Create Context
 export const ThemeContext = createContext({
@@ -18,6 +19,7 @@ export const ThemeContext = createContext({
 
 export function ThemeProviderWrapper({ children }: { children: ReactNode }) {
   const [mode, setMode] = useState<"light" | "dark">("light"); // Set mode
+   const { Toast } = useSnackbar();
 
   // Envent onClick
   const toggleTheme = () => {
@@ -49,6 +51,7 @@ export function ThemeProviderWrapper({ children }: { children: ReactNode }) {
     <ThemeContext.Provider value={{ mode, toggleTheme }}>
       <ThemeProvider theme={muiTheme}>
         <CssBaseline />
+        <Toast />
         {children}
       </ThemeProvider>
     </ThemeContext.Provider>

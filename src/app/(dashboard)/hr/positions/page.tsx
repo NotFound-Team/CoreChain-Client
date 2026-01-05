@@ -106,7 +106,6 @@ export default function PositionLevelPage() {
     fetchPositions();
   }, []);
 
-  /* --- LOGIC VẼ NODE VÀ TỰ ĐỘNG NỐI DÂY --- */
   useEffect(() => {
     if (rawPositions.length === 0) {
       setNodes([]);
