@@ -19,7 +19,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 // -- React --
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 // -- React-icon
 import { MdChevronRight, MdExitToApp, MdExpandMore } from "react-icons/md";
@@ -88,6 +88,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         router.push(item.href);
       }
     };
+
+    useEffect(() => {
+      if (hasChildren) {
+        const childPaths = item.childrens!.map((child) => child.href);
+        if (childPaths.includes(pathName)) {
+          setIsExpanded(true);
+        }
+      }
+    }, [pathName]);
 
     const paddingLeft = 2 + level * 3;
 

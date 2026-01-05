@@ -253,7 +253,7 @@ export default function ProjectPage() {
           </Box>
         </>
       ) : (
-        <Box sx={{ p: 3, minHeight: "100vh" }}>
+        <Box sx={{ p: 3 }}>
           <Box
             sx={{
               display: "flex",
