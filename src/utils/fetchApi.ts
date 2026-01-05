@@ -1,13 +1,12 @@
-// -- Axios --
-import axios, { AxiosRequestConfig } from "axios";
-// -- Configs --
-import { BASE_URL } from "@/configs/api";
+import axios, { AxiosRequestConfig, AxiosError } from "axios";
+import { BASE_URL, CONFIG_API } from "@/configs/api";
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true,
 });
 
 axiosInstance.interceptors.request.use((config) => {
@@ -18,31 +17,59 @@ axiosInstance.interceptors.request.use((config) => {
   return config;
 });
 
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  async (error: AxiosError) => {
+    const originalRequest: any = error.config;
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      try {
+        const res = await axios.post(`${BASE_URL}${CONFIG_API.AUTH.REFRESH}`, {
+          withCredentials: true,
+        });
+
+        if (res.data?.accessToken) {
+          const newToken = res.data.access_token;
+
+          localStorage.setItem("token", newToken);
+
+          axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
+          originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
+
+          return axiosInstance(originalRequest);
+        }
+      } catch (refreshError) {
+        localStorage.removeItem("token");
+        window.location.href = "/login";
+        return Promise.reject(refreshError);
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
+
 const fetchApi = async <T>(
   url: string,
   method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE" = "GET",
-  data?: T,
+  data?: any,
   extraOptions: Omit<AxiosRequestConfig, "url" | "method" | "data"> = {}
 ) => {
   try {
     const config: AxiosRequestConfig = {
       method,
       url,
-      // ...(data ? { data } : {}),
       data,
       ...extraOptions,
     };
-
-    // console.log("Request Config:", config);
 
     const response = await axiosInstance(config);
     return response.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
-      console.error("API Error:", error.response?.data?.message || error.message);
       throw new Error(error.response?.data?.message || "Request failed");
     }
-    console.error("Unknown error");
     throw new Error("Unknown error occurred");
   }
 };

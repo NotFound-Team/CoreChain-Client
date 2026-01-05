@@ -430,7 +430,7 @@ export default function ContractPage() {
         deleteDialogOpen={confirmDeleteOpen}
         handleCancelDelete={handleCancelDelete}
         titleConfirmDelete="Xác nhận xóa hợp đồng"
-        descriptionConfirmDelete="Bạn có chắc chắn muốn xóa hợp đồng này không?"
+        descriptionConfirmDelete={`Bạn có chắc chắn muốn xóa hợp đồng này không?`}
         handleConfirmDelete={handleConfirmDelete}
       />
     </Box>
