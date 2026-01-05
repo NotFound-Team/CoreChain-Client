@@ -4,7 +4,7 @@ import { Drawer } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { ReactNode } from "react";
 
-const MiniDrawerWidth = 72;
+const MiniDrawerWidth = 58;
 const FullDrawerWidth = 240;
 
 // Custom styled drawer

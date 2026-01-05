@@ -127,7 +127,7 @@ export default function ProfilePage() {
     <>
       {loadingUpdate && <SpinnerModal />}
       <Toast />
-      <div ref={containerRef} className="container mx-auto p-4 max-w-8xl">
+      <div ref={containerRef}>
         <Paper elevation={0} className="p-6 mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl">
           <div className="flex items-center gap-6 mb-8">
             <Avatar
