@@ -58,7 +58,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           localStorage.removeItem("token");
           localStorage.removeItem("projects");
           localStorage.removeItem("list-conversation");
-          Cookies.remove("token");
           setIsInitializing(false);
           router.push("/login");
           return;
@@ -93,13 +92,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = useCallback(async ({ username, password }: UserLogin) => {
     setLoading(true);
     try {
-      const response = await axios.post(`${BASE_URL}${CONFIG_API.AUTH.LOGIN}`, { username, password });
+      const response = await axios.post(
+        `${BASE_URL}${CONFIG_API.AUTH.LOGIN}`,
+        { username, password },
+        {
+          withCredentials: true,
+        }
+      );
 
       if (response) {
         const { user, access_token } = response.data.data;
         const newUser = { ...user, access_token };
         localStorage.setItem("token", access_token);
-        Cookies.set("token", access_token, { expires: 1 });
         setUser(newUser);
       }
     } catch (error: unknown) {

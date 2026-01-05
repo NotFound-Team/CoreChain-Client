@@ -254,7 +254,17 @@ export default function ProjectPage() {
         </>
       ) : (
         <Box sx={{ p: 3, minHeight: "100vh" }}>
-          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2, backgroundColor: "background.default", padding: 2, borderRadius: 2 }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 2,
+              backgroundColor: "background.default",
+              padding: 2,
+              borderRadius: 2,
+            }}
+          >
             <Typography variant="h4" sx={{ fontSize: { xs: "20px", sm: "28px", md: "32px" } }} fontWeight={700}>
               Projects
             </Typography>
