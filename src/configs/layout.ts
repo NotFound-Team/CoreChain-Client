@@ -4,13 +4,14 @@ import {
   MdAttachMoney,
   MdAutoGraph,
   MdCalculate,
+  MdCalendarMonth,
   MdDashboard,
   MdFactCheck,
   MdHistory,
-  MdOutlineFeedback,
   MdPayments,
-  MdReport,
   MdSettings,
+  MdVideoCall,
+  MdVpnKey,
   MdWorkOutline,
 } from "react-icons/md";
 import { FaBox, FaFileContract, FaRegUserCircle, FaUserEdit, FaUsers, FaUsersCog, FaUserShield } from "react-icons/fa";
@@ -41,8 +42,29 @@ export const NAVIGATION_ITEMS: TNavigationItem[] = [
     href: "#",
     permissions: [],
     childrens: [
+      {
+        id: "calendar",
+        title: "Calendar",
+        icon: MdCalendarMonth,
+        href: "/operations/calendar",
+        permissions: [],
+      },
       { id: "project", title: "Project", icon: GoProject, href: "/project", permissions: [] },
       { id: "chat", title: "Chat", icon: IoIosChatbubbles, href: "/chat", permissions: [] },
+      {
+        id: "meeting",
+        title: "Meetings",
+        icon: MdVideoCall,
+        href: "/operations/meetings",
+        permissions: [],
+      },
+      {
+        id: "feedback",
+        title: "Feedback",
+        icon: MdVpnKey,
+        href: "/operations/feedback",
+        permissions: [],
+      },
     ],
   },
   // --- (CORE HR) ---
@@ -58,6 +80,13 @@ export const NAVIGATION_ITEMS: TNavigationItem[] = [
         title: "Personnel List",
         icon: FaUsers,
         href: "/hr/personnel",
+        permissions: [],
+      },
+      {
+        id: "working-hours",
+        title: "Working Hours",
+        icon: MdHistory,
+        href: "/hr/working-hours",
         permissions: [],
       },
       {

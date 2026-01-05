@@ -39,6 +39,7 @@ import { useAuth } from "@/hooks/useAuth";
 import VerticalDashboard from "@/components/layout/VerticalDashboard";
 import HorizontalDashboard from "@/components/layout/HorizontalDashboard";
 import { NAVIGATION_ITEMS, TNavigationItem } from "@/configs/layout";
+import Image from "next/image";
 
 const drawerWidth = 240;
 const appBarHeight = 64;
@@ -90,13 +91,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     };
 
     useEffect(() => {
-      if (hasChildren) {
+      if (hasChildren && mobileOpen) {
         const childPaths = item.childrens!.map((child) => child.href);
         if (childPaths.includes(pathName)) {
           setIsExpanded(true);
         }
       }
     }, [pathName]);
+
+    useEffect(() => {
+      if (!mobileOpen) {
+        setIsExpanded(false);
+      }
+    }, [mobileOpen]);
 
     const paddingLeft = 2 + level * 3;
 
@@ -135,11 +142,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               }}
             />
 
-            {hasChildren && (isExpanded ? <MdExpandMore size={20} /> : <MdChevronRight size={20} />)}
+            {hasChildren && mobileOpen && (isExpanded ? <MdExpandMore size={20} /> : <MdChevronRight size={20} />)}
           </ListItem>
         </Tooltip>
 
-        {hasChildren && (
+        {hasChildren && mobileOpen && (
           <Collapse in={isExpanded} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
               {item.childrens?.map((child, index) => (
@@ -155,13 +162,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     () => (
       <div>
         <Toast />
-        <Toolbar>LOGO</Toolbar>
+        <Toolbar>
+          <Image src={"/images/img_avatar.png"} alt="Logo" width={100} height={100} />
+        </Toolbar>
         <List>
           {NAVIGATION_ITEMS.map((item) => (
             <MenuItem key={item.id} item={item} />
           ))}
 
-          <Tooltip disableHoverListener={mobileOpen ? true : false} arrow placement="right" title="Logout">
+          {/* <Tooltip disableHoverListener={mobileOpen ? true : false} arrow placement="right" title="Logout">
             <ListItem
               sx={{
                 "&:hover": {
@@ -176,7 +185,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </ListItemIcon>
               <ListItemText primary="Logout" />
             </ListItem>
-          </Tooltip>
+          </Tooltip> */}
         </List>
       </div>
     ),

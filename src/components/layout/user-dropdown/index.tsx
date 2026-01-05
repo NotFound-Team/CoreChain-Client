@@ -1,4 +1,7 @@
+import { CONFIG_API } from "@/configs/api";
 import { useAuth } from "@/hooks/useAuth";
+import { useSnackbar } from "@/hooks/useSnackbar";
+import fetchApi from "@/utils/fetchApi";
 import {
   Avatar,
   Badge,
@@ -13,7 +16,8 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useCallback } from "react";
 import { FaRegUser } from "react-icons/fa";
 import { MdExitToApp } from "react-icons/md";
 
@@ -46,14 +50,37 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
- const UserDropdown = () => {
+const UserDropdown = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const router = useRouter();
+  const { showToast } = useSnackbar();
+
+  const handleLogout = useCallback(async () => {
+    try {
+      await fetchApi(`${CONFIG_API.AUTH.LOGOUT}`, "POST");
+      localStorage.removeItem("token");
+      localStorage.removeItem("projects");
+      showToast("Logut successfully!", "success");
+      router.push("/login");
+    } catch (error) {
+      console.error("error", error);
+      showToast("Error during logout. Please try again!", "error");
+    } finally {
+      setAnchorEl(null);
+    }
+  }, []);
+
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleNavigateProfile = () => {
+    setAnchorEl(null);
+    router.push("/profile");
   };
 
   const { user } = useAuth();
@@ -128,13 +155,13 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
             </Box>
           </Box>
           <Divider />
-          <MenuItem onClick={handleClose}>
+          <MenuItem onClick={handleNavigateProfile}>
             <ListItemIcon>
               <FaRegUser />
             </ListItemIcon>
             My account
           </MenuItem>
-          <MenuItem onClick={handleClose}>
+          <MenuItem onClick={handleLogout}>
             <ListItemIcon>
               <MdExitToApp size={24} />
             </ListItemIcon>
