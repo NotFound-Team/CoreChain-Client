@@ -32,6 +32,7 @@ import { getSalaryList, calculateSalary } from "@/services/personnel.service";
 import CustomDataGrid from "@/components/custom-data-grid/CustomDataGrid";
 import type { GridColDef } from "@mui/x-data-grid";
 import type { ISalaryAdvance } from "@/types/personnel";
+import { getUserDetail } from "@/services/user.service";
 
 // const MOCK_PAYROLL_DATA: ISalaryAdvance[] = [
 //   {
@@ -116,9 +117,11 @@ const StatCard = ({ title, value, icon: Icon, color, trend }: any) => (
   </Card>
 );
 
+type PayrollRow = ISalaryAdvance & { employeeInfo: { name: string; email: string } };
+
 export default function PayrollPage() {
   const [loading, setLoading] = useState(false);
-  const [rows, setRows] = useState<ISalaryAdvance[]>([]);
+  const [rows, setRows] = useState<PayrollRow[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
 
@@ -130,6 +133,26 @@ export default function PayrollPage() {
         pageSize: pagination.pageSize,
       });
       if (res?.data?.result) {
+        const employeeIds: string[] = Array.from(new Set(res.data.result.map((item: ISalaryAdvance) => item.employee)));
+        const userCache = new Map<string, { name: string; email: string }>();
+
+        await Promise.all(
+          employeeIds.map(async (employeeId) => {
+            if (!userCache.has(employeeId)) {
+              const user = await getUserDetail(employeeId);
+              userCache.set(employeeId, {
+                name: user.name,
+                email: user.email,
+              });
+            }
+          })
+        );
+
+        res.data.result.forEach((item: ISalaryAdvance & { employeeInfo: { name: string; email: string } }) => {
+          const employeeInfo = userCache.get(item.employee) || { name: "Unknown", email: "" };
+          item.employeeInfo = employeeInfo;
+        });
+        // console.log("Payroll data with user info:", res.data.result);
         setRows(res.data.result);
       }
     } catch (error) {
@@ -141,7 +164,7 @@ export default function PayrollPage() {
 
   useEffect(() => {
     loadData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pagination]);
 
   const handleCalculateSalary = async (id: string) => {
@@ -166,14 +189,14 @@ export default function PayrollPage() {
   const filteredRows = useMemo(() => {
     return rows.filter(
       (row) =>
-        row.employee?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        row.employeeInfo?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         row.reason?.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [rows, searchQuery]);
 
-  const columns: GridColDef<ISalaryAdvance>[] = [
+  const columns: GridColDef<PayrollRow>[] = [
     {
-      field: "employee",
+      field: "employeeInfo.name",
       headerName: "Employee",
       width: 250,
       renderCell: (params) => (
@@ -182,7 +205,7 @@ export default function PayrollPage() {
             {params.value?.charAt(0)}
           </Avatar>
           <Typography variant="body2" fontWeight={500}>
-            {params.value}
+            {params.row.employeeInfo?.name || "Unknown"}
           </Typography>
         </Stack>
       ),

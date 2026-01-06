@@ -15,3 +15,11 @@ export const getUserList = async (params: TQueryUser) => {
     return error?.response?.data;
   }
 };
+
+export const getUserDetail = async (id: string) => {
+  try {
+    return await fetchApi(`${CONFIG_API.USER.DETAIL(id)}`, "GET");
+  } catch (error: any) {
+    return error?.response?.data;
+  }
+};
