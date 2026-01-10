@@ -82,7 +82,7 @@ export default function JobDetailPage({ params }: Props) {
         <section className="space-y-2">
           <h2 className="font-semibold">Skills</h2>
           <div className="flex flex-wrap gap-2">
-            {job.skills.map((skill) => (
+            {job.skills.map((skill: string) => (
               <Chip key={skill} label={skill} />
             ))}
           </div>
@@ -100,8 +100,8 @@ export default function JobDetailPage({ params }: Props) {
         <section className="space-y-2">
           <h2 className="font-semibold">Responsibilities</h2>
           <ul className="list-disc pl-5 space-y-1 text-sm">
-            {job.responsibilities.map((item, idx) => (
-              <li key={idx}>{item}</li>
+            {job.responsibilities.map((item: string, idx: number) => (
+              <li key={`${item}-${idx}`}>{item}</li>
             ))}
           </ul>
         </section>
@@ -112,8 +112,8 @@ export default function JobDetailPage({ params }: Props) {
         <section className="space-y-2">
           <h2 className="font-semibold">Requirements</h2>
           <ul className="list-disc pl-5 space-y-1 text-sm">
-            {job.requirements.map((item, idx) => (
-              <li key={idx}>{item}</li>
+            {job.requirements.map((item: string, idx: number) => (
+              <li key={`${item}_${idx}`}>{item}</li>
             ))}
           </ul>
         </section>
@@ -124,9 +124,10 @@ export default function JobDetailPage({ params }: Props) {
         <section className="space-y-2">
           <h2 className="font-semibold">Benefits</h2>
           <ul className="list-disc pl-5 space-y-1 text-sm">
-            {job.benefits.map((b: any, idx) => (
-              <li key={idx}>{typeof b === "string" ? b : b.name}</li>
-            ))}
+            {job.benefits.map((b: any, idx: number) => {
+              const label = typeof b === "string" ? b : b.name;
+              return <li key={`${label}-${idx}`}>{label}</li>;
+            })}
           </ul>
         </section>
       )}

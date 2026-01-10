@@ -48,7 +48,6 @@ const MeetingRoom = ({ params }: MeetingPageProps) => {
           localVideoRef.current.srcObject = stream;
         }
       } catch (err) {
-        console.error("Lỗi truy cập thiết bị:", err);
         alert("Không thể truy cập Camera/Micro. Vui lòng kiểm tra quyền trình duyệt.");
       }
     };
@@ -100,7 +99,6 @@ const MeetingRoom = ({ params }: MeetingPageProps) => {
           handleStopSharing(stream);
         };
       } catch (err) {
-        console.error("Lỗi chia sẻ màn hình:", err);
       }
     } else {
       handleStopSharing(screenStream);

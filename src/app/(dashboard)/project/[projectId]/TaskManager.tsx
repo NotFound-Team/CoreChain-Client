@@ -78,7 +78,7 @@ const TaskManager = ({ employees }: { employees: Employee[] }) => {
     });
   };
 
-  const handleSelectChange = (e: SelectChangeEvent<number>, field: string) => {
+  const handleSelectChange = (e: SelectChangeEvent<any>, field: string) => {
     setFormData({
       ...formData,
       [field]: e.target.value,
@@ -218,7 +218,6 @@ const TaskManager = ({ employees }: { employees: Employee[] }) => {
                     label="assignedTo"
                     value={formData.assignedTo}
                     onChange={(e) => {
-                      console.log(e);
                       handleSelectChange(e, "assignedTo");
                     }}
                   >

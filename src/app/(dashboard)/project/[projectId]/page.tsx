@@ -398,7 +398,6 @@ const ProjectDetail = () => {
                               value={selectedMembers}
                               onChange={(e, newValue: any) => {
                                 setSelectedMembers([...newValue]);
-                                console.log("Selected:", newValue);
                               }}
                               disableCloseOnSelect
                               fullWidth

@@ -6,7 +6,6 @@ interface DetailContractPageProps {
 }
 
 export default async function ContractDetailSlot({ params }: DetailContractPageProps) {
-  console.log("DetailContractPageParams:", params);
   const { id } = await params;
 
   if (!id) {

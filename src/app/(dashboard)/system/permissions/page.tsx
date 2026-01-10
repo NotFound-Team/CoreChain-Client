@@ -52,7 +52,6 @@ export default function PermissionPage() {
     const fecthRole = async () => {
       const response = await fetchApi(`${CONFIG_API.ROLE.INDEX}`, "GET");
       if (response && response.statusCode === 200) {
-        console.log("ROLE", response.data.result);
         setRolePermissions(response.data.result);
       }
     };

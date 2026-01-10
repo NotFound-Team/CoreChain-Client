@@ -70,7 +70,6 @@ export default function ContractDetailModal({ contractId }: Props) {
         const res = await getContractDetail(contractId);
         setData(res.data);
       } catch (error) {
-        console.error("Lỗi khi lấy chi tiết hợp đồng:", error);
       } finally {
         setLoading(false);
       }

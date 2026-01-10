@@ -49,13 +49,11 @@ export default function KpiAssessmentPage() {
             ...emp,
             id: `${deptItem.department}-${emp._id}`,
             departmentName: deptItem.department,
-          }))
+          })),
         );
-        console.log("Flattened KPI Data:", flattened);
         setRawRows(flattened);
       }
     } catch (error) {
-      console.error("Failed to load KPI report:", error);
     } finally {
       setLoading(false);
     }
@@ -86,7 +84,7 @@ export default function KpiAssessmentPage() {
       (row) =>
         row.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         row.departmentName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        row.email?.toLowerCase().includes(searchQuery.toLowerCase())
+        row.email?.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   }, [rawRows, searchQuery]);
 

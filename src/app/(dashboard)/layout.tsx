@@ -65,7 +65,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       showToast("Logut successfully!", "success");
       router.push("/login");
     } catch (error) {
-      console.error("error", error);
       showToast("Error during logout. Please try again!", "error");
     }
   }, []);

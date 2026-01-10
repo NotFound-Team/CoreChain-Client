@@ -162,7 +162,6 @@ export default function ContractPage() {
       const response = await getContracts({ current: 1, pageSize: 10 });
       setContracts(response?.data?.result || []);
     } catch (error) {
-      console.error("Failed to fetch contracts:", error);
       setContracts([]);
     } finally {
       setLoading(false);

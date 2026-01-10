@@ -260,7 +260,6 @@ export default function Index() {
         fetchDepartment();
       }
     } catch (error) {
-      console.error(error);
       showToast("An error occurred, please try again", "error");
     } finally {
       setOpen(false);
@@ -278,7 +277,6 @@ export default function Index() {
         fetchDepartment();
       }
     } catch (error) {
-      console.error(error);
       showToast("An error occurred please try again", "error");
     } finally {
       setOpenConfirmDelete(false);
@@ -323,7 +321,6 @@ export default function Index() {
       }));
       setRowsDepartment(formattedData);
     } catch (error) {
-      console.error(error);
     } finally {
       setLoadingFetchDepartment(false);
     }

@@ -40,10 +40,8 @@ const schema = yup.object({
     .string()
     .required("The field is required")
     .matches(EMAIL_REG, "Invalid email. Please enter a valid email format."),
-  password: yup
-    .string()
-    .required("The field is required")
-    // .matches(PASSWORD_REG, "Password must be at least 8 characters, including uppercase and special characters."),
+  password: yup.string().required("The field is required"),
+  // .matches(PASSWORD_REG, "Password must be at least 8 characters, including uppercase and special characters."),
 });
 
 export default function Login() {
@@ -75,7 +73,6 @@ export default function Login() {
       await router.push("/dashboard");
     } catch (error) {
       showToast("Incorrect username or password!", "error");
-      console.error("Login failed:", error);
     } finally {
       setLoading(false);
     }
