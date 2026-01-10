@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, use } from "react";
 import { Box, IconButton, Stack, Typography, Avatar, Grid, Tooltip, Paper } from "@mui/material";
 import {
   MdMic,
@@ -16,7 +16,14 @@ import {
 } from "react-icons/md";
 import { useRouter } from "next/navigation";
 
-const MeetingRoom = ({ params }: { params: { id: string } }) => {
+type MeetingPageProps = {
+  params: Promise<{
+    id: string;
+  }>;
+};
+
+const MeetingRoom = ({ params }: MeetingPageProps) => {
+  const { id } = use(params);
   const router = useRouter();
 
   const localVideoRef = useRef<HTMLVideoElement>(null);
@@ -52,6 +59,7 @@ const MeetingRoom = ({ params }: { params: { id: string } }) => {
       localStream?.getTracks().forEach((track) => track.stop());
       screenStream?.getTracks().forEach((track) => track.stop());
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -220,7 +228,7 @@ const MeetingRoom = ({ params }: { params: { id: string } }) => {
       >
         <Box>
           <Typography color="white" variant="subtitle2" fontWeight="500">
-            Meeting ID: {params.id}
+            Meeting ID: {id}
           </Typography>
         </Box>
 

@@ -14,7 +14,18 @@ import {
   MdVpnKey,
   MdWorkOutline,
 } from "react-icons/md";
-import { FaBox, FaFileContract, FaRegUserCircle, FaUserEdit, FaUsers, FaUsersCog, FaUserShield } from "react-icons/fa";
+import {
+  FaBox,
+  FaBriefcase,
+  FaClipboardList,
+  FaFileContract,
+  FaRegUserCircle,
+  FaUserEdit,
+  FaUsers,
+  FaUsersCog,
+  FaUserShield,
+  FaUserTie,
+} from "react-icons/fa";
 import { BsBuildingFillLock } from "react-icons/bs";
 import { IconType } from "react-icons/lib";
 
@@ -182,6 +193,30 @@ export const NAVIGATION_ITEMS: TNavigationItem[] = [
       },
     ],
   },
+  {
+    id: "recruitment",
+    title: "Recruitment",
+    icon: FaBriefcase,
+    href: "#",
+    permissions: ["admin", "hr"],
+    childrens: [
+      {
+        id: "jobs",
+        title: "Jobs",
+        icon: FaClipboardList,
+        href: "/recruitment/jobs",
+        permissions: [],
+      },
+      {
+        id: "candidates",
+        title: "Candidates",
+        icon: FaUserTie,
+        href: "/recruitment/candidates",
+        permissions: [],
+      },
+    ],
+  },
+
   {
     id: "setting",
     title: "Settings",
