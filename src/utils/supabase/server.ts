@@ -1,24 +1,40 @@
-import { createServerClient, type CookieOptions } from "@supabase/ssr";
-import { cookies } from "next/headers";
+import { createServerClient } from "@supabase/ssr";
+import { cookies as nextCookies } from "next/headers";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
 
-export const createClient = (cookieStore: ReturnType<typeof cookies>) => {
-  return createServerClient(supabaseUrl!, supabaseKey!, {
-    cookies: {
+type CookieStore = Awaited<ReturnType<typeof nextCookies>>;
+
+const createCookieAdapter = (cookieStore?: CookieStore) => {
+  if (!cookieStore) {
+    // Fallback no-op cookies
+    return {
       getAll() {
-        return cookieStore.getAll();
+        return [];
       },
-      setAll(cookiesToSet) {
-        try {
-          cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options));
-        } catch {
-          // The `setAll` method was called from a Server Component.
-          // This can be ignored if you have middleware refreshing
-          // user sessions.
-        }
+      setAll() {
+        // noop
       },
+    };
+  }
+
+  return {
+    getAll() {
+      return cookieStore.getAll();
     },
+    setAll(cookiesToSet: any[]) {
+      try {
+        cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options));
+      } catch {
+        // Ignore if called in Server Component
+      }
+    },
+  };
+};
+
+export const createClient = (cookieStore?: CookieStore) => {
+  return createServerClient(supabaseUrl, supabaseKey, {
+    cookies: createCookieAdapter(cookieStore),
   });
 };
