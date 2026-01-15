@@ -186,7 +186,7 @@ export default function DashboardPage() {
             </Typography>
             <Box sx={{ height: 350, width: "100%" }}>
               <CustomDataGrid
-                rows={data.projects?.projects || []}
+                rows={data.projects?.result || []}
                 getRowId={(row) => row._id}
                 columns={[
                   { field: "name", headerName: "Project Name", flex: 1, minWidth: 200 },

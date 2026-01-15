@@ -10,9 +10,7 @@ export const metadata: Metadata = {
 export default function LayoutRole({ children }: { children: React.ReactNode }) {
   return (
     <Can I="get" a="roles">
-      <div>
-        <div>{children}</div>
-      </div>
+      <div>{children}</div>
     </Can>
   );
 }

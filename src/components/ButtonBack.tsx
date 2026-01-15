@@ -8,7 +8,7 @@ const ButtonBack = () => {
   const router = useRouter();
 
   const handleBack = React.useCallback(() => {
-    router.push("/user-management");
+    router.push("/system/users");
   }, [router]);
   return (
     <IconButton

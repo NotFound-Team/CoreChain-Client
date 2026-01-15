@@ -134,3 +134,7 @@ export type TQueryUser = {
   role?: string;
   isActive?: boolean;
 };
+
+export type UpdateFcmToken = {
+  fcmToken: string;
+};

@@ -39,6 +39,7 @@
     "dagre": "^0.8.5",
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
+    "firebase": "^12.8.0",
     "gsap": "^3.12.7",
     "js-cookie": "^3.0.5",
     "jwt-decode": "^4.0.0",

@@ -13,6 +13,7 @@ export const CONFIG_API = {
     DETAIL: (id: string) => `/users/${id}`,
     PRIVATE: (id: string) => `/users/private/${id}`,
     PUBLIC: (id: string) => `/users/public/${id}`,
+    FCM_TOKEN: (id: string) => `/users/fcm-token/${id}`,
     CHANGE_PASSWORD: "/users/password/change",
   },
 

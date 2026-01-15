@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Box,
   Typography,
@@ -9,19 +11,19 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Theme,
   Dialog,
   DialogTitle,
   DialogContent,
   FormControl,
   DialogActions,
   SelectChangeEvent,
-  Autocomplete,
-  // Autocomplete,
+  alpha,
+  Paper,
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { useEffect, useState } from "react";
 import { IoMdAdd } from "react-icons/io";
+import { MdFormatListBulleted } from "react-icons/md";
 import TaskItem from "./TaskItem";
 import fetchApi from "@/utils/fetchApi";
 import { useParams } from "next/navigation";
@@ -35,12 +37,12 @@ import { Employee } from "@/types/project";
 
 const TaskManager = ({ employees }: { employees: Employee[] }) => {
   const { Toast, showToast } = useSnackbar();
-  const theme: Theme = useTheme();
+  const theme = useTheme();
   const [open, setOpen] = useState(false);
   const [listTask, setListTask] = useState<TTask[]>([]);
   const params = useParams<{ projectId: string }>();
+
   const [formData, setFormData] = useState<TCreateTask>({
-    name: "",
     title: "",
     description: "",
     assignedTo: "",
@@ -51,6 +53,7 @@ const TaskManager = ({ employees }: { employees: Employee[] }) => {
     dueDate: null,
   });
 
+  // ... (Giữ nguyên các hàm handleDeleteTask, handleFormChange, handleSelectChange, handleDateChange) ...
   const handleDeleteTask = async (taskId: string) => {
     try {
       await fetchApi(`${CONFIG_API.TASK}/${taskId}`, "DELETE");
@@ -58,68 +61,33 @@ const TaskManager = ({ employees }: { employees: Employee[] }) => {
       showToast("Deleted task successfully!", "success");
     } catch (error) {
       showToast("Error!", "error");
-      console.error("error", error);
     }
   };
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const handleSelectChange = (e: SelectChangeEvent<any>, field: string) => {
-    setFormData({
-      ...formData,
-      [field]: e.target.value,
-    });
-  };
-
-  const handleDateChange = (date: dayjs.Dayjs | null, field: string) => {
-    setFormData({
-      ...formData,
-      [field]: dayjs(date).toISOString(),
-    });
-  };
-
-  // console.log(listTask);
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // console.log(formData);
     try {
       const response = await fetchApi(`${CONFIG_API.TASK.INDEX}`, "POST", formData);
-
       if (response && response.statusCode === 201) {
-        // console.log("add task", response);
         const newData: TTask = {
           ...formData,
           _id: response.data,
-          deletedAt: null, // No deletion initially
-          attachments: [], // Default empty array for attachments
-          createdAt: new Date(), // Set current date for creation time
-          createdBy: {}, // You can replace 'system' with the actual user ID or name
-          isDeleted: false, // Set to false since the task is not deleted initially
+          attachments: [],
+          createdAt: new Date(),
           updatedAt: new Date(),
+          isDeleted: false,
+          deletedAt: null,
+          createdBy: {},
         };
-        setListTask((prev) => [...prev, newData]);
+        setListTask((prev) => [newData, ...prev]);
         showToast("Create task success!", "success");
+        setOpen(false);
       }
     } catch (error) {
-      console.error("error", error);
-    } finally {
-      setOpen(false);
+      console.error(error);
     }
   };
+
   useEffect(() => {
     const fetchTask = async () => {
       const response = await fetchApi(`${CONFIG_API.TASK.INDEX}?projectId=${params.projectId}`, "GET");
@@ -128,150 +96,100 @@ const TaskManager = ({ employees }: { employees: Employee[] }) => {
       }
     };
     fetchTask();
-  }, [params]);
+  }, [params.projectId]);
+
   return (
-    <Box sx={{ mt: 6 }}>
+    <Box sx={{ mt: 4 }}>
       <Toast />
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          mb: 4,
-        }}
-      >
-        <Typography variant="h4" sx={{ fontWeight: 700, display: "flex", alignItems: "center" }}>
-          <IoMdAdd style={{ marginRight: 12 }} />
-          Task Management
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
+        <Typography variant="h5" sx={{ fontWeight: 700, display: "flex", alignItems: "center", gap: 1.5 }}>
+          <MdFormatListBulleted color={theme.palette.primary.main} />
+          Project Tasks
         </Typography>
         <Can I="post" a="tasks">
           <Button
             variant="contained"
             startIcon={<IoMdAdd />}
-            onClick={handleClickOpen}
-            sx={{
-              px: 4,
-              py: 1.5,
-              borderRadius: 2,
-              textTransform: "none",
-              fontWeight: 600,
-            }}
+            onClick={() => setOpen(true)}
+            sx={{ borderRadius: 2, textTransform: "none", fontWeight: 600, px: 3 }}
           >
             New Task
           </Button>
         </Can>
       </Box>
 
-      {/* Add Task Form */}
-      <Dialog open={open} onClose={handleClose}>
-        <form onSubmit={handleSubmit}>
-          <DialogTitle sx={{ fontWeight: 600 }}>ADD TASK</DialogTitle>
-          <DialogContent>
-            <Grid container spacing={2} sx={{ mb: 4 }}>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  margin="dense"
-                  id="name"
-                  name="name"
-                  label="Name"
-                  fullWidth
-                  variant="outlined"
-                  value={formData.name}
-                  onChange={handleFormChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  margin="dense"
-                  id="title"
-                  name="title"
-                  label="Title"
-                  fullWidth
-                  variant="outlined"
-                  value={formData.title}
-                  onChange={handleFormChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  margin="dense"
-                  id="description"
-                  name="description"
-                  label="Description"
-                  fullWidth
-                  variant="outlined"
-                  value={formData.description}
-                  onChange={handleFormChange}
-                />
-              </Grid>
+      {/* Task List */}
+      <List sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        {listTask.length > 0 ? (
+          listTask.map((task) => (
+            <TaskItem
+              key={task._id}
+              data={{ tasks: task, theme }}
+              employees={employees}
+              handleDeleteTask={handleDeleteTask}
+            />
+          ))
+        ) : (
+          <Paper
+            variant="outlined"
+            sx={{ p: 4, textAlign: "center", borderStyle: "dashed", bgcolor: alpha(theme.palette.grey[500], 0.02) }}
+          >
+            <Typography color="text.secondary">No tasks assigned to this project yet.</Typography>
+          </Paper>
+        )}
+      </List>
 
+      {/* Add Task Dialog */}
+      <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="sm">
+        <form onSubmit={handleSubmit}>
+          <DialogTitle sx={{ fontWeight: 700, pb: 1 }}>Create New Task</DialogTitle>
+          <DialogContent dividers>
+            <Grid container spacing={2.5} sx={{ mt: 0.5 }}>
               <Grid item xs={12}>
-                <FormControl fullWidth variant="outlined">
-                  <InputLabel id="assignedTo-label">Assigned To</InputLabel>
+                <TextField
+                  required
+                  label="Task Title"
+                  name="title"
+                  fullWidth
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  placeholder="What needs to be done?"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Description"
+                  name="description"
+                  fullWidth
+                  multiline
+                  rows={3}
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <InputLabel>Assign To</InputLabel>
                   <Select
-                    labelId="assignedTo-label"
-                    id="assignedTo"
-                    name="assignedTo"
-                    label="assignedTo"
+                    label="Assign To"
                     value={formData.assignedTo}
-                    onChange={(e) => {
-                      handleSelectChange(e, "assignedTo");
-                    }}
+                    onChange={(e) => setFormData({ ...formData, assignedTo: e.target.value })}
                   >
-                    {employees.map((employee: Employee) => (
-                      <MenuItem key={employee.id} value={employee.id}>
-                        {employee.name}
+                    {employees.map((emp) => (
+                      <MenuItem key={emp.id} value={emp.id}>
+                        {emp.name}
                       </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
               </Grid>
-
-              {/* <MultiAutocomplete /> */}
-              {/* <Grid item xs={12}>
-                <Autocomplete<Employee, true, false, false>
-                  // value={formData.teamMembers}
-                  value={formData.teamMembers}
-                  onChange={(e, arrayValues) => {
-                    setFormData({ ...formData, teamMembers: arrayValues });
-                  }}
-                  fullWidth
-                  multiple
-                  id="tags-standard"
-                  options={employees}
-                  getOptionLabel={(option) => option.id ?? "N/A"}
-                  disableCloseOnSelect
-                  renderOption={(props, option, { selected }) => (
-                    <MenuItem value={option.id} sx={{ justifyContent: "space-between" }} {...props}>
-                      {option.id ?? "N/A"}
-                      {selected ? <MdCheckCircleOutline color="info" /> : null}
-                    </MenuItem>
-                  )}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant="outlined"
-                      label="Team Members"
-                      name="teamMembers"
-                      placeholder="Favorites"
-                    />
-                  )}
-                />
-              </Grid> */}
-
-              <Grid item xs={12} md={6}>
-                <FormControl fullWidth variant="outlined">
-                  <InputLabel id="priority-label">Priority</InputLabel>
+              <Grid item xs={6}>
+                <FormControl fullWidth>
+                  <InputLabel>Priority</InputLabel>
                   <Select
-                    labelId="priority-label"
-                    id="priority"
-                    name="priority"
                     label="Priority"
                     value={formData.priority}
-                    onChange={(e) => handleSelectChange(e, "priority")}
+                    onChange={(e) => setFormData({ ...formData, priority: Number(e.target.value) })}
                   >
                     <MenuItem value={1}>Low</MenuItem>
                     <MenuItem value={2}>Medium</MenuItem>
@@ -279,67 +197,50 @@ const TaskManager = ({ employees }: { employees: Employee[] }) => {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={6}>
                 <FormControl fullWidth>
-                  <InputLabel id="status-label">Status</InputLabel>
+                  <InputLabel>Status</InputLabel>
                   <Select
-                    labelId="status-label"
-                    id="status"
-                    name="status"
                     label="Status"
                     value={formData.status}
-                    onChange={(e) => handleSelectChange(e, "status")}
+                    onChange={(e) => setFormData({ ...formData, status: Number(e.target.value) })}
                   >
-                    <MenuItem value={1}>Not Started</MenuItem>
+                    <MenuItem value={1}>To Do</MenuItem>
                     <MenuItem value={2}>In Progress</MenuItem>
-                    <MenuItem value={3}>Completed</MenuItem>
+                    <MenuItem value={3}>Done</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} md={6}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <Grid item xs={6}>
                   <DatePicker
                     label="Start Date"
+                    sx={{ width: "100%" }}
                     value={dayjs(formData.startDate)}
-                    onChange={(date) => handleDateChange(date, "startDate")}
-                    sx={{
-                      width: "100%",
-                      "& .MuiOutlinedInput-root": { borderRadius: 2 },
-                    }}
+                    onChange={(d) => setFormData({ ...formData, startDate: d ? d.toDate() : null })}
                   />
-                </LocalizationProvider>
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                </Grid>
+                <Grid item xs={6}>
                   <DatePicker
-                    label="End Date"
+                    label="Due Date"
+                    sx={{ width: "100%" }}
                     value={dayjs(formData.dueDate)}
-                    onChange={(date) => handleDateChange(date, "dueDate")}
-                    sx={{
-                      width: "100%",
-                      "& .MuiOutlinedInput-root": { borderRadius: 2 },
-                    }}
+                    onChange={(d) => setFormData({ ...formData, dueDate: d ? d.toDate() : null })}
                   />
-                </LocalizationProvider>
-              </Grid>
+                </Grid>
+              </LocalizationProvider>
             </Grid>
           </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button type="submit">Create</Button>
+          <DialogActions sx={{ p: 2.5 }}>
+            <Button onClick={() => setOpen(false)} color="inherit">
+              Cancel
+            </Button>
+            <Button type="submit" variant="contained" sx={{ px: 4 }}>
+              Create Task
+            </Button>
           </DialogActions>
         </form>
       </Dialog>
-
-      {/* Task List */}
-      {/* <Can I="get" a="tasks"> */}
-      <List sx={{ "& .MuiListItem-root": { px: 0 } }}>
-        {listTask.map((tasks) => (
-          <TaskItem key={tasks._id} data={{ tasks, theme }} handleDeleteTask={handleDeleteTask} />
-        ))}
-      </List>
-      {/* </Can> */}
     </Box>
   );
 };

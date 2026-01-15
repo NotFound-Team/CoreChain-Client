@@ -161,9 +161,26 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     () => (
       <div>
         <Toast />
-        <Toolbar>
-          <Image src={"/images/img_avatar.png"} alt="Logo" width={100} height={100} />
+        <Toolbar className="flex! items-center! justify-center! p-1! py-2! bg-gradient-to-r! from-indigo-500! to-purple-600! shadow-md!">
+          <div className="flex items-center gap-3">
+            <div className="bg-white rounded-xl p-2 shadow">
+              <Image
+                src="/images/corechain.png"
+                alt="CoreChain Logo"
+                width={50}
+                height={50}
+                className="object-contain"
+              />
+            </div>
+            {mobileOpen && (
+              <div className="text-white leading-tight">
+                <p className="text-lg font-bold">CoreChain</p>
+                <p className="text-xs opacity-80">Admin Dashboard</p>
+              </div>
+            )}
+          </div>
         </Toolbar>
+
         <List>
           {NAVIGATION_ITEMS.map((item) => (
             <MenuItem key={item.id} item={item} />
@@ -188,7 +205,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </List>
       </div>
     ),
-    [mobileOpen, pathName, theme]
+    [mobileOpen, pathName, theme],
   );
 
   return (
@@ -220,9 +237,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             // bgcolor: theme.palette.background.default,
             bgcolor: "#F5F7FA",
             minHeight: "100vh",
+            width: mobileOpen ? `calc(100% - ${drawerWidth}px)` : "100%",
           }}
         >
-          <main className="w-full h-full">{children}</main>
+          <main className="h-full w-full transition-all duration-300">{children}</main>
         </Box>
       </Box>
     </AbilityProvider>

@@ -155,7 +155,7 @@ export default function ListUser() {
           <Stack direction="row" spacing={0.5}>
             <Can I="get" a="users/:id">
               <Tooltip title="View" arrow>
-                <IconButton size="small" color="primary" component={Link} href={`/user-management/${params.row._id}`}>
+                <IconButton size="small" color="primary" component={Link} href={`/system/users/${params.row._id}`}>
                   <IoEye size={20} />
                 </IconButton>
               </Tooltip>

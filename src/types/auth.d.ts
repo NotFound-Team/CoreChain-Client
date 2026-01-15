@@ -16,6 +16,7 @@ type User = {
   role: RoleType;
   permissions?: Array;
   token: string;
+  fcmToken: string;
 };
 
 export type AuthContextType = {

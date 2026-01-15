@@ -20,6 +20,8 @@ import FallbackSpinner from "@/components/fall-back";
 
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import axios from "axios";
+import useFcmToken from "@/hooks/useFcmToken";
+import { updateFcmToken } from "@/services/user.service";
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -28,12 +30,13 @@ type MyJwtPayload = JwtPayload & { exp: number };
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  // isInitializing: true khi đang kiểm tra auth lần đầu, cho phép hiển thị skeleton
   const [isInitializing, setIsInitializing] = useState<boolean>(true);
   const router = useRouter();
   const pathname = usePathname();
 
   const hasCheckedAuth = useRef(false);
+
+  const { fcmToken } = useFcmToken();
 
   useEffect(() => {
     if (hasCheckedAuth.current) return;
@@ -65,7 +68,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         // Token còn hạn - fetch user data
         const response = await fetchApi(CONFIG_API.AUTH.ACCOUNT, "GET");
-
+        console.log("ACCOUNT", response);
         if (response.statusCode === 200 && response.data) {
           const newUser = { ...response.data.user, token };
           setUser(newUser);
@@ -87,6 +90,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     checkAndFetchUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  
+  useEffect(() => {
+    if (!user || !fcmToken) return;
+    if (user.fcmToken === fcmToken) return;
+
+    const updateIsFcmToken = async () => {
+      try {
+        await updateFcmToken({ fcmToken, id: user._id });
+
+        // Update local user state
+        setUser((prev) => (prev ? { ...prev, fcmToken } : prev));
+      } catch (error) {
+        console.error("Failed to update FCM token:", error);
+      }
+    };
+
+    updateIsFcmToken();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?._id, fcmToken]);
 
   // Memoized login function
   const login = useCallback(async ({ username, password }: UserLogin) => {
@@ -97,7 +119,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         { username, password },
         {
           withCredentials: true,
-        }
+        },
       );
 
       if (response) {
@@ -139,7 +161,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       login,
       logout,
     }),
-    [user, loading, isInitializing, login, logout]
+    [user, loading, isInitializing, login, logout],
   );
 
   if (isInitializing) {

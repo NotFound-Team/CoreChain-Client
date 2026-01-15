@@ -15,9 +15,6 @@ import {
 } from "react-icons/fa";
 import { IconType } from "react-icons/lib";
 import ButtonBack from "./ButtonBack";
-import { CONFIG_API } from "@/configs/api";
-import fetchApi from "@/utils/fetchApi";
-import { useEffect, useState } from "react";
 
 export default function UserDetails({ user }: { user: UserResponse }) {
   // const [loading, setLoading] = useState(false);

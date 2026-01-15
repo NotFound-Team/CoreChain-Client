@@ -1,42 +1,60 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
 import { BASE_URL, CONFIG_API } from "@/configs/api";
 import UserDetails from "@/components/UserDetails";
-import { cookies } from "next/headers";
 import { UserResponse } from "@/types/user";
-import { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: " Detail User | User Management | Dashboard",
-  description: "User Management",
-};
+import fetchApi from "@/utils/fetchApi";
+import { CircularProgress, Box, Alert } from "@mui/material";
 
 type TProps = {
   params: Promise<{ userId: string }>;
-  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-export default async function PageUser({ params }: TProps) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("token")?.value;
+export default function PageUser({ params }: TProps) {
+  const [user, setUser] = useState<UserResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const { userId } = await params;
-  try {
-    const response = await fetch(`${BASE_URL}${CONFIG_API.USER.INDEX}/${userId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }).then((res) => res.json());
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        const { userId } = await params;
 
-    // Fetch data from API in Server Component
-    const user: UserResponse = response.data;
+        const response = await fetchApi(`${CONFIG_API.USER.DETAIL(userId)}`, "GET");
 
+        if (response && response.data) {
+          setUser(response.data);
+        } else {
+          setError("User not found");
+        }
+      } catch (err) {
+        console.error("Fetch error:", err);
+        setError("Failed to load user data");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    if (!user) {
-      return <div>User not found</div>;
-    }
+    loadData();
+  }, [params]);
 
-    return <UserDetails user={user} />;
-  } catch (error) {
-    console.error("Failed to fetch user data:", error);
-    return <div>Error loading user data!</div>;
+  if (loading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", p: 5 }}>
+        <CircularProgress />
+      </Box>
+    );
   }
+
+  if (error) {
+    return (
+      <Alert severity="error" sx={{ m: 2 }}>
+        {error}
+      </Alert>
+    );
+  }
+
+  return user ? <UserDetails user={user} /> : null;
 }

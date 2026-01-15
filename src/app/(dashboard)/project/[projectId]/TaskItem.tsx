@@ -1,11 +1,8 @@
-import { CONFIG_API } from "@/configs/api";
-import { Can } from "@/context/casl/AbilityContext";
-import { useSnackbar } from "@/hooks/useSnackbar";
-import { TCreateTask, TTask } from "@/types/task";
-import fetchApi from "@/utils/fetchApi";
+"use client";
+
+import React, { useState } from "react";
 import {
   Avatar,
-  AvatarGroup,
   Box,
   Button,
   Chip,
@@ -24,99 +21,73 @@ import {
   MenuItem,
   Paper,
   Select,
-  SelectChangeEvent,
   TextField,
   Theme,
   Tooltip,
   Typography,
+  alpha,
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { useParams } from "next/navigation";
-import React, { useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
-import { MdDeleteForever } from "react-icons/md";
+import { MdDeleteForever, MdOutlineCalendarToday } from "react-icons/md";
+import { TTask, TCreateTask } from "@/types/task";
+import { Employee } from "@/types/project";
+import { Can } from "@/context/casl/AbilityContext";
+import { CONFIG_API } from "@/configs/api";
+import fetchApi from "@/utils/fetchApi";
+import { useSnackbar } from "@/hooks/useSnackbar";
 
 type TaskItemProps = {
   data: { tasks: TTask; theme: Theme };
+  employees: Employee[];
   handleDeleteTask: (taskId: string) => Promise<void>;
 };
 
-const TaskItem = React.memo<TaskItemProps>(({ data, handleDeleteTask }) => {
-  const { Toast, showToast } = useSnackbar();
+const TaskItem = React.memo<TaskItemProps>(({ data, employees, handleDeleteTask }) => {
   const { tasks, theme } = data;
+  const { showToast, Toast } = useSnackbar();
   const params = useParams();
-  const [formData, setFormData] = useState<TCreateTask>({
-    name: tasks.name || "",
-    title: tasks.title || "",
-    description: tasks.description || "",
-    assignedTo: "",
-    projectId: `${params.projectId}`,
-    priority: tasks.priority || 1,
-    status: tasks.status || 1,
-    startDate: tasks.startDate || null,
-    dueDate: tasks.dueDate || null,
-  });
   const [open, setOpen] = useState(false);
-  const taskStart = tasks?.startDate;
-  const taskEnd = tasks?.dueDate;
 
-  const handleClickOpen = () => {
-    setOpen(true);
-    setFormData({
-      name: tasks.name,
-      title: tasks.title,
-      description: tasks.description,
-      assignedTo: "",
-      projectId: `${params.projectId}`,
-      priority: tasks.priority,
-      status: tasks.status,
-      startDate: tasks.startDate,
-      dueDate: tasks.dueDate,
-    });
+  // Lấy thông tin người được giao task
+  const assignee = employees.find((e) => e.id === tasks.assignedTo);
+
+  const [formData, setFormData] = useState<TCreateTask>({
+    title: tasks.title,
+    description: tasks.description,
+    assignedTo: tasks.assignedTo.toString(),
+    projectId: `${params.projectId}`,
+    priority: tasks.priority,
+    status: tasks.status,
+    startDate: tasks.startDate,
+    dueDate: tasks.dueDate,
+  });
+
+  const getStatusColor = (status: number) => {
+    switch (status) {
+      case 2:
+        return theme.palette.primary.main; // In Progress
+      case 3:
+        return theme.palette.success.main; // Completed (Xanh lá)
+      default:
+        return theme.palette.grey[400]; // Not Started
+    }
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const handleSelectChange = (e: SelectChangeEvent<number>, field: string) => {
-    setFormData({
-      ...formData,
-      [field]: e.target.value,
-    });
-  };
-
-  const handleDateChange = (date: dayjs.Dayjs | null, field: string) => {
-    setFormData({
-      ...formData,
-      [field]: dayjs(date).toISOString(),
-    });
-  };
-
-  const handleEditTask = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleEditSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     try {
-      const response = await fetchApi(`${CONFIG_API.TASK.DETAIL(tasks._id)}`, "PATCH", formData, {
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      });
-      if (response) {
-        showToast("Edit task successfully!", "success");
-      } else {
-        showToast("Failed to edit task. Please try again.", "error");
+      const res = await fetchApi(`${CONFIG_API.TASK.DETAIL(tasks._id)}`, "PATCH", formData);
+      if (res) {
+        showToast("Task updated successfully!", "success");
+        setOpen(false);
+        window.location.reload(); // Hoặc update state ở cha
       }
     } catch (error) {
-      console.error("error", error);
-      showToast("An error occurred while editing the task. Please try again.", "error");
+      showToast("Update failed", "error");
     }
   };
 
@@ -124,271 +95,210 @@ const TaskItem = React.memo<TaskItemProps>(({ data, handleDeleteTask }) => {
     <Box>
       <Toast />
       <Paper
-        key={tasks._id}
-        elevation={2}
+        elevation={0}
         sx={{
-          pr: 2,
-          mb: 2,
-          background: theme.palette.background.paper,
-          display: "flex",
+          mb: 1,
+          border: `1px solid ${theme.palette.divider}`,
           borderRadius: 3,
+          display: "flex",
           overflow: "hidden",
-          transition: "transform 0.2s",
-          "&:hover": { transform: "translateX(5px)" },
+          transition: "all 0.2s",
+          "&:hover": {
+            borderColor: theme.palette.primary.main,
+            boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.08)}`,
+            transform: "translateY(-2px)",
+          },
         }}
       >
-        <Box
-          sx={{
-            pl: 2,
-            height: "100px",
-            bgcolor: tasks.status === 1 ? "#F3F3F4" : tasks.status === 2 ? "#7367F0" : "#EA5455",
-          }}
-        ></Box>
-        <ListItem sx={{ py: 2, background: theme.palette.background.paper }}>
+        {/* Status Bar Indicator */}
+        <Box sx={{ width: 6, bgcolor: getStatusColor(tasks.status) }} />
+
+        <ListItem sx={{ py: 1.5, px: 2 }}>
           <ListItemAvatar>
-            <AvatarGroup max={3}>
-              <Tooltip title={`Assignee `}>
-                <Avatar
-                  src={"/images/img_avatar.png"}
-                  sx={{
-                    width: 40,
-                    height: 40,
-                    border: "2px solid #fff",
-                    "&:hover": { transform: "scale(1.1)" },
-                    transition: "transform 0.2s",
-                  }}
-                />
-              </Tooltip>
-            </AvatarGroup>
+            <Tooltip title={assignee?.name || "Unassigned"}>
+              <Avatar
+                src={`https://i.pravatar.cc/150?u=${tasks.assignedTo}`}
+                sx={{ width: 42, height: 42, border: `2px solid ${alpha(getStatusColor(tasks.status), 0.2)}` }}
+              >
+                {assignee?.name?.charAt(0)}
+              </Avatar>
+            </Tooltip>
           </ListItemAvatar>
 
           <ListItemText
             primary={
-              <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  fontWeight: 600,
+                  color: tasks.status === 3 ? "text.secondary" : "text.primary",
+                  textDecoration: tasks.status === 3 ? "line-through" : "none",
+                }}
+              >
                 {tasks.title}
               </Typography>
             }
             secondary={
-              <Typography variant="body2" sx={{ color: "text.secondary", mt: 0.5 }}>
-                {tasks.description}
-              </Typography>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mt: 0.5 }}>
+                <Typography
+                  variant="caption"
+                  sx={{ display: "flex", alignItems: "center", gap: 0.5, color: "text.secondary" }}
+                >
+                  <MdOutlineCalendarToday size={14} />
+                  {dayjs(tasks.dueDate).format("MMM DD")}
+                </Typography>
+                <Typography variant="caption" noWrap sx={{ maxWidth: 300 }}>
+                  • {tasks.description}
+                </Typography>
+              </Box>
             }
-            sx={{ mx: 2, flex: "1 1 auto" }}
           />
 
-          <Box sx={{ minWidth: 140, textAlign: "center" }}>
-            <Typography
-              variant="caption"
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            {/* Priority Chip */}
+            <Chip
+              label={tasks.priority === 3 ? "High" : tasks.priority === 2 ? "Medium" : "Low"}
+              size="small"
               sx={{
-                display: "block",
-                color: "text.secondary",
-                mb: 0.5,
+                fontWeight: 600,
+                fontSize: "0.7rem",
+                bgcolor:
+                  tasks.priority === 3 ? alpha(theme.palette.error.main, 0.1) : alpha(theme.palette.info.main, 0.1),
+                color: tasks.priority === 3 ? theme.palette.error.main : theme.palette.info.main,
+                border: "none",
               }}
-            >
-              {dayjs(taskStart).format("DD/MM/YYYY")} - {dayjs(taskEnd).format("DD/MM/YYYY")}
-            </Typography>
+            />
 
-            <Tooltip title="Priority">
-              <Box>
-                {tasks.priority === 1 && <Chip label="Low" color="default" size="small" sx={{ borderRadius: 1 }} />}
-                {tasks.priority === 2 && <Chip label="Medium" color="primary" size="small" sx={{ borderRadius: 1 }} />}
-                {tasks.priority === 3 && <Chip label="High" color="error" size="small" sx={{ borderRadius: 1 }} />}
-              </Box>
-            </Tooltip>
-          </Box>
-          <Divider sx={{ ml: 2 }} orientation="vertical" flexItem />
-          <Tooltip sx={{ ml: 2 }} title="Status">
-            <Box>
-              {tasks.status === 1 && <Chip label="Not Started" color="default" size="small" sx={{ borderRadius: 1 }} />}
-              {tasks.status === 2 && <Chip label="In Progress" color="primary" size="small" sx={{ borderRadius: 1 }} />}
-              {tasks.status === 3 && <Chip label="Completed" color="error" size="small" sx={{ borderRadius: 1 }} />}
+            {/* Status Chip */}
+            <Chip
+              label={tasks.status === 3 ? "Done" : tasks.status === 2 ? "In Progress" : "To Do"}
+              size="small"
+              variant="outlined"
+              sx={{
+                fontWeight: 600,
+                fontSize: "0.7rem",
+                borderColor: getStatusColor(tasks.status),
+                color: getStatusColor(tasks.status),
+              }}
+            />
+
+            <Divider orientation="vertical" flexItem sx={{ mx: 1, height: 24, alignSelf: "center" }} />
+
+            <Box sx={{ display: "flex" }}>
+              <Can I="patch" a="tasks/:id">
+                <IconButton size="small" onClick={() => setOpen(true)} sx={{ color: theme.palette.action.active }}>
+                  <FaRegEdit size={18} />
+                </IconButton>
+              </Can>
+              <Can I="delete" a="tasks/:id">
+                <IconButton size="small" color="error" onClick={() => handleDeleteTask(tasks._id)}>
+                  <MdDeleteForever size={20} />
+                </IconButton>
+              </Can>
             </Box>
-          </Tooltip>
-
-          <Divider sx={{ ml: 2 }} orientation="vertical" flexItem />
-
-          <Box sx={{ ml: 2, display: "flex", gap: 1 }}>
-            <Can I="patch" a="tasks/:id">
-              <Tooltip title="Edit Task">
-                <IconButton
-                  sx={{
-                    background: theme.palette.action.hover,
-                    "&:hover": { background: theme.palette.action.selected },
-                  }}
-                  onClick={handleClickOpen}
-                >
-                  <FaRegEdit />
-                </IconButton>
-              </Tooltip>
-            </Can>
-            <Can I="delete" a="tasks/:id">
-              <Tooltip title="Delete Task">
-                <IconButton
-                  color="error"
-                  sx={{
-                    background: theme.palette.error.light + "20",
-                    "&:hover": { background: theme.palette.error.light + "40" },
-                  }}
-                  onClick={() => handleDeleteTask(tasks._id)}
-                >
-                  <MdDeleteForever />
-                </IconButton>
-              </Tooltip>
-            </Can>
-
-            <Dialog open={open} onClose={handleClose}>
-              <form onSubmit={handleEditTask}>
-                <DialogTitle sx={{ fontWeight: 600 }}>EDIT TASK</DialogTitle>
-                <DialogContent>
-                  <Grid container spacing={2} sx={{ mb: 4 }}>
-                    <Grid item xs={12}>
-                      <TextField
-                        required
-                        margin="dense"
-                        id="name"
-                        name="name"
-                        label="Name"
-                        fullWidth
-                        variant="outlined"
-                        value={formData.name}
-                        onChange={handleFormChange}
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <TextField
-                        required
-                        margin="dense"
-                        id="title"
-                        name="title"
-                        label="Title"
-                        fullWidth
-                        variant="outlined"
-                        value={formData.title}
-                        onChange={handleFormChange}
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <TextField
-                        required
-                        margin="dense"
-                        id="description"
-                        name="description"
-                        label="Description"
-                        fullWidth
-                        variant="outlined"
-                        value={formData.description}
-                        onChange={handleFormChange}
-                      />
-                    </Grid>
-
-                    {/* <MultiAutocomplete /> */}
-                    {/* <Grid item xs={12}>
-                <Autocomplete<Employee, true, false, false>
-                  // value={formData.teamMembers}
-                  value={formData.teamMembers}
-                  onChange={(e, arrayValues) => {
-                    setFormData({ ...formData, teamMembers: arrayValues });
-                  }}
-                  fullWidth
-                  multiple
-                  id="tags-standard"
-                  options={employees}
-                  getOptionLabel={(option) => option.id ?? "N/A"}
-                  disableCloseOnSelect
-                  renderOption={(props, option, { selected }) => (
-                    <MenuItem value={option.id} sx={{ justifyContent: "space-between" }} {...props}>
-                      {option.id ?? "N/A"}
-                      {selected ? <MdCheckCircleOutline color="info" /> : null}
-                    </MenuItem>
-                  )}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant="outlined"
-                      label="Team Members"
-                      name="teamMembers"
-                      placeholder="Favorites"
-                    />
-                  )}
-                />
-              </Grid> */}
-
-                    <Grid item xs={12} md={6}>
-                      <FormControl fullWidth variant="outlined">
-                        <InputLabel id="priority-label">Priority</InputLabel>
-                        <Select
-                          labelId="priority-label"
-                          id="priority"
-                          name="priority"
-                          label="Priority"
-                          value={formData.priority}
-                          onChange={(e) => handleSelectChange(e, "priority")}
-                        >
-                          <MenuItem value={1}>Low</MenuItem>
-                          <MenuItem value={2}>Medium</MenuItem>
-                          <MenuItem value={3}>High</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                      <FormControl fullWidth>
-                        <InputLabel id="status-label">Status</InputLabel>
-                        <Select
-                          labelId="status-label"
-                          id="status"
-                          name="status"
-                          label="Status"
-                          value={formData.status}
-                          onChange={(e) => handleSelectChange(e, "status")}
-                        >
-                          <MenuItem value={1}>Not Started</MenuItem>
-                          <MenuItem value={2}>In Progress</MenuItem>
-                          <MenuItem value={3}>Completed</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DatePicker
-                          label="Start Date"
-                          value={dayjs(formData.startDate)}
-                          onChange={(date) => handleDateChange(date, "startDate")}
-                          sx={{
-                            width: "100%",
-                            "& .MuiOutlinedInput-root": { borderRadius: 2 },
-                          }}
-                        />
-                      </LocalizationProvider>
-                    </Grid>
-
-                    <Grid item xs={12} md={6}>
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DatePicker
-                          label="End Date"
-                          value={dayjs(formData.dueDate)}
-                          onChange={(date) => handleDateChange(date, "dueDate")}
-                          sx={{
-                            width: "100%",
-                            "& .MuiOutlinedInput-root": { borderRadius: 2 },
-                          }}
-                        />
-                      </LocalizationProvider>
-                    </Grid>
-                  </Grid>
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={handleClose}>Cancel</Button>
-                  <Button type="submit">Edit</Button>
-                </DialogActions>
-              </form>
-            </Dialog>
           </Box>
         </ListItem>
       </Paper>
+
+      {/* Edit Dialog */}
+      <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="sm">
+        <form onSubmit={handleEditSubmit}>
+          <DialogTitle sx={{ fontWeight: 700 }}>Edit Task</DialogTitle>
+          <DialogContent dividers>
+            <Grid container spacing={2} sx={{ mt: 0.5 }}>
+              <Grid item xs={12}>
+                <TextField
+                  label="Title"
+                  fullWidth
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Description"
+                  fullWidth
+                  multiline
+                  rows={2}
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <InputLabel>Assignee</InputLabel>
+                  <Select
+                    label="Assignee"
+                    value={formData.assignedTo}
+                    onChange={(e) => setFormData({ ...formData, assignedTo: e.target.value })}
+                  >
+                    {employees.map((emp) => (
+                      <MenuItem key={emp.id} value={emp.id}>
+                        {emp.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={6}>
+                <FormControl fullWidth>
+                  <InputLabel>Priority</InputLabel>
+                  <Select
+                    label="Priority"
+                    value={formData.priority}
+                    onChange={(e) => setFormData({ ...formData, priority: Number(e.target.value) })}
+                  >
+                    <MenuItem value={1}>Low</MenuItem>
+                    <MenuItem value={2}>Medium</MenuItem>
+                    <MenuItem value={3}>High</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={6}>
+                <FormControl fullWidth>
+                  <InputLabel>Status</InputLabel>
+                  <Select
+                    label="Status"
+                    value={formData.status}
+                    onChange={(e) => setFormData({ ...formData, status: Number(e.target.value) })}
+                  >
+                    <MenuItem value={1}>To Do</MenuItem>
+                    <MenuItem value={2}>In Progress</MenuItem>
+                    <MenuItem value={3}>Done</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <Grid item xs={6}>
+                  <DatePicker
+                    label="Start Date"
+                    sx={{ width: "100%" }}
+                    value={dayjs(formData.startDate)}
+                    onChange={(d) => setFormData({ ...formData, startDate: d ? d.toDate() : null })}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <DatePicker
+                    label="Due Date"
+                    sx={{ width: "100%" }}
+                    value={dayjs(formData.dueDate)}
+                    onChange={(d) => setFormData({ ...formData, dueDate: d ? d.toDate() : null })}
+                  />
+                </Grid>
+              </LocalizationProvider>
+            </Grid>
+          </DialogContent>
+          <DialogActions sx={{ p: 2 }}>
+            <Button onClick={() => setOpen(false)}>Cancel</Button>
+            <Button type="submit" variant="contained">
+              Save Changes
+            </Button>
+          </DialogActions>
+        </form>
+      </Dialog>
     </Box>
   );
 });
 
 TaskItem.displayName = "TaskItem";
-
 export default TaskItem;

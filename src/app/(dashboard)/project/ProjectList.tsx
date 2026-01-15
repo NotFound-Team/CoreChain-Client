@@ -52,7 +52,7 @@ const ProjectList = memo(({ projectList, viewMode }: { projectList: TProject[]; 
         minWidth: 150,
         valueGetter: (params: any) => params?.name || "Unknown",
         renderCell: (params: GridRenderCellParams) => (
-            <Typography variant="body2">{params.row.department?.name || "N/A"}</Typography>
+            <Typography variant="body2">{params.row.departmentName || "N/A"}</Typography>
         ),
       },
       {

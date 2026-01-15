@@ -1,5 +1,5 @@
 import { CONFIG_API } from "@/configs/api";
-import { TQueryUser } from "@/types/user";
+import { TQueryUser, UpdateFcmToken } from "@/types/user";
 import fetchApi from "@/utils/fetchApi";
 // you help me refactor fetch projects same as getFeedbackList
 /**
@@ -19,6 +19,14 @@ export const getUserList = async (params: TQueryUser) => {
 export const getUserDetail = async (id: string) => {
   try {
     return await fetchApi(`${CONFIG_API.USER.DETAIL(id)}`, "GET");
+  } catch (error: any) {
+    return error?.response?.data;
+  }
+};
+
+export const updateFcmToken = async ({ fcmToken, id }: UpdateFcmToken & { id: string }) => {
+  try {
+    return await fetchApi(`${CONFIG_API.USER.FCM_TOKEN(id)}`, "PATCH", { fcmToken });
   } catch (error: any) {
     return error?.response?.data;
   }

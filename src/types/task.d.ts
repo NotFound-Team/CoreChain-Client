@@ -7,7 +7,6 @@ const TObjectCreateBy = {
 };
 
 export type TCreateTask = {
-  name: string;
   title: string;
   description: string;
   assignedTo: string;
@@ -20,7 +19,6 @@ export type TCreateTask = {
 
 export type TTask = {
   _id: string;
-  name: string;
   title: string;
   description: string;
   startDate: Date | null;
