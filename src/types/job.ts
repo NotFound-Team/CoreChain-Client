@@ -21,7 +21,6 @@ export type Location = {
 
 export type TJob = {
   id: string;
-  companyId?: string; // liên kết employer/company
   title: string;
   slug?: string; // seo friendly url
   short_title?: string; // optional short version

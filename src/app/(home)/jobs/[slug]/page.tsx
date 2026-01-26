@@ -3,6 +3,7 @@ import { Chip, Divider } from "@mui/material";
 import { FaMapMarkerAlt, FaBriefcase, FaClock, FaMoneyBillWave, FaEnvelope, FaPhone, FaGlobe } from "react-icons/fa";
 import { mockJobs } from "../data";
 import { use } from "react";
+import { CONFIG_API } from "@/configs/api";
 
 type Props = {
   params: Promise<{
@@ -10,11 +11,46 @@ type Props = {
   }>;
 };
 
-export default function JobDetailPage({ params }: Props) {
-  const { slug } = use(params);
-  const job = mockJobs.find((j) => j.slug === slug);
+async function getJobBySlug(slug: string) {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL_2}${CONFIG_API.JOB.PUBLIC.JOB_DETAIL_SLUG(slug)}`, {
+    cache: "no-store", // hoặc revalidate
+  });
+
+  if (!res.ok) return null;
+
+  return res.json();
+}
+
+import type { Metadata } from "next";
+
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const job = await getJobBySlug(params.slug);
+
+  if (!job) {
+    return {
+      title: "Job not found",
+      description: "This job does not exist or is no longer available.",
+    };
+  }
+
+  return {
+    title: `${job.title} | Careers`,
+    description: job.short_description || job.description?.slice(0, 160),
+    openGraph: {
+      title: job.title,
+      description: job.short_description,
+      type: "article",
+    },
+  };
+}
+
+export default async function JobDetailPage({ params }: Props) {
+  const job = await getJobBySlug((await params).slug);
 
   if (!job || !job.public) return notFound();
+  // const job = mockJobs.find((j) => j.slug === slug);
+
+  // if (!job || !job.public) return notFound();
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-10 space-y-8">

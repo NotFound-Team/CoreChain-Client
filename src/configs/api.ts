@@ -92,4 +92,12 @@ export const CONFIG_API = {
   CHAT: {
     INDEX: `${process.env.NEXT_PUBLIC_BASE_URL_SOCKET}/chat`,
   },
+  JOB: {
+    INDEX: `/api/jobs`,
+    JOB_DETAIL: (id: string) => `/api/jobs/${id}`,
+    PUBLIC: {
+      INDEX: `/api/jobs/public`,
+      JOB_DETAIL_SLUG: (slug: string) => `/api/jobs/public/${slug}`,
+    },
+  },
 };

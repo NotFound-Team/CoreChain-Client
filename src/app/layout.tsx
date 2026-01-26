@@ -34,7 +34,7 @@ export async function generateMetadata() {
     const metadata = settings.metadata || {};
 
     return {
-      title: metadata.title || "Gemini HR Management",
+      title: metadata.title || "CoreChain HR Management",
       description: metadata.description || "Secure and Transparent HR Management with Blockchain",
       keywords: metadata.keywords || ["blockchain", "hr"],
       openGraph: {
@@ -49,7 +49,7 @@ export async function generateMetadata() {
   } catch (e) {
     console.error("Error generating metadata:", e);
     return {
-      title: "Gemini HR Management",
+      title: "CoreChain HR Management",
       description: "Secure and Transparent HR Management with Blockchain",
     };
   }

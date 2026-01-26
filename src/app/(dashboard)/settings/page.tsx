@@ -307,7 +307,7 @@ export default function SettingsPage() {
 
   return (
     <div className="font-sans min-h-screen bg-gray-50/30">
-      <div className="max-w-7xl mx-auto px-6 py-10">
+      <div className="mx-auto px-6 py-10">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
           <div>
