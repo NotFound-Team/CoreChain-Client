@@ -22,6 +22,7 @@ import { jwtDecode, JwtPayload } from "jwt-decode";
 import axios from "axios";
 import useFcmToken from "@/hooks/useFcmToken";
 import { updateFcmToken } from "@/services/user.service";
+import { PUBLIC_ROUTES } from "@/configs/route";
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -47,7 +48,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       if (!token) {
         setIsInitializing(false);
-        if (pathname !== "/") {
+        if (!PUBLIC_ROUTES.includes(pathname)) {
           router.push("/login");
         }
         return;

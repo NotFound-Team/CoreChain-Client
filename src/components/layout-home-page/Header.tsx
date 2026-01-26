@@ -14,11 +14,12 @@ import { IoClose } from "react-icons/io5";
 import { gsap } from "gsap";
 
 const MENU_ITEMS = [
-  { label: "Features", href: "#features" },
-  { label: "Solutions", href: "#solutions" },
+  { label: "Features", href: "/features" },
+  { label: "About", href: "/about" },
   { label: "Pricing", href: "/pricing" },
   { label: "Developers", href: "/developers" },
   { label: "Jobs", href: "/jobs" },
+  { label: "FAQ", href: "/faq" },
 ];
 
 export default function Header() {
@@ -66,103 +67,105 @@ export default function Header() {
   }, [isMenuOpen]);
 
   return (
-    <>
-      <div className="relative h-[72px]">
-        <div
-          className={`
+    <div className="relative h-[72px]">
+      <div
+        className={`
               bg-[var(--bg-paper)] absolute left-0 right-0 z-50 transition-colors duration-300
               ${
                 showHeader &&
                 "fixed -top-[72px] translate-y-[72px] transition-transform duration-400 shadow-[var(--shadow-md)]"
               }
             `}
-        >
-          <div className="container mx-auto w-full px-4">
-            <div className="flex items-center justify-between py-4">
-              <Link href={"/"}>
-                <Image
-                  src={"/images/logo-color 1.png"}
-                  alt="Logo company"
-                  width={150}
-                  height={100}
-                  className="max-lg:w-[100px]"
-                />
-              </Link>
+      >
+        <div className="container mx-auto w-full px-4">
+          <div className="flex items-center justify-between py-4">
+            <Link href={"/"} className="flex items-center gap-x-2">
+              <Image
+                src={"/images/corechain.png"}
+                alt="Logo company"
+                width={40}
+                height={40}
+                className="max-lg:w-[100px]"
+              />
+              <h1 className="font-bold text-xl">CoreChain</h1>
+            </Link>
 
-              <nav className="max-lg:hidden">
-                <ul className="flex items-center gap-x-6 text-[var(--text-secondary)] max-xl:text-[14px]">
-                  {MENU_ITEMS.map((item) => (
-                    <li key={item.label} className="hover:text-[var(--color-primary)] transition-colors cursor-pointer">
-                      <Link href={item.href}>{item.label}</Link>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-
-              <div className="max-lg:hidden">
-                <ul className="flex items-center gap-x-8 max-xl:text-[14px]">
-                  <li className="text-[var(--text-secondary)] hover:text-[var(--color-primary)] transition-colors cursor-pointer">
-                    App
+            <nav className="max-lg:hidden">
+              <ul className="flex items-center gap-x-6 text-[var(--text-secondary)] max-xl:text-[14px]">
+                {MENU_ITEMS.map((item) => (
+                  <li key={item.label} className="hover:text-[var(--color-primary)] transition-colors cursor-pointer">
+                    <Link href={item.href}>{item.label}</Link>
                   </li>
-                  <li className="text-[var(--text-secondary)] hover:text-[var(--color-primary)] transition-colors cursor-pointer">
-                    English
-                  </li>
-                  {token ? (
-                    <li className="bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white font-bold px-6 py-2 rounded-[var(--radius-sm)] transition-all duration-300">
-                      <Link href={"/dashboard"}>Go to Dashboard</Link>
-                    </li>
-                  ) : (
-                    <li className="font-bold border-2 border-[var(--color-primary)] text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white px-4 py-1 rounded-[var(--radius-sm)] transition-all duration-300">
-                      <Link href={"/login"}>Sign In</Link>
-                    </li>
-                  )}
-                </ul>
-              </div>
+                ))}
+              </ul>
+            </nav>
 
-              <div
-                className="hidden max-lg:block text-2xl cursor-pointer text-[var(--text-primary)]"
-                onClick={toggleMenu}
-              >
-                <IoIosMenu />
-              </div>
+            <div className="max-lg:hidden">
+              <ul className="flex items-center gap-x-8 max-xl:text-[14px]">
+                <Link
+                  href={"/download"}
+                  className="text-[var(--text-secondary)] hover:text-[var(--color-primary)] transition-colors cursor-pointer"
+                >
+                  App
+                </Link>
+                <li className="text-[var(--text-secondary)] hover:text-[var(--color-primary)] transition-colors cursor-pointer">
+                  English
+                </li>
+                {token ? (
+                  <li className="bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white font-bold px-6 py-2 rounded-[var(--radius-sm)] transition-all duration-300">
+                    <Link href={"/dashboard"}>Go to Dashboard</Link>
+                  </li>
+                ) : (
+                  <li className="font-bold border-2 border-[var(--color-primary)] text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white px-4 py-1 rounded-[var(--radius-sm)] transition-all duration-300">
+                    <Link href={"/login"}>Sign In</Link>
+                  </li>
+                )}
+              </ul>
             </div>
 
             <div
-              ref={menuRef}
-              className={`fixed top-0 right-0 w-64 h-full bg-[var(--bg-paper)] shadow-[var(--shadow-xl)] py-4 transform ${
-                isMenuOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
-              } transition-all ease-in-out`}
+              className="hidden max-lg:block text-2xl cursor-pointer text-[var(--text-primary)]"
+              onClick={toggleMenu}
             >
-              <div
-                className="cursor-pointer text-xl mb-4 px-4 text-[var(--text-primary)] hover:text-[var(--color-primary)]"
-                onClick={toggleMenu}
-              >
-                <IoClose />
-              </div>
-              <ul className="flex flex-col gap-y-4 text-[var(--text-secondary)] text-center">
-                <li className="hover:bg-[var(--color-primary)] hover:text-white transition-all duration-300 py-2 transform">
-                  Features
-                </li>
-                <li className="hover:bg-[var(--color-primary)] hover:text-white transition-all duration-300 py-2">
-                  Solutions
-                </li>
-                <li className="hover:bg-[var(--color-primary)] hover:text-white transition-all duration-300 py-2">
-                  NFT Storage
-                </li>
-                <li className="hover:bg-[var(--color-primary)] hover:text-white transition-all duration-300 py-2">
-                  Pricing
-                </li>
-                <li className="hover:bg-[var(--color-primary)] hover:text-white transition-all duration-300 py-2">
-                  Developers
-                </li>
-                <li className="hover:bg-[var(--color-primary)] hover:text-white transition-all duration-300 py-2">
-                  <Link href={"/login"}>Sign In</Link>
-                </li>
-              </ul>
+              <IoIosMenu />
             </div>
+          </div>
+
+          <div
+            ref={menuRef}
+            className={`fixed top-0 right-0 w-64 h-full bg-[var(--bg-paper)] shadow-[var(--shadow-xl)] py-4 transform ${
+              isMenuOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
+            } transition-all ease-in-out`}
+          >
+            <div
+              className="cursor-pointer text-xl mb-4 px-4 text-[var(--text-primary)] hover:text-[var(--color-primary)]"
+              onClick={toggleMenu}
+            >
+              <IoClose />
+            </div>
+            <ul className="flex flex-col gap-y-4 text-[var(--text-secondary)] text-center">
+              <li className="hover:bg-[var(--color-primary)] hover:text-white transition-all duration-300 py-2 transform">
+                Features
+              </li>
+              <li className="hover:bg-[var(--color-primary)] hover:text-white transition-all duration-300 py-2">
+                About
+              </li>
+              <li className="hover:bg-[var(--color-primary)] hover:text-white transition-all duration-300 py-2">
+                NFT Storage
+              </li>
+              <li className="hover:bg-[var(--color-primary)] hover:text-white transition-all duration-300 py-2">
+                Pricing
+              </li>
+              <li className="hover:bg-[var(--color-primary)] hover:text-white transition-all duration-300 py-2">
+                Developers
+              </li>
+              <li className="hover:bg-[var(--color-primary)] hover:text-white transition-all duration-300 py-2">
+                <Link href={"/login"}>Sign In</Link>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
