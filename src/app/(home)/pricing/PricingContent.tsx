@@ -6,13 +6,13 @@ import Pricing from "@/components/Pricing";
 
 export default function PricingContent() {
   return (
-    <Box className="bg-[var(--bg-default)] min-h-screen">
-      <Box className="pt-20 pb-10">
+    <Box sx={{ bgcolor: 'var(--bg-default)', minHeight: '100vh' }}>
+      <Box sx={{ pt: { xs: 12, md: 16 }, pb: { xs: 6, md: 10 }, px: 2 }}>
         <Container maxWidth="lg">
-          <Typography variant="h2" className="text-center font-extrabold text-[var(--text-primary)] mb-4">
+          <Typography variant="h2" sx={{ textAlign: 'center', fontWeight: 800, color: 'var(--text-primary)', mb: 2, fontSize: { xs: '1.875rem', md: '3rem', lg: '3.75rem' } }}>
             Transparent Pricing
           </Typography>
-          <Typography variant="h5" className="text-center text-[var(--text-secondary)] mb-12 mx-auto leading-relaxed">
+          <Typography variant="h5" sx={{ textAlign: 'center', color: 'var(--text-secondary)', mb: { xs: 4, md: 6 }, mx: 'auto', lineHeight: 1.6, maxWidth: '42rem', fontSize: { xs: '1rem', md: '1.25rem' } }}>
             Choose the best plan for your team. No hidden fees, no complexity.
           </Typography>
         </Container>
@@ -22,18 +22,18 @@ export default function PricingContent() {
       <Pricing />
 
       {/* Comparison Table (Mock) */}
-      <Box className="py-24 bg-white border-t border-slate-200">
+      <Box sx={{ py: { xs: 8, md: 12 }, bgcolor: 'white', borderTop: '1px solid #e2e8f0', px: 2 }}>
         <Container maxWidth="md">
-          <Typography variant="h4" className="text-center font-bold mb-12 text-slate-900">
+          <Typography variant="h4" sx={{ textAlign: 'center', fontWeight: 'bold', mb: { xs: 4, md: 6 }, color: '#0f172a', fontSize: { xs: '1.5rem', md: '2.25rem' } }}>
             Compare Plans
           </Typography>
-          <Box className="overflow-x-auto">
-            <table className="w-full border-collapse">
+          <Box sx={{ overflowX: 'auto', mx: -2, px: 2, pb: 2 }}>
+            <table className="w-full border-collapse min-w-[500px]">
               <thead>
                 <tr className="border-b-2 border-slate-100">
-                  <th className="text-left p-4 text-slate-500 font-semibold uppercase text-xs">Feature</th>
-                  <th className="p-4 text-slate-900 font-bold">Standard</th>
-                  <th className="p-4 text-indigo-600 font-bold">Enterprise</th>
+                  <th className="text-left p-4 text-slate-500 font-semibold uppercase text-[10px] md:text-xs">Feature</th>
+                  <th className="p-4 text-slate-900 font-bold text-sm md:text-base">Standard</th>
+                  <th className="p-4 text-indigo-600 font-bold text-sm md:text-base">Enterprise</th>
                 </tr>
               </thead>
               <tbody>
@@ -45,9 +45,9 @@ export default function PricingContent() {
                   { name: "Audit Support", s: "Standard", e: "Priority 24/7" },
                 ].map((row, i) => (
                   <tr key={i} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
-                    <td className="p-4 text-slate-700 font-medium">{row.name}</td>
-                    <td className="p-4 text-center text-slate-600">{row.s}</td>
-                    <td className="p-4 text-center text-slate-900 font-semibold">{row.e}</td>
+                    <td className="p-4 text-slate-700 font-medium text-xs md:text-sm">{row.name}</td>
+                    <td className="p-4 text-center text-slate-600 text-xs md:text-sm">{row.s}</td>
+                    <td className="p-4 text-center text-slate-900 font-semibold text-xs md:text-sm">{row.e}</td>
                   </tr>
                 ))}
               </tbody>

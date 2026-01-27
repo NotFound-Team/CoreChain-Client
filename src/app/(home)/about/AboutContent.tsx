@@ -5,17 +5,17 @@ import { Box, Typography, Container, Grid, Avatar } from "@mui/material";
 
 export default function AboutContent() {
   return (
-    <Box className="bg-white min-h-screen">
+    <Box sx={{ bgcolor: 'white', minHeight: '100vh' }}>
       {/* Vision Section */}
-      <Box className="bg-indigo-600 py-32 text-center text-white">
+      <Box sx={{ bgcolor: '#4f46e5', py: { xs: 8, md: 16 }, textAlign: 'center', color: 'white', px: 2 }}>
         <Container maxWidth="md">
-          <Typography variant="overline" className="font-bold tracking-[0.2em] mb-4 block opacity-80">
+          <Typography variant="overline" sx={{ fontWeight: 'bold', letterSpacing: '0.2em', mb: 2, display: 'block', opacity: 0.8, fontSize: { xs: '0.75rem', md: '0.875rem' } }}>
             OUR MISSION
           </Typography>
-          <Typography variant="h2" className="font-extrabold mb-8 leading-[1.2]">
+          <Typography variant="h2" sx={{ fontWeight: 800, mb: { xs: 3, md: 4 }, lineHeight: 1.2, fontSize: { xs: '1.875rem', md: '3rem', lg: '3.75rem' } }}>
             Democratizing Workplace Transparency through Blockchain.
           </Typography>
-          <Typography variant="h5" className="opacity-90 leading-relaxed font-light">
+          <Typography variant="h5" sx={{ opacity: 0.9, lineHeight: 1.6, fontWeight: 300, fontSize: { xs: '1rem', md: '1.25rem' } }}>
             Founded in 2024, Core Chain Client was born out of a desire to fix the broken systems of human resource
             management, making them more secure, employee-centric, and auditable.
           </Typography>
@@ -23,13 +23,13 @@ export default function AboutContent() {
       </Box>
 
       {/* Story Section */}
-      <Container maxWidth="lg" className="py-24">
-        <Grid container spacing={12} alignItems="center">
+      <Container maxWidth="lg" sx={{ py: { xs: 8, md: 12 } }}>
+        <Grid container spacing={4} alignItems="center">
           <Grid item xs={12} md={6}>
-            <Typography variant="h3" className="font-bold mb-6 text-slate-900">
+            <Typography variant="h3" sx={{ fontWeight: 'bold', mb: 3, color: '#0f172a', fontSize: { xs: '1.5rem', md: '2.25rem' } }}>
               Our Story
             </Typography>
-            <Box className="space-y-6 text-slate-600 leading-relaxed">
+            <Box sx={{ '& > p': { mb: 3 }, color: '#475569', lineHeight: 1.6, fontSize: { xs: '0.875rem', md: '1rem' } }}>
               <p>
                 The team behind Core Chain saw a pattern of centralized databases failing companies—not just through
                 technical vulnerabilities, but through a lack of trust. Employees felt like data points, and managers
@@ -43,24 +43,24 @@ export default function AboutContent() {
             </Box>
           </Grid>
           <Grid item xs={12} md={6}>
-            <Box className="grid grid-cols-2 gap-4">
-              <Box className="bg-slate-50 p-8 rounded-3xl text-center">
-                <Typography variant="h3" className="font-extrabold text-indigo-600 mb-2">
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>
+              <Box sx={{ bgcolor: '#f8fafc', p: { xs: 3, md: 4 }, borderRadius: { xs: 4, md: 6 }, textAlign: 'center', boxShadow: 1 }}>
+                <Typography variant="h3" sx={{ fontWeight: 800, color: '#4f46e5', mb: 1, fontSize: { xs: '1.875rem', md: '2.25rem' } }}>
                   500+
                 </Typography>
-                <Typography className="text-slate-500 font-medium uppercase text-xs">Companies</Typography>
+                <Typography sx={{ color: '#64748b', fontWeight: 500, textTransform: 'uppercase', fontSize: { xs: '10px', md: '0.75rem' } }}>Companies</Typography>
               </Box>
-              <Box className="bg-slate-900 p-8 rounded-3xl text-center text-white">
-                <Typography variant="h3" className="font-extrabold text-white mb-2">
+              <Box sx={{ bgcolor: '#0f172a', p: { xs: 3, md: 4 }, borderRadius: { xs: 4, md: 6 }, textAlign: 'center', color: 'white', boxShadow: 3 }}>
+                <Typography variant="h3" sx={{ fontWeight: 800, color: 'white', mb: 1, fontSize: { xs: '1.875rem', md: '2.25rem' } }}>
                   1M+
                 </Typography>
-                <Typography className="text-white/50 font-medium uppercase text-xs">Smart Contracts</Typography>
+                <Typography sx={{ color: 'rgba(255,255,255,0.5)', fontWeight: 500, textTransform: 'uppercase', fontSize: { xs: '10px', md: '0.75rem' } }}>Smart Contracts</Typography>
               </Box>
-              <Box className="bg-indigo-50 p-8 rounded-3xl text-center col-span-2">
-                <Typography variant="h3" className="font-extrabold text-indigo-900 mb-2">
+              <Box sx={{ bgcolor: '#eef2ff', p: { xs: 3, md: 4 }, borderRadius: { xs: 4, md: 6 }, textAlign: 'center', gridColumn: { sm: 'span 2' }, boxShadow: 1, border: '1px solid #e0e7ff' }}>
+                <Typography variant="h3" sx={{ fontWeight: 800, color: '#1e1b4b', mb: 1, fontSize: { xs: '1.875rem', md: '2.25rem' } }}>
                   99.9%
                 </Typography>
-                <Typography className="text-indigo-700 font-medium uppercase text-xs">Uptime</Typography>
+                <Typography sx={{ color: '#4338ca', fontWeight: 500, textTransform: 'uppercase', fontSize: { xs: '10px', md: '0.75rem' } }}>Uptime</Typography>
               </Box>
             </Box>
           </Grid>
@@ -68,12 +68,12 @@ export default function AboutContent() {
       </Container>
 
       {/* Team Section (Mock) */}
-      <Box className="bg-slate-50 py-24">
+      <Box sx={{ bgcolor: '#f8fafc', py: { xs: 8, md: 12 } }}>
         <Container maxWidth="lg">
-          <Typography variant="h3" className="text-center font-bold mb-16">
+          <Typography variant="h3" sx={{ textAlign: 'center', fontWeight: 'bold', mb: { xs: 6, md: 8 }, fontSize: { xs: '1.5rem', md: '2.25rem' } }}>
             Meet the Pioneers
           </Typography>
-          <Grid container spacing={6} justifyContent="center">
+          <Grid container spacing={4} justifyContent="center">
             {[
               {
                 name: "Tran Van D",
@@ -91,18 +91,35 @@ export default function AboutContent() {
                 desc: "Frontend-focused student passionate about building user-friendly interfaces.",
               },
             ].map((member, i) => (
-              <Grid item xs={12} sm={6} md={3} key={i}>
-                <Box className="text-center">
-                  <Avatar className="w-32 h-32 mx-auto mb-6 bg-indigo-100 text-indigo-600 text-4xl shadow-lg border-4 border-white">
+              <Grid item xs={12} sm={6} md={4} key={i}>
+                <Box sx={{ 
+                  textAlign: 'center', 
+                  p: 3, 
+                  bgcolor: { xs: 'white', md: 'transparent' }, 
+                  borderRadius: 4, 
+                  boxShadow: { xs: 1, md: 0 }, 
+                  border: { xs: '1px solid #f1f5f9', md: 'none' } 
+                }}>
+                  <Avatar sx={{ 
+                    width: { xs: 96, md: 128 }, 
+                    height: { xs: 96, md: 128 }, 
+                    mx: 'auto', 
+                    mb: 3, 
+                    bgcolor: '#eef2ff', 
+                    color: '#4f46e5', 
+                    fontSize: '2.25rem', 
+                    boxShadow: 3, 
+                    border: '4px solid white' 
+                  }}>
                     {member.name[0]}
                   </Avatar>
-                  <Typography variant="h6" className="font-bold text-slate-900">
+                  <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#0f172a', fontSize: { xs: '1.125rem', md: '1.25rem' } }}>
                     {member.name}
                   </Typography>
-                  <Typography variant="body2" className="text-indigo-600 font-semibold mb-4 uppercase tracking-tighter">
+                  <Typography variant="body2" sx={{ color: '#4f46e5', fontWeight: 600, mb: 2, textTransform: 'uppercase', letterSpacing: '-0.025em', fontSize: { xs: '0.75rem', md: '0.875rem' } }}>
                     {member.role}
                   </Typography>
-                  <Typography className="text-slate-500 text-sm">{member.desc}</Typography>
+                  <Typography sx={{ color: '#64748b', fontSize: '0.875rem' }}>{member.desc}</Typography>
                 </Box>
               </Grid>
             ))}

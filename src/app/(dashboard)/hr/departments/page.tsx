@@ -174,7 +174,7 @@ export default function Index() {
               <Can I="get" a="departments/:id">
                 <IconButton
                   onClick={() => {
-                    router.push(`/department/${params.id}`);
+                    router.push(`/hr/departments/${params.id}`);
                   }}
                 >
                   <MdVisibility />

@@ -75,7 +75,6 @@ const GlobalSearch = () => {
       PaperComponent={({ children }) => (
         <Paper elevation={12} sx={{ mt: 1, borderRadius: "12px", overflow: "hidden", width: 650 }}>
           <Grid container>
-            {/* BÊN TRÁI: KẾT QUẢ TÌM KIẾM TRANG CHÍNH */}
             <Grid item xs={userRole === "ADMIN" ? 7 : 12}>
               <Box sx={{ p: 1.5, bgcolor: "#f9fafb", borderBottom: "1px solid #eee" }}>
                 <Typography variant="caption" fontWeight="bold" color="text.secondary">
@@ -131,7 +130,6 @@ const GlobalSearch = () => {
           </Grid>
         </Paper>
       )}
-      // Render từng dòng kết quả ở bên trái
       renderOption={(props, option) => (
         <Box component="li" {...props} key={option.id} sx={{ display: "flex", alignItems: "center", gap: 1.5, py: 1 }}>
           <Box sx={{ color: "primary.main", display: "flex" }}>

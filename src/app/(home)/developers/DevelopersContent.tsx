@@ -5,30 +5,40 @@ import { Box, Typography, Container, Grid, Button, Paper } from "@mui/material";
 import { FaCode, FaBook, FaTerminal, FaGithub } from "react-icons/fa";
 
 const CodeSnippet = ({ code }: { code: string }) => (
-  <Box className="bg-slate-900 rounded-2xl p-6 font-mono text-sm text-indigo-300 overflow-x-auto border border-slate-800 shadow-2xl">
+  <Box sx={{ 
+    bgcolor: '#0f172a', 
+    borderRadius: 4, 
+    p: 3, 
+    fontFamily: 'monospace', 
+    fontSize: '0.875rem', 
+    color: '#a5b4fc', 
+    overflowX: 'auto', 
+    border: '1px solid #1e293b', 
+    boxShadow: 24 
+  }}>
     <pre><code>{code}</code></pre>
   </Box>
 );
 
 export default function DevelopersContent() {
   return (
-    <Box className="bg-slate-50 min-h-screen pb-24">
+    <Box sx={{ bgcolor: '#f8fafc', minHeight: '100vh', pb: { xs: 8, md: 12 } }}>
       {/* Header */}
-      <Box className="bg-slate-950 py-24 text-white">
+      <Box sx={{ bgcolor: '#020617', py: { xs: 8, md: 12 }, color: 'white', px: 2 }}>
         <Container maxWidth="lg">
-          <Grid container spacing={8} alignItems="center">
+          <Grid container spacing={6} alignItems="center">
             <Grid item xs={12} md={6}>
-              <Typography variant="h2" className="font-extrabold mb-6">
-                Built for <span className="text-indigo-400">Engineers</span>.
+              <Typography variant="h2" sx={{ fontWeight: 800, mb: 3, fontSize: { xs: '1.875rem', md: '3rem', lg: '3.75rem' } }}>
+                Built for <Box component="span" sx={{ color: '#818cf8' }}>Engineers</Box>.
               </Typography>
-              <Typography variant="h5" className="text-slate-400 mb-8 leading-relaxed">
+              <Typography variant="h5" sx={{ color: '#94a3b8', mb: 4, lineHeight: 1.6, fontSize: { xs: '1rem', md: '1.25rem' } }}>
                 Seamlessly integrate blockchain-based identity and payroll into your applications using our robust APIs and SDKs.
               </Typography>
-              <Box className="flex gap-4">
-                <Button variant="contained" className="bg-indigo-600 px-6 py-2 rounded-lg normal-case font-bold">
+              <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2 }}>
+                <Button variant="contained" sx={{ bgcolor: '#4f46e5', '&:hover': { bgcolor: '#4338ca' }, px: 3, py: 1.5, borderRadius: 2, textTransform: 'none', fontWeight: 'bold', width: { xs: '100%', sm: 'auto' } }}>
                   Read Documentation
                 </Button>
-                <Button variant="outlined" className="border-slate-700 text-white px-6 py-2 rounded-lg normal-case font-bold">
+                <Button variant="outlined" sx={{ border: '1px solid #334155', color: 'white', '&:hover': { border: '1px solid #475569', bgcolor: 'rgba(255,255,255,0.05)' }, px: 3, py: 1.5, borderRadius: 2, textTransform: 'none', fontWeight: 'bold', width: { xs: '100%', sm: 'auto' } }}>
                   Get API Key
                 </Button>
               </Box>
@@ -53,8 +63,8 @@ const result = await client.employees.create({
       </Box>
 
       {/* SDKs & Tools */}
-      <Container maxWidth="lg" className="-mt-12">
-        <Grid container spacing={4}>
+      <Container maxWidth="lg" sx={{ mt: { xs: -4, md: -6 }, px: 2 }}>
+        <Grid container spacing={3}>
           {[
             { icon: <FaTerminal />, title: "Node.js SDK", desc: "Easily integrate with our first-class JavaScript and TypeScript SDK." },
             { icon: <FaCode />, title: "React Hooks", desc: "Built-in hooks for authentication and data fetching in React apps." },
@@ -62,10 +72,18 @@ const result = await client.employees.create({
             { icon: <FaGithub />, title: "Open Source", desc: "Check out our community-driven examples and star us on GitHub." },
           ].map((item, idx) => (
             <Grid item xs={12} sm={6} md={3} key={idx}>
-              <Paper className="p-8 h-full rounded-3xl border border-slate-200 shadow-sm hover:translate-y-[-4px] transition-all duration-300">
-                <Box className="text-3xl text-indigo-600 mb-4">{item.icon}</Box>
-                <Typography variant="h6" className="font-bold mb-2">{item.title}</Typography>
-                <Typography className="text-slate-600 text-sm leading-relaxed">{item.desc}</Typography>
+              <Paper sx={{ 
+                p: { xs: 3, md: 4 }, 
+                height: '100%', 
+                borderRadius: { xs: 4, md: 6 }, 
+                border: '1px solid #e2e8f0', 
+                boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1)', 
+                transition: 'all 0.3s', 
+                '&:hover': { transform: 'translateY(-4px)' } 
+              }}>
+                <Box sx={{ fontSize: { xs: '1.5rem', md: '1.875rem' }, color: '#4f46e5', mb: 2 }}>{item.icon}</Box>
+                <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 1, fontSize: { xs: '1.125rem', md: '1.25rem' } }}>{item.title}</Typography>
+                <Typography sx={{ color: '#475569', fontSize: '0.875rem', lineHeight: 1.6 }}>{item.desc}</Typography>
               </Paper>
             </Grid>
           ))}
@@ -73,23 +91,23 @@ const result = await client.employees.create({
       </Container>
 
       {/* API Reference Preview */}
-      <Container maxWidth="lg" className="mt-24">
-        <Box className="bg-white p-12 rounded-[40px] border border-slate-200">
-          <Typography variant="h4" className="font-bold mb-8">API Reference Preview</Typography>
-          <Grid container spacing={8}>
+      <Container maxWidth="lg" sx={{ mt: { xs: 8, md: 12 }, px: 2 }}>
+        <Box sx={{ bgcolor: 'white', p: { xs: 3, md: 6 }, borderRadius: { xs: 4, md: 10 }, border: '1px solid #e2e8f0' }}>
+          <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 4, fontSize: { xs: '1.5rem', md: '2.25rem' }, textAlign: { xs: 'center', md: 'left' } }}>API Reference Preview</Typography>
+          <Grid container spacing={4}>
             <Grid item xs={12} md={4}>
-              <Box className="space-y-6">
-                <Box className="p-4 bg-indigo-50 rounded-xl border-l-4 border-indigo-600">
-                  <Typography className="font-bold text-indigo-900">GET /v1/employees</Typography>
-                  <Typography className="text-xs text-indigo-700">Retrieve a list of employees</Typography>
+              <Box sx={{ '& > div': { mb: 2 } }}>
+                <Box sx={{ p: 2, bgcolor: '#eef2ff', borderRadius: 3, borderLeft: '4px solid #4f46e5' }}>
+                  <Typography sx={{ fontWeight: 'bold', color: '#1e1b4b', fontSize: { xs: '0.875rem', md: '1rem' } }}>GET /v1/employees</Typography>
+                  <Typography sx={{ fontSize: { xs: '10px', md: '0.75rem' }, color: '#4338ca' }}>Retrieve a list of employees</Typography>
                 </Box>
-                <Box className="p-4 hover:bg-slate-50 rounded-xl cursor-default transition-colors">
-                  <Typography className="font-bold text-slate-900">POST /v1/payroll</Typography>
-                  <Typography className="text-xs text-slate-500">Initiate a smart contract payment</Typography>
+                <Box sx={{ p: 2, '&:hover': { bgcolor: '#f8fafc' }, borderRadius: 3, transition: 'colors 0.2s' }}>
+                  <Typography sx={{ fontWeight: 'bold', color: '#0f172a', fontSize: { xs: '0.875rem', md: '1rem' } }}>POST /v1/payroll</Typography>
+                  <Typography sx={{ fontSize: { xs: '10px', md: '0.75rem' }, color: '#64748b' }}>Initiate a smart contract payment</Typography>
                 </Box>
-                <Box className="p-4 hover:bg-slate-50 rounded-xl cursor-default transition-colors">
-                  <Typography className="font-bold text-slate-900">GET /v1/audit/{`{id}`}</Typography>
-                  <Typography className="text-xs text-slate-500">Get audit logs for a specific tx</Typography>
+                <Box sx={{ p: 2, '&:hover': { bgcolor: '#f8fafc' }, borderRadius: 3, transition: 'colors 0.2s' }}>
+                  <Typography sx={{ fontWeight: 'bold', color: '#0f172a', fontSize: { xs: '0.875rem', md: '1rem' } }}>GET /v1/audit/{`{id}`}</Typography>
+                  <Typography sx={{ fontSize: { xs: '10px', md: '0.75rem' }, color: '#64748b' }}>Get audit logs for a specific tx</Typography>
                 </Box>
               </Box>
             </Grid>

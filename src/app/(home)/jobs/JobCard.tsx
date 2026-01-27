@@ -7,8 +7,8 @@ import { TJob } from "@/types/job";
 
 export function JobCard({ job }: { job: TJob }) {
   return (
-    <Card className="rounded-2xl border border-gray-200">
-      <CardContent className="space-y-3">
+    <Card sx={{ borderRadius: 4, border: '1px solid #e5e7eb', boxShadow: 'none', '&:hover': { boxShadow: 2 }, transition: 'box-shadow 0.2s' }}>
+      <CardContent sx={{ '& > :not(style) + :not(style)': { mt: 1.5 }, p: 3, '&:last-child': { pb: 3 } }}>
         {/* Title */}
         <Link href={`/jobs/${job.slug}`}>
           <h3 className="text-lg font-semibold hover:underline">
@@ -45,6 +45,7 @@ export function JobCard({ job }: { job: TJob }) {
               label={`${job.remote_type} work`}
               color="primary"
               size="small"
+              sx={{ fontWeight: 'bold' }}
             />
           )}
         </div>

@@ -48,126 +48,322 @@ const DownloadHero = () => {
   return (
     <Box
       ref={containerRef}
-      className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 text-white py-20 lg:py-32"
+      sx={{
+        position: "relative",
+        overflow: "hidden",
+        background: "linear-gradient(to bottom right, #020617, #0f172a, #1e1b4b)",
+        color: "white",
+        py: { xs: 8, lg: 16 },
+      }}
     >
       {/* Background Decorative Elements */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] -mr-64 -mt-64" />
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[120px] -ml-64 -mb-64" />
+      <Box
+        sx={{
+          position: "absolute",
+          top: 0,
+          right: 0,
+          width: 500,
+          height: 500,
+          bgcolor: "primary.main",
+          opacity: 0.2,
+          borderRadius: "50%",
+          filter: "blur(120px)",
+          mr: -32,
+          mt: -32,
+        }}
+      />
+      <Box
+        sx={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          width: 500,
+          height: 500,
+          bgcolor: "#4f46e5",
+          opacity: 0.1,
+          borderRadius: "50%",
+          filter: "blur(120px)",
+          ml: -32,
+          mb: -32,
+        }}
+      />
 
       <Container maxWidth="lg">
-        <Grid container spacing={8} alignItems="center">
+        <Grid container spacing={{ xs: 6, lg: 8 }} alignItems="center">
           <Grid item xs={12} lg={7}>
             <Box ref={textRef}>
-              <Box className="flex items-center gap-4 mb-8">
-                <div className="bg-white/10 p-3 rounded-2xl backdrop-blur-md border border-white/20">
+              <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 4 }}>
+                <Box
+                  sx={{
+                    bgcolor: "rgba(255,255,255,0.1)",
+                    p: 1.5,
+                    borderRadius: 2,
+                    backdropFilter: "blur(10px)",
+                    border: "1px solid rgba(255,255,255,0.2)",
+                  }}
+                >
                   <Image
                     src="/images/corechain.png"
                     alt="Core Chain Logo"
-                    width={48}
-                    height={48}
+                    width={40}
+                    height={40}
                     className="rounded-lg"
                   />
-                </div>
-                <Typography variant="h6" className="font-bold tracking-tight text-white/90">
+                </Box>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontWeight: "bold",
+                    letterSpacing: "-0.025em",
+                    color: "rgba(255,255,255,0.9)",
+                    fontSize: { xs: "0.875rem", md: "1.25rem" },
+                  }}
+                >
                   CORE CHAIN CLIENT
                 </Typography>
               </Box>
 
               <Typography
                 variant="h1"
-                className="text-5xl lg:text-7xl font-extrabold mb-6 leading-tight bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent"
+                sx={{
+                  fontSize: { xs: "2.25rem", md: "3.75rem", lg: "4.5rem" },
+                  fontWeight: 800,
+                  mb: 3,
+                  lineHeight: 1.1,
+                  background: "linear-gradient(to right, #fff, #c7d2fe, #818cf8)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
               >
                 The Future of <br /> Digital Assets.
               </Typography>
 
-              <Typography variant="h5" className="text-xl text-slate-400 mb-10! max-w-xl leading-relaxed">
+              <Typography
+                variant="h5"
+                sx={{
+                  fontSize: { xs: "1rem", md: "1.25rem" },
+                  color: "#94a3b8",
+                  mb: 5,
+                  maxWidth: "36rem",
+                  lineHeight: 1.6,
+                }}
+              >
                 Experience secure, transparent, and ultra-fast blockchain management. Download the Core Chain Client
                 today and take control of your digital identity.
               </Typography>
 
-              <Box className="flex flex-wrap gap-4 mb-12">
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, mb: { xs: 4, lg: 6 } }}>
                 <Button
                   variant="contained"
-                  size="large"
-                  startIcon={<FaApple className="text-2xl" />}
-                  className={`px-8 py-4 rounded-2xl normal-case text-lg font-semibold transition-all duration-300 ${
-                    os === "ios"
-                      ? "bg-white text-black scale-105 shadow-xl shadow-white/10"
-                      : "bg-white/5 text-white hover:bg-white/10 border border-white/10"
-                  }`}
+                  sx={{
+                    px: { xs: 4, md: 5 },
+                    py: 2,
+                    borderRadius: 4,
+                    textTransform: "none",
+                    fontSize: { xs: "0.875rem", md: "1.125rem" },
+                    fontWeight: 600,
+                    transition: "all 0.3s",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1.5,
+                    ...(os === "ios"
+                      ? {
+                          bgcolor: "white",
+                          color: "black",
+                          "&:hover": { bgcolor: "#f1f5f9" },
+                          transform: "scale(1.05)",
+                          boxShadow: "0 20px 25px -5px rgba(255,255,255,0.1)",
+                        }
+                      : {
+                          bgcolor: "rgba(255,255,255,0.05)",
+                          color: "white",
+                          border: "1px solid rgba(255,255,255,0.1)",
+                          "&:hover": { bgcolor: "rgba(255,255,255,0.1)" },
+                        }),
+                  }}
+                  startIcon={<FaApple style={{ fontSize: "1.5rem" }} />}
                   href={APP_DOWNLOAD_CONFIG.IOS_DOWNLOAD_URL}
                   target="_blank"
                 >
                   App Store
                   {os === "ios" && (
-                    <span className="ml-2 px-2 py-0.5 bg-indigo-600 text-[10px] rounded-full">Recommended</span>
+                    <Box
+                      component="span"
+                      sx={{
+                        ml: 1,
+                        px: 1.5,
+                        py: 0.5,
+                        bgcolor: "#4f46e5",
+                        color: "white",
+                        fontSize: "10px",
+                        borderRadius: 999,
+                      }}
+                    >
+                      Recommended
+                    </Box>
                   )}
                 </Button>
 
                 <Button
                   variant="contained"
-                  size="large"
-                  startIcon={<FaGooglePlay className="text-xl" />}
-                  className={`px-8 py-4 rounded-2xl normal-case text-lg font-semibold transition-all duration-300 ${
-                    os === "android"
-                      ? "bg-white text-black scale-105 shadow-xl shadow-white/10"
-                      : "bg-white/5 text-white hover:bg-white/10 border border-white/10"
-                  }`}
+                  sx={{
+                    px: { xs: 4, md: 5 },
+                    py: 2,
+                    borderRadius: 4,
+                    textTransform: "none",
+                    fontSize: { xs: "0.875rem", md: "1.125rem" },
+                    fontWeight: 600,
+                    transition: "all 0.3s",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1.5,
+                    ...(os === "android"
+                      ? {
+                          bgcolor: "white",
+                          color: "black",
+                          "&:hover": { bgcolor: "#f1f5f9" },
+                          transform: "scale(1.05)",
+                          boxShadow: "0 20px 25px -5px rgba(255,255,255,0.1)",
+                        }
+                      : {
+                          bgcolor: "rgba(255,255,255,0.05)",
+                          color: "white",
+                          border: "1px solid rgba(255,255,255,0.1)",
+                          "&:hover": { bgcolor: "rgba(255,255,255,0.1)" },
+                        }),
+                  }}
+                  startIcon={<FaGooglePlay style={{ fontSize: "1.25rem" }} />}
                   href={APP_DOWNLOAD_CONFIG.ANDROID_DOWNLOAD_URL}
-                  target="_blank"
+                  target="_self"
+                  download
                 >
-                  Google Play
+                  Download APK
                   {os === "android" && (
-                    <span className="ml-2 px-2 py-0.5 bg-indigo-600 text-[10px] rounded-full">Recommended</span>
+                    <Box
+                      component="span"
+                      sx={{
+                        ml: 1,
+                        px: 1.5,
+                        py: 0.5,
+                        bgcolor: "#4f46e5",
+                        color: "white",
+                        fontSize: "10px",
+                        borderRadius: 999,
+                      }}
+                    >
+                      Recommended
+                    </Box>
                   )}
                 </Button>
               </Box>
 
               {os === "desktop" && (
-                <Box className="flex items-center gap-8 lg:p-6 p-4 bg-white/5 border border-white/10 rounded-3xl backdrop-blur-sm max-w-fit">
-                  <div className="space-y-2">
-                    <Typography className="text-sm font-medium text-slate-300">Scan to download</Typography>
-                    <div className="flex gap-4">
+                <Box
+                  sx={{
+                    display: "inline-flex",
+                    flexDirection: { xs: "column", sm: "row" },
+                    alignItems: { xs: "flex-start", sm: "center" },
+                    gap: { xs: 2, sm: 4 },
+                    p: { xs: 3, md: 4 },
+                    bgcolor: "rgba(255,255,255,0.05)",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    borderRadius: 6,
+                    backdropFilter: "blur(10px)",
+                    width: { xs: "100%", sm: "auto" },
+                  }}
+                >
+                  <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                    <Typography sx={{ fontSize: "0.875rem", fontWeight: 500, color: "#cbd5e1" }}>
+                      Scan to download
+                    </Typography>
+                    <Box sx={{ display: "flex", gap: 2, flexWrap: { xs: "wrap", sm: "nowrap" } }}>
                       {/* iOS */}
-                      <div className="flex flex-col items-center gap-2 bg-white p-3 rounded-xl">
-                        <div className="relative w-40 h-40 rounded-lg overflow-hidden">
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          gap: 1,
+                          bgcolor: "white",
+                          p: 1.5,
+                          borderRadius: 3,
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            position: "relative",
+                            width: { xs: 80, sm: 120, md: 160 },
+                            height: { xs: 80, sm: 120, md: 160 },
+                            borderRadius: 2,
+                            overflow: "hidden",
+                          }}
+                        >
                           <Image
                             src="/images/qr-ios.webp"
                             alt="Download app on iOS"
                             fill
                             className="object-contain"
-                            sizes="140px"
+                            sizes="(max-width: 640px) 80px, 160px"
                             priority
                           />
-                        </div>
-                        <span className="text-sm font-medium text-slate-700">iOS</span>
-                      </div>
+                        </Box>
+                        <Typography sx={{ fontSize: "0.75rem", fontWeight: 600, color: "#334155" }}>iOS</Typography>
+                      </Box>
 
                       {/* Android */}
-                      <div className="flex flex-col items-center gap-2 bg-white p-3 rounded-xl">
-                        <div className="relative w-40 h-40 rounded-lg overflow-hidden">
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          gap: 1,
+                          bgcolor: "white",
+                          p: 1.5,
+                          borderRadius: 3,
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            position: "relative",
+                            width: { xs: 80, sm: 120, md: 160 },
+                            height: { xs: 80, sm: 120, md: 160 },
+                            borderRadius: 2,
+                            overflow: "hidden",
+                          }}
+                        >
                           <Image
                             src="/images/qr-android.png"
                             alt="Download app on Android"
                             fill
                             className="object-contain"
-                            sizes="140px"
+                            sizes="(max-width: 640px) 80px, 160px"
                             priority
                           />
-                        </div>
-                        <span className="text-sm font-medium text-slate-700">Android</span>
-                      </div>
-                    </div>
-                  </div>
+                        </Box>
+                        <Typography sx={{ fontSize: "0.75rem", fontWeight: 600, color: "#334155" }}>Android</Typography>
+                      </Box>
+                    </Box>
+                  </Box>
                 </Box>
               )}
             </Box>
           </Grid>
 
-          <Grid item xs={12} lg={5} className="relative">
-            <Box ref={mockupRef} className="relative z-10">
-              <div className="relative group">
-                <div className="absolute inset-0 bg-indigo-500 rounded-full blur-[80px] opacity-20 group-hover:opacity-40 transition-opacity duration-700" />
+          <Grid item xs={12} lg={5} sx={{ position: "relative" }}>
+            <Box ref={mockupRef} sx={{ position: "relative", zIndex: 10 }}>
+              <Box sx={{ position: "relative", "&:hover .glow": { opacity: 0.4 } }}>
+                <Box
+                  className="glow"
+                  sx={{
+                    position: "absolute",
+                    inset: 0,
+                    bgcolor: "#6366f1",
+                    borderRadius: "50%",
+                    filter: "blur(80px)",
+                    opacity: 0.2,
+                    transition: "opacity 0.7s",
+                  }}
+                />
                 <Image
                   src="/images/app-mockup.png"
                   alt="App Mockup"
@@ -175,8 +371,9 @@ const DownloadHero = () => {
                   height={800}
                   className="relative z-20 drop-shadow-2xl animate-float"
                   priority
+                  style={{ width: "100%", height: "auto", maxWidth: "500px", margin: "0 auto" }}
                 />
-              </div>
+              </Box>
             </Box>
           </Grid>
         </Grid>

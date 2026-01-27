@@ -32,42 +32,45 @@ const faqs = [
 
 export default function FaqContent() {
   return (
-    <Box className="bg-slate-50 min-h-screen py-24">
+    <Box sx={{ bgcolor: '#f8fafc', minHeight: '100vh', py: { xs: 8, md: 12 }, px: 2 }}>
       <Container maxWidth="md">
-        <Box className="text-center mb-16">
-          <FaQuestionCircle className="text-5xl text-indigo-600 mx-auto mb-6" />
-          <Typography variant="h2" className="font-extrabold text-slate-900 mb-4">
+        <Box sx={{ textAlign: 'center', mb: { xs: 6, md: 8 } }}>
+          <FaQuestionCircle className="text-4xl md:text-5xl text-indigo-600 mx-auto mb-6" />
+          <Typography variant="h2" sx={{ fontWeight: 800, color: '#0f172a', mb: 2, fontSize: { xs: '1.875rem', md: '3rem' } }}>
             Frequently Asked Questions
           </Typography>
-          <Typography variant="h5" className="text-slate-500 max-w-xl mx-auto font-light">
+          <Typography variant="h5" sx={{ color: '#64748b', maxWidth: '36rem', mx: 'auto', fontWeight: 300, fontSize: { xs: '1rem', md: '1.25rem' } }}>
             Everything you need to know about Core Chain. Can&apos;t find an answer? Contact our support team.
           </Typography>
         </Box>
 
         {faqs.map((cat, idx) => (
-          <Box key={idx} className="mb-12">
-            <Typography variant="h6" className="text-indigo-600 font-bold uppercase tracking-widest mb-6 px-4">
+          <Box key={idx} sx={{ mb: { xs: 5, md: 6 } }}>
+            <Typography variant="h6" sx={{ color: '#4f46e5', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.1em', mb: { xs: 2, md: 3 }, px: 1, fontSize: { xs: '0.875rem', md: '1rem' } }}>
               {cat.category}
             </Typography>
-            <Box className="space-y-4">
+            <Box sx={{ '& > div': { mb: { xs: 1.5, md: 2 } } }}>
               {cat.questions.map((faq, fIdx) => (
                 <Accordion 
                   key={fIdx} 
-                  className="rounded-2xl border border-slate-200 before:hidden shadow-sm hover:shadow-md transition-shadow mb-3 overflow-hidden"
                   sx={{ 
-                    borderRadius: '16px !important', 
+                    borderRadius: '12px !important', 
                     '&:before': { display: 'none' },
-                    boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1)'
+                    boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1)',
+                    border: '1px solid #e2e8f0',
+                    overflow: 'hidden',
+                    '&:hover': { boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' },
+                    transition: 'box-shadow 0.2s'
                   }}
                 >
                   <AccordionSummary
-                    expandIcon={<FaChevronDown className="text-indigo-600" />}
-                    className="py-2 hover:bg-slate-50 transition-colors"
+                    expandIcon={<FaChevronDown className="text-indigo-600 text-xs md:text-base" />}
+                    sx={{ py: { xs: 0.5, md: 1 }, '&:hover': { bgcolor: '#f8fafc' }, transition: 'background-color 0.2s' }}
                   >
-                    <Typography className="font-bold text-slate-800">{faq.q}</Typography>
+                    <Typography sx={{ fontWeight: 'bold', color: '#1e293b', fontSize: { xs: '0.875rem', md: '1rem' } }}>{faq.q}</Typography>
                   </AccordionSummary>
-                  <AccordionDetails className="bg-white border-t border-slate-50 py-6">
-                    <Typography className="text-slate-600 leading-relaxed font-light">
+                  <AccordionDetails sx={{ bgcolor: 'white', borderTop: '1px solid #f1f5f9', py: { xs: 2, md: 3 } }}>
+                    <Typography sx={{ color: '#475569', lineHeight: 1.6, fontWeight: 300, fontSize: { xs: '0.875rem', md: '1rem' } }}>
                       {faq.a}
                     </Typography>
                   </AccordionDetails>
@@ -78,12 +81,12 @@ export default function FaqContent() {
         ))}
 
         {/* Support CTA */}
-        <Box className="mt-20 p-12 bg-indigo-600 rounded-[40px] text-center text-white">
-          <Typography variant="h4" className="font-bold mb-4">Still have questions?</Typography>
-          <Typography className="opacity-80 mb-8 max-w-lg mx-auto">
+        <Box sx={{ mt: { xs: 8, md: 10 }, p: { xs: 3, md: 6 }, bgcolor: '#4f46e5', borderRadius: { xs: 6, md: 10 }, textAlign: 'center', color: 'white' }}>
+          <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 2, fontSize: { xs: '1.5rem', md: '2.25rem' } }}>Still have questions?</Typography>
+          <Typography sx={{ opacity: 0.8, mb: 4, maxWidth: '32rem', mx: 'auto', fontSize: { xs: '0.875rem', md: '1rem' } }}>
             We&apos;re here to help. Reach out to our dedicated support team for any technical or billing inquiries.
           </Typography>
-          <button className="bg-white text-indigo-600 px-10 py-3 rounded-full font-bold hover:bg-slate-100 transition-colors">
+          <button className="bg-white text-indigo-600 px-8 md:px-10 py-3 rounded-full font-bold hover:bg-slate-100 transition-colors text-sm md:text-base w-full sm:w-auto">
             Get in touch
           </button>
         </Box>

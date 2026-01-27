@@ -9,39 +9,42 @@ import { useGSAP } from "@gsap/react";
 export default function FeaturesContent() {
   const heroRef = useRef<HTMLDivElement>(null);
 
-  useGSAP(() => {
-    gsap.from(".animate-item", {
-      y: 30,
-      opacity: 0,
-      duration: 0.8,
-      stagger: 0.2,
-      ease: "power3.out",
-    });
-  }, { scope: heroRef });
+  useGSAP(
+    () => {
+      gsap.from(".animate-item", {
+        y: 30,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.2,
+        ease: "power3.out",
+      });
+    },
+    { scope: heroRef },
+  );
 
   return (
-    <Box className="bg-white">
+    <Box sx={{ bgcolor: 'white' }}>
       {/* Hero Section */}
-      <Box ref={heroRef} className="bg-slate-950 py-24 text-white relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-indigo-600/20 rounded-full blur-[100px] -mr-32 -mt-32" />
-        <Container maxWidth="lg" className="relative z-10">
+      <Box ref={heroRef} sx={{ bgcolor: '#020617', py: { xs: 8, md: 12 }, color: 'white', position: 'relative', overflow: 'hidden', px: 2 }}>
+        <Box sx={{ position: 'absolute', top: 0, right: 0, width: 400, height: 400, bgcolor: 'rgba(79, 70, 229, 0.2)', borderRadius: '50%', filter: 'blur(100px)', mr: -16, mt: -16 }} />
+        <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 10 }}>
           <Grid container spacing={6} alignItems="center">
             <Grid item xs={12} md={7}>
-              <Typography variant="overline" className="text-indigo-400 font-bold tracking-widest mb-4 block animate-item">
+              <Typography variant="overline" className="animate-item" sx={{ color: '#818cf8', fontWeight: 'bold', letterSpacing: '0.2em', mb: 2, display: 'block', fontSize: { xs: '0.75rem', md: '0.875rem' } }}>
                 FEATURES & CAPABILITIES
               </Typography>
-              <Typography variant="h1" className="text-5xl md:text-6xl font-extrabold mb-6 leading-tight animate-item">
+              <Typography variant="h1" className="animate-item" sx={{ fontSize: { xs: '1.875rem !important', md: '3rem', lg: '4.375rem' }, fontWeight: 800, mb: 3, lineHeight: 1.2 }}>
                 Enterprise-Grade <br />
-                <span className="text-indigo-400">Blockchain HR</span> Solutions.
+                <Box component="span" sx={{ color: '#818cf8' }}>Blockchain HR</Box> Solutions.
               </Typography>
-              <Typography variant="h5" className="text-xl text-slate-400 mb-8 max-w-xl leading-relaxed animate-item">
+              <Typography variant="h5" className="animate-item" sx={{ fontSize: { xs: '0.875rem', md: '1.25rem' }, color: '#94a3b8', mb: 4, maxWidth: '36rem', lineHeight: 1.6 }}>
                 Everything you need to manage your workforce securely, transparently, and efficiently on the blockchain.
               </Typography>
-              <Box className="flex gap-4 animate-item">
-                <Button variant="contained" className="bg-indigo-600 hover:bg-indigo-700 px-8 py-3 rounded-full normal-case text-lg font-semibold">
+              <Box className="animate-item" sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2 }}>
+                <Button variant="contained" sx={{ bgcolor: '#4f46e5', '&:hover': { bgcolor: '#4338ca' }, px: 4, py: 1.5, borderRadius: 999, textTransform: 'none', fontSize: { xs: '1rem', md: '1.125rem' }, fontWeight: 600, width: { xs: '100%', sm: 'auto' } }}>
                   Get Started
                 </Button>
-                <Button variant="outlined" className="border-slate-700 text-white hover:bg-white/5 px-8 py-3 rounded-full normal-case text-lg font-semibold">
+                <Button variant="outlined" sx={{ border: '1px solid #334155', color: 'white', '&:hover': { bgcolor: 'rgba(255,255,255,0.05)' }, px: 4, py: 1.5, borderRadius: 999, textTransform: 'none', fontSize: { xs: '1rem', md: '1.125rem' }, fontWeight: 600, width: { xs: '100%', sm: 'auto' } }}>
                   View Demo
                 </Button>
               </Box>
@@ -54,9 +57,9 @@ export default function FeaturesContent() {
       <FeatureHighlights />
 
       {/* Detailed Technical Features List (Mock) */}
-      <Box className="py-24 bg-slate-50">
+      <Box sx={{ py: { xs: 8, md: 12 }, bgcolor: '#f8fafc', px: 2 }}>
         <Container maxWidth="lg">
-          <Typography variant="h3" className="text-center font-bold text-slate-900 mb-16">
+          <Typography variant="h3" sx={{ textAlign: 'center', fontWeight: 'bold', color: '#0f172a', mb: { xs: 6, md: 8 }, fontSize: { xs: '1.5rem', md: '2.25rem' } }}>
             Advanced Technical Capabilities
           </Typography>
           <Grid container spacing={4}>
@@ -68,12 +71,12 @@ export default function FeaturesContent() {
               { title: "Customizable Permissions", desc: "Granular access control using CASL integrated with blockchain keys." },
               { title: "API-First Design", desc: "Easily integrate with existing ERP and payroll systems via our robust SDK." },
             ].map((item, idx) => (
-              <Grid item xs={12} md={4} key={idx}>
-                <Box className="p-8 bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow duration-300">
-                  <Typography variant="h6" className="font-bold mb-4 text-indigo-700">
+              <Grid item xs={12} sm={6} md={4} key={idx}>
+                <Box sx={{ p: { xs: 3, md: 4 }, bgcolor: 'white', borderRadius: { xs: 4, md: 6 }, border: '1px solid #e2e8f0', boxShadow: 1, '&:hover': { boxShadow: 4 }, transition: 'box-shadow 0.3s', height: '100%' }}>
+                  <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2, color: '#4338ca', fontSize: { xs: '1.125rem', md: '1.25rem' } }}>
                     {item.title}
                   </Typography>
-                  <Typography className="text-slate-600">
+                  <Typography sx={{ color: '#475569', fontSize: { xs: '0.875rem', md: '1rem' } }}>
                     {item.desc}
                   </Typography>
                 </Box>
